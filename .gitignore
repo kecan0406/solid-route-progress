@@ -8,4 +8,5 @@ coverage
 .playwright
 .playwright-cli
 .output
+.vercel
 .size-exports

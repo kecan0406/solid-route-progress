@@ -3,6 +3,8 @@
 [![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+Docs and a live demo: https://solid-route-progress.vercel.app
+
 A web-native route progress bar for [SolidJS](https://solidjs.com) and [`@solidjs/router`](https://github.com/solidjs/solid-router), in the spirit of [NProgress](https://github.com/rstacruz/nprogress) and [BProgress](https://bprogress.vercel.app/):
 
 - CSS does the animating: JavaScript writes the target value (`--sp-value`), the hop speed (`--sp-speed`), and one attribute (`data-state`). The loading trickle is a single long CSS transition, and no JS timer steps the bar forward. You can change its motion, color, and shape in CSS. `--sp-value` is registered with `@property`, so an element of your own can transition it too, such as a `conic-gradient()` ring.
