@@ -1,7 +1,7 @@
-# sprogress
+# solid-route-progress
 
-> [!NOTE]
-> `sprogress` is a working name. Both `sprogress` and `solid-progress` are taken on npm, so `package.json` is marked `private` until the final name is decided. Everything below uses `sprogress` as a placeholder, and one search-and-replace renames it.
+[![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A web-native route progress bar for [SolidJS](https://solidjs.com) and [`@solidjs/router`](https://github.com/solidjs/solid-router), in the spirit of [NProgress](https://github.com/rstacruz/nprogress) and [BProgress](https://bprogress.vercel.app/):
 
@@ -15,10 +15,10 @@ A web-native route progress bar for [SolidJS](https://solidjs.com) and [`@solidj
 ## Install
 
 ```sh
-pnpm add sprogress
+pnpm add solid-route-progress
 ```
 
-Peer dependencies: `solid-js ^1.9` and, for the router integration, `@solidjs/router >= 0.15`.
+Peer dependencies: `solid-js ^1.9` and, for the router integration, `@solidjs/router >= 1.0`.
 
 Server rendering needs a bundler that resolves the `solid` export condition (`vite-plugin-solid`, SolidStart): the `default` export is compiled for the DOM.
 
@@ -29,13 +29,13 @@ The stylesheet uses modern CSS: `@layer`, `@property`, `linear()`, `oklch()` and
 ```css
 /* app.css */
 @import 'tailwindcss'; /* optional */
-@import 'sprogress/style.css';
+@import 'solid-route-progress/style.css';
 ```
 
 ```tsx
 import { Router, Route } from '@solidjs/router'
 import { Suspense } from 'solid-js'
-import { RouteProgress } from 'sprogress/router'
+import { RouteProgress } from 'solid-route-progress/router'
 
 const Layout = (props) => (
   <>
@@ -60,7 +60,7 @@ It takes the same two steps: import the stylesheet in `src/app.css`, and render 
 import { Router } from '@solidjs/router'
 import { FileRoutes } from '@solidjs/start/router'
 import { Suspense } from 'solid-js'
-import { RouteProgress } from 'sprogress/router'
+import { RouteProgress } from 'solid-route-progress/router'
 import './app.css'
 
 export default function App() {
@@ -141,7 +141,7 @@ The bar is a normal component. Render it inside the container and make it `absol
 The default template is a single `<Bar />`. Compose whatever you need. Children can read the controller with `useProgress()`:
 
 ```tsx
-import { Bar, useProgress } from 'sprogress'
+import { Bar, useProgress } from 'solid-route-progress'
 
 ;<RouteProgress>
   <Bar class="rounded-r-full" />
@@ -253,7 +253,7 @@ Mark any link (or a whole nav) with `data-sp-ignore` to keep the bar hidden for 
 Wrap the app in `<ProgressProvider>`; `<RouteProgress>` then drives the provider's controller and `useProgress()` reaches it from anywhere, which is handy for fetches, uploads, or anything else:
 
 ```tsx
-import { ProgressProvider, useProgress } from 'sprogress'
+import { ProgressProvider, useProgress } from 'solid-route-progress'
 
 const Layout = (props) => (
   <ProgressProvider delay={300}>
@@ -291,12 +291,12 @@ Or create your own with `createProgress(options)` and render it with `<Progress 
 
 ## Without `@solidjs/router`: the Navigation API
 
-`sprogress/navigation` drives the bar from the browser's [Navigation API](https://developer.mozilla.org/docs/Web/API/Navigation_API) (Baseline since January 2026). It starts on `navigate` and completes once the navigation settles: on `navigatesuccess` or `navigateerror` for navigations a router intercepts, or right away for a plain `pushState` nobody intercepts (over before it paints, so nothing shows). An intercepted navigation starts as a `navigate` event whose `destination.sameDocument` is `false` (it only becomes same-document once intercepted), so it is held like a cross-document one, and the safety timeout stops applying once it commits. A `navigateerror` from an abort (a stop, a newer navigation) fades the bar out. Any other, such as a rejected intercept handler, completes it as an `'error'`. Cross-document navigations are covered exactly as with the router integration. Where the API is missing, nothing is tracked (development builds say so).
+`solid-route-progress/navigation` drives the bar from the browser's [Navigation API](https://developer.mozilla.org/docs/Web/API/Navigation_API) (Baseline since January 2026). It starts on `navigate` and completes once the navigation settles: on `navigatesuccess` or `navigateerror` for navigations a router intercepts, or right away for a plain `pushState` nobody intercepts (over before it paints, so nothing shows). An intercepted navigation starts as a `navigate` event whose `destination.sameDocument` is `false` (it only becomes same-document once intercepted), so it is held like a cross-document one, and the safety timeout stops applying once it commits. A `navigateerror` from an abort (a stop, a newer navigation) fades the bar out. Any other, such as a rejected intercept handler, completes it as an `'error'`. Cross-document navigations are covered exactly as with the router integration. Where the API is missing, nothing is tracked (development builds say so).
 
-Routers that don't intercept through the Navigation API (including `@solidjs/router`) load their data outside of it, so their loads are invisible here. Use `sprogress/router` for those.
+Routers that don't intercept through the Navigation API (including `@solidjs/router`) load their data outside of it, so their loads are invisible here. Use `solid-route-progress/router` for those.
 
 ```tsx
-import { NavigationProgress } from 'sprogress/navigation'
+import { NavigationProgress } from 'solid-route-progress/navigation'
 
 ;<NavigationProgress filter={(e) => e.navigationType !== 'replace'} />
 ```
@@ -324,7 +324,7 @@ import { NavigationProgress } from 'sprogress/navigation'
 ## API surface
 
 ```ts
-// sprogress
+// solid-route-progress
 createProgress(options?): ProgressController // { start(): Release, done(outcome?), set, track(promise, { timeout? }), value, state, active, error, options }
 type Release = (outcome?: 'error' | 'cancel') => void // & Disposable where Symbol.dispose exists
 // types: Release, Outcome, TrackOptions, DisposableLike, ProgressController, ProgressOptions, ProgressState
@@ -332,10 +332,10 @@ type Release = (outcome?: 'error' | 'cancel') => void // & Disposable where Symb
 createCrossDocumentProgress(controller, { timeout?, filter? })
 IGNORE_ATTRIBUTE // 'data-sp-ignore'
 
-// sprogress/router
+// solid-route-progress/router
 <RouteProgress>, createRouteProgress(controller, { shallow?, filter?, crossDocument? })
 
-// sprogress/navigation
+// solid-route-progress/navigation
 <NavigationProgress>, createNavigationProgress(controller, { filter?, timeout? })
 ```
 
@@ -363,9 +363,11 @@ pnpm check      # lint, typecheck, test, build, size
 pnpm changeset  # describe a change for the next release's notes
 ```
 
-CI runs `pnpm format:check`, `pnpm check` and the docs build on every push and pull request. Releases go through changesets with npm trusted publishing (provenance included) once the package is no longer `private`.
+CI runs `pnpm format:check`, `pnpm check` and the docs build on every push and pull request. Releases go through changesets with npm trusted publishing (provenance included).
 
 The package ships JSX untouched under the `solid` export condition, so SolidStart / `vite-plugin-solid` compile it for DOM or SSR as appropriate, plus a DOM-compiled build for everyone else. That build does not render on the server, so SSR needs a bundler that resolves `solid`.
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Report security issues as described in [SECURITY.md](SECURITY.md).
 
 ## License
 

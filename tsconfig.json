@@ -16,9 +16,9 @@
     "noEmit": true,
     "types": ["vite/client"],
     "paths": {
-      "sprogress": ["./src/index.ts"],
-      "sprogress/router": ["./src/router.tsx"],
-      "sprogress/navigation": ["./src/navigation.tsx"]
+      "solid-route-progress": ["./src/index.ts"],
+      "solid-route-progress/router": ["./src/router.tsx"],
+      "solid-route-progress/navigation": ["./src/navigation.tsx"]
     }
   },
   "include": ["src", "test", "dev", "tsdown.config.ts", "vitest.config.ts", "scripts"]

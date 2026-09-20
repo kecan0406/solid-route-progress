@@ -1,4 +1,4 @@
-import { Bar, createProgress, Progress, useProgress } from 'sprogress'
+import { Bar, createProgress, Progress, useProgress } from 'solid-route-progress'
 import { Btn, delay, Panel, Row } from './ui'
 
 /** Children of `<Progress>` read its controller with `useProgress()`. */

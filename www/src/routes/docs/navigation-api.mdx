@@ -1,7 +1,7 @@
 # Navigation API
 
 ```tsx
-import { NavigationProgress } from 'sprogress/navigation'
+import { NavigationProgress } from 'solid-route-progress/navigation'
 
 ;<NavigationProgress />
 ```
@@ -38,13 +38,13 @@ Each navigation holds the bar on its own.
 
 ## Where the API is missing
 
-Nothing is tracked; `<NavigationProgress>` renders an idle bar. `sprogress/router`'s cross-document tracking needs it too.
+Nothing is tracked; `<NavigationProgress>` renders an idle bar. `solid-route-progress/router`'s cross-document tracking needs it too.
 
 ## `createNavigationProgress()`
 
 ```tsx
-import { createProgress, Progress } from 'sprogress'
-import { createNavigationProgress } from 'sprogress/navigation'
+import { createProgress, Progress } from 'solid-route-progress'
+import { createNavigationProgress } from 'solid-route-progress/navigation'
 
 const progress = createProgress()
 createNavigationProgress(progress, { timeout: 5000 })
@@ -52,4 +52,4 @@ createNavigationProgress(progress, { timeout: 5000 })
 <Progress controller={progress} />
 ```
 
-`@solidjs/router` loads outside the Navigation API, so use [`sprogress/router`](/docs/router) for it.
+`@solidjs/router` loads outside the Navigation API, so use [`solid-route-progress/router`](/docs/router) for it.

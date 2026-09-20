@@ -1,5 +1,5 @@
 import { For, onCleanup, Show } from 'solid-js'
-import type { ProgressController } from 'sprogress'
+import type { ProgressController } from 'solid-route-progress'
 import { cfg, DEFAULTS, navLoading, setCfg, SWATCHES } from '~/playground'
 
 const Label = (props: { name: string; value?: string; for?: string }) => (

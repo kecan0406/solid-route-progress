@@ -1,6 +1,6 @@
 import { createAsync, useSearchParams } from '@solidjs/router'
 import { Show, type JSX } from 'solid-js'
-import { useProgress } from 'sprogress'
+import { useProgress } from 'solid-route-progress'
 import { wait } from '../data'
 
 const Card = (props: { title: string; children: JSX.Element }) => (

@@ -1,16 +1,16 @@
 {
-  "name": "sprogress",
+  "name": "solid-route-progress",
   "version": "0.0.0",
   "description": "Web-native, CSS-driven route progress bar for SolidJS. The loading drift is one CSS transition; Tailwind v4 friendly.",
-  "private": true,
   "license": "MIT",
+  "author": "kecan0406 (https://github.com/kecan0406)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kecan0406/solid-progress.git"
+    "url": "git+https://github.com/kecan0406/solid-route-progress.git"
   },
-  "homepage": "https://github.com/kecan0406/solid-progress#readme",
+  "homepage": "https://github.com/kecan0406/solid-route-progress#readme",
   "bugs": {
-    "url": "https://github.com/kecan0406/solid-progress/issues"
+    "url": "https://github.com/kecan0406/solid-route-progress/issues"
   },
   "type": "module",
   "sideEffects": [
@@ -53,8 +53,8 @@
   },
   "scripts": {
     "dev": "vite serve dev",
-    "dev:www": "pnpm --filter sprogress-www dev",
-    "build:www": "pnpm --filter sprogress-www build",
+    "dev:www": "pnpm --filter solid-route-progress-www dev",
+    "build:www": "pnpm --filter solid-route-progress-www build",
     "build": "tsdown",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.build.json",
     "test": "vitest run",
@@ -68,7 +68,7 @@
     "changeset": "changeset"
   },
   "peerDependencies": {
-    "@solidjs/router": ">=0.15.0",
+    "@solidjs/router": ">=1.0.0",
     "solid-js": "^1.9.0"
   },
   "peerDependenciesMeta": {

@@ -1,6 +1,6 @@
 # Changesets with npm trusted publishing (provenance included), after
 # changesets/changesets site/guide/_snippets/automating-trusted-publishing.yaml.
-# The package stays `private` until its npm name is decided, so nothing publishes yet.
+# Merging the "Version Packages" pull request that this workflow opens publishes to npm.
 name: Release
 
 on:

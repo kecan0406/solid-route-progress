@@ -4,10 +4,10 @@ import { defineConfig, type ViteUserConfig } from 'vitest/config'
 
 const src = (file: string) => new URL(`./src/${file}`, import.meta.url).pathname
 const alias = {
-  'sprogress/router': src('router.tsx'),
-  'sprogress/navigation': src('navigation.tsx'),
-  'sprogress/style.css': src('style.css'),
-  sprogress: src('index.ts'),
+  'solid-route-progress/router': src('router.tsx'),
+  'solid-route-progress/navigation': src('navigation.tsx'),
+  'solid-route-progress/style.css': src('style.css'),
+  'solid-route-progress': src('index.ts'),
 }
 
 /** One project per runtime: the same source compiled for the DOM, for the server, and run in real browsers. */

@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 
 /**
- * The chrome the examples share, so each example file shows its sprogress code and little else.
+ * The chrome the examples share, so each example file shows its solid-route-progress code and little else.
  * `Panel` is the container recipe from the Styling docs: the bar inside it is `absolute`.
  */
 export const Panel = (props: { children: JSX.Element }) => (

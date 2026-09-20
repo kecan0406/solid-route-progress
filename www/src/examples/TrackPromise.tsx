@@ -1,4 +1,4 @@
-import { createProgress, Progress } from 'sprogress'
+import { createProgress, Progress } from 'solid-route-progress'
 import { Btn, delay, fail, Panel, Readout, Row } from './ui'
 
 export function TrackPromise() {

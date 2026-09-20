@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
-@import 'sprogress/style.css';
+@import 'solid-route-progress/style.css';
 
 /* ---------- theme tokens ---------- */
 /*

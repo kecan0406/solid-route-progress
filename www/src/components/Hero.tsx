@@ -5,7 +5,7 @@ export function Hero() {
   const [copied, setCopied] = createSignal(false)
 
   const copy = async () => {
-    if (!(await copyText('npm i sprogress'))) return
+    if (!(await copyText('npm i solid-route-progress'))) return
     setCopied(true)
     setTimeout(() => setCopied(false), 1200)
   }
@@ -23,7 +23,7 @@ export function Hero() {
         and any stylesheet can theme it.
       </p>
       <span class="inline-flex items-center gap-2.5 rounded-[10px] border border-border bg-card px-3.5 py-2.5 font-mono text-[13px]">
-        <span class="text-muted-foreground select-none">$</span> npm i sprogress
+        <span class="text-muted-foreground select-none">$</span> npm i solid-route-progress
         <button
           type="button"
           onClick={copy}

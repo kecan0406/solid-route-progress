@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import 'sprogress/style.css';
+@import 'solid-route-progress/style.css';
 
 /* Theme presets picked from the header. Plain custom properties — no JS involved. */
 [data-theme='glow'] .sprogress-bar::after {

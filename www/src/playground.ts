@@ -64,9 +64,9 @@ export function usageText(): string {
     : '<RouteProgress />'
   return `import { Router } from '@solidjs/router'
 import { Suspense } from 'solid-js'
-import { ProgressProvider } from 'sprogress'
-import { RouteProgress } from 'sprogress/router'
-import 'sprogress/style.css'
+import { ProgressProvider } from 'solid-route-progress'
+import { RouteProgress } from 'solid-route-progress/router'
+import 'solid-route-progress/style.css'
 
 <Router
   root={(props) => (

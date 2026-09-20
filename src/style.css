@@ -1,5 +1,5 @@
 /*
- * sprogress — all rendering lives here. JS only writes `--sp-value`, `--sp-speed` and `data-state`.
+ * solid-route-progress — all rendering lives here. JS only writes `--sp-value`, `--sp-speed` and `data-state`.
  *
  * Tunables (set them anywhere: `:root`, `@theme`, a class, or inline):
  *   --sp-color            bar colour                       oklch(0.65 0.14 241)

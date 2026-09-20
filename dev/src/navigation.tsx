@@ -1,7 +1,7 @@
 /* @refresh reload */
 import { render } from 'solid-js/web'
 import { createSignal, onMount } from 'solid-js'
-import { NavigationProgress } from 'sprogress/navigation'
+import { NavigationProgress } from 'solid-route-progress/navigation'
 
 /**
  * A tiny "router" that intercepts same-document navigations with the Navigation API and

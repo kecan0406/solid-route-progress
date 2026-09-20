@@ -1,7 +1,7 @@
 # Router integration
 
 ```tsx
-import { RouteProgress } from 'sprogress/router'
+import { RouteProgress } from 'solid-route-progress/router'
 
 <Router root={(props) => <><RouteProgress /><Suspense>{props.children}</Suspense></>}>
 ```
@@ -59,7 +59,7 @@ Works for `<A>`, plain anchors and Navigation API navigations alike.
 ```
 
 ```ts
-import { createCrossDocumentProgress } from 'sprogress'
+import { createCrossDocumentProgress } from 'solid-route-progress'
 
 createCrossDocumentProgress(controller, options)
 ```
@@ -67,8 +67,8 @@ createCrossDocumentProgress(controller, options)
 ## `createRouteProgress()`
 
 ```tsx
-import { createProgress, Progress } from 'sprogress'
-import { createRouteProgress } from 'sprogress/router'
+import { createProgress, Progress } from 'solid-route-progress'
+import { createRouteProgress } from 'solid-route-progress/router'
 
 const progress = createProgress()
 createRouteProgress(progress, { shallow: true })
