@@ -1,0 +1,181 @@
+import { CodeBlock } from '~/components/CodeBlock'
+import { Highlight } from '~/highlight'
+import styleCss from '../../../../src/style.css?raw'
+
+# Styling
+
+## Custom properties
+
+| Property                | Default                | Meaning                                                      |
+| ----------------------- | ---------------------- | ------------------------------------------------------------ |
+| `--sp-color`            | `oklch(0.65 0.14 241)` | bar color                                                    |
+| `--sp-height`           | `3px`                  | bar thickness                                                |
+| `--sp-z-index`          | `9999`                 |                                                              |
+| `--sp-start`            | `0.08`                 | value the bar is revealed at                                 |
+| `--sp-trickle-duration` | `10s`                  | how long the loading drift takes                             |
+| `--sp-trickle-easing`   | `linear(…)`            | shape of the drift                                           |
+| `--sp-speed`            | the `speed` option     | read-only; set it through [`speed`](/docs/controller#options) |
+
+Set them on `:root`, in Tailwind's `@theme`, on a class, or inline.
+
+```css
+:root {
+  --sp-color: oklch(0.62 0.19 264); /* or var(--color-indigo-500) */
+  --sp-height: 2px;
+}
+```
+
+```css
+:root {
+  color-scheme: light dark;
+  --sp-color: light-dark(oklch(0.55 0.2 264), oklch(0.75 0.12 264));
+}
+```
+
+## Utilities
+
+```tsx
+<RouteProgress class="h-1 data-[state=done]:opacity-50" />
+```
+
+The stylesheet sits in the `components.sprogress` sublayer, so utilities, your own `@layer components` rules and unlayered CSS all beat it without `!important`.
+
+## Hooks for the rest of the page
+
+| Hook                                             | Where    | When                        |
+| ------------------------------------------------ | -------- | --------------------------- |
+| `data-state="idle \| trickle \| active \| done"` | the bar  | always                      |
+| `data-error`                                     | the bar  | done phase of a failed load |
+| `data-sp-busy`                                   | `<html>` | while any bar is visible    |
+
+```tsx
+<main class="transition-opacity [[data-sp-busy]_&]:opacity-60">…</main>
+```
+
+```tsx
+<Progress busyAttribute={false} /> // opt out
+<Progress ariaBusy /> // also aria-busy="true"
+```
+
+## Inside a container
+
+```tsx
+<div class="relative overflow-hidden rounded-xl">
+  <Progress controller={panel} class="absolute" />…
+</div>
+```
+
+## Your own template
+
+```tsx
+import { Bar, useProgress } from 'sprogress'
+
+const Percent = () => <output>{Math.round(useProgress().value() * 100)}%</output>
+
+<RouteProgress>
+  <Bar class="rounded-r-full" />
+  <Percent />
+</RouteProgress>
+```
+
+`--sp-value` is registered as a `<number>`, so your own elements can transition it. Keep the `var()` fallbacks.
+
+```css
+.ring {
+  background: conic-gradient(
+    var(--sp-color, oklch(0.65 0.14 241)) calc(var(--sp-value) * 1turn),
+    transparent 0
+  );
+  transition: --sp-value var(--sp-trickle-duration, 10s) var(--sp-trickle-easing, ease-out);
+}
+```
+
+## Recipes
+
+They are not shipped, so they cost nothing until you paste them. See them live in [Examples](/docs/examples#styling-recipes).
+
+### Failed loads
+
+```css
+.sprogress[data-error] {
+  --sp-color: oklch(0.63 0.19 23);
+}
+```
+
+### Spinner
+
+```tsx
+<RouteProgress>
+  <Bar />
+  <div class="spinner" aria-hidden="true" />
+</RouteProgress>
+```
+
+```css
+.spinner {
+  position: absolute;
+  top: 15px;
+  inset-inline-end: 15px;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-block-start-color: var(--sp-color, oklch(0.65 0.14 241));
+  border-inline-start-color: var(--sp-color, oklch(0.65 0.14 241));
+  border-radius: 50%;
+  animation: spinner 400ms linear infinite;
+}
+.sprogress[data-state='idle'] .spinner {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    display: none;
+  }
+}
+@keyframes spinner {
+  to {
+    rotate: 1turn;
+  }
+}
+```
+
+```tsx
+<div
+  aria-hidden="true"
+  class="absolute end-4 top-4 size-4.5 animate-spin rounded-full border-2 border-transparent border-s-(color:--sp-color) border-t-(color:--sp-color) in-data-[state=idle]:animate-none motion-reduce:hidden"
+/>
+```
+
+### Glow
+
+```css
+.sprogress-bar::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow:
+    0 0 10px var(--sp-color, oklch(0.65 0.14 241)),
+    0 0 5px var(--sp-color, oklch(0.65 0.14 241));
+  transform: rotate(3deg) translateY(-4px);
+}
+.sprogress:dir(rtl) .sprogress-bar::after {
+  transform: rotate(-3deg) translateY(-4px);
+}
+```
+
+## Built in
+
+|                | |
+| -------------- | -------------------------------------------------- |
+| RTL            | the bar slides in from the right under `dir="rtl"`  |
+| Forced colors  | paints with the system `Highlight` color            |
+
+## The stylesheet
+
+<CodeBlock>
+  <Highlight text={styleCss} lang="css" />
+</CodeBlock>

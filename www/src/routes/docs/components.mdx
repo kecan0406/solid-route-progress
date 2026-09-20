@@ -1,0 +1,75 @@
+# Components
+
+```tsx
+import { Bar, Progress, ProgressProvider, useProgress } from 'sprogress'
+```
+
+## `<Progress>`
+
+```tsx
+import { createProgress, Progress } from 'sprogress'
+
+const progress = createProgress()
+
+<Progress controller={progress} label="Loading page" />
+```
+
+| Prop                                       | Default                          | Meaning                                                  |
+| ------------------------------------------ | -------------------------------- | -------------------------------------------------------- |
+| `controller`                               | nearest provided, else a new one | the controller to drive                                  |
+| `trickleTo`, `delay`, `stopDelay`, `speed` |                                  | applied only when the bar creates its own controller     |
+| `label`                                    | `Loading`                        | accessible name                                          |
+| `getValueLabel`                            |                                  | `(percent) => string`, read as `aria-valuetext`          |
+| `busyAttribute`                            | `true`                           | `data-sp-busy` on `<html>` while visible                 |
+| `ariaBusy`                                 | `false`                          | `aria-busy="true"` on `<html>` while visible             |
+| `class`, `style`, …                        |                                  | forwarded; `style` merges with the custom properties     |
+| `children`                                 | `<Bar />`                        | custom template                                          |
+
+| Renders                          | When                            |
+| -------------------------------- | ------------------------------- |
+| `role="progressbar"`             | always                          |
+| no `aria-valuenow`               | while trickling (indeterminate) |
+| `aria-valuenow` + `aria-valuetext` | after `set()`                 |
+
+The attributes that mirror the controller (`role`, the `aria-*` values, `data-state`, `data-error`, the class, and the custom properties) win over props spread onto the element. With several bars the `<html>` attributes stay until the last one goes idle.
+
+## `<ProgressProvider>`
+
+```tsx
+<ProgressProvider delay={300}>
+  <RouteProgress />
+  {children}
+</ProgressProvider>
+```
+
+| Prop         | Meaning                                |
+| ------------ | -------------------------------------- |
+| `controller` | share an existing one                  |
+| options      | otherwise it creates one from them     |
+
+Renders nothing.
+
+## `useProgress()`
+
+```tsx
+const progress = useProgress()
+
+progress.track(upload(file))
+```
+
+Reads the nearest controller from `<ProgressProvider>`, `<Progress>`, `<RouteProgress>` or `<NavigationProgress>`. Throws outside them.
+
+## `<Bar>`
+
+```tsx
+<RouteProgress>
+  <Bar class="rounded-r-full" />
+  <div class="spinner" aria-hidden="true" />
+</RouteProgress>
+```
+
+The default template. It forwards `class` and other attributes. A spinner and a glow are [recipes](/docs/styling#recipes).
+
+## `ProgressContext`
+
+The shared context, exported for integrations. Prefer `useProgress()`.

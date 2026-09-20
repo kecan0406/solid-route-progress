@@ -1,0 +1,55 @@
+# Navigation API
+
+```tsx
+import { NavigationProgress } from 'sprogress/navigation'
+
+;<NavigationProgress />
+```
+
+It works without a router.
+
+## `<NavigationProgress>`
+
+Every [`<Progress>` prop](/docs/components), plus:
+
+| Prop      | Default | Meaning                                                  |
+| --------- | ------- | -------------------------------------------------------- |
+| `filter`  |         | `(event) => boolean` on the `navigate` event; `false` skips it |
+| `timeout` | `10000` | safety net for navigations that never unload; `0` disables it |
+
+```tsx
+<NavigationProgress filter={(event) => event.navigationType !== 'replace'} />
+```
+
+## When the bar completes
+
+| Navigation                                    | Bar                                              |
+| --------------------------------------------- | ------------------------------------------------ |
+| intercepted by a router                       | holds until `navigatesuccess` / `navigateerror`  |
+| `navigateerror` with an `AbortError`          | fades out without reaching 100%                  |
+| `navigateerror`, anything else                | completes as an [`'error'`](/docs/controller#start) |
+| plain `pushState`, nobody intercepting        | commits before the first paint, so nothing shows |
+| cross-document                                | holds until the page unloads                     |
+| back from the bfcache                         | fades out                                        |
+| hash change, `download`, `data-sp-ignore`     | nothing                                          |
+| cancelled by another listener                 | nothing                                          |
+
+Each navigation holds the bar on its own.
+
+## Where the API is missing
+
+Nothing is tracked; `<NavigationProgress>` renders an idle bar. `sprogress/router`'s cross-document tracking needs it too.
+
+## `createNavigationProgress()`
+
+```tsx
+import { createProgress, Progress } from 'sprogress'
+import { createNavigationProgress } from 'sprogress/navigation'
+
+const progress = createProgress()
+createNavigationProgress(progress, { timeout: 5000 })
+
+<Progress controller={progress} />
+```
+
+`@solidjs/router` loads outside the Navigation API, so use [`sprogress/router`](/docs/router) for it.

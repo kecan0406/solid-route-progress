@@ -1,0 +1,55 @@
+# Introduction
+
+```tsx
+import { Router } from '@solidjs/router'
+import { Suspense } from 'solid-js'
+import { RouteProgress } from 'sprogress/router'
+import 'sprogress/style.css'
+
+<Router
+  root={(props) => (
+    <>
+      <RouteProgress />
+      <Suspense>{props.children}</Suspense>
+    </>
+  )}
+/>
+```
+
+## Entry points
+
+| Entry                  | Exports                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| `sprogress`            | `createProgress`, `<Progress>`, `<ProgressProvider>`, `<Bar>`, `useProgress()` |
+| `sprogress/router`     | `<RouteProgress>`, `createRouteProgress()`                                    |
+| `sprogress/navigation` | `<NavigationProgress>`, `createNavigationProgress()`                          |
+| `sprogress`            | `createCrossDocumentProgress()`, `IGNORE_ATTRIBUTE`                           |
+| `sprogress/style.css`  | the stylesheet                                                                |
+
+## What JavaScript writes
+
+| Written             | On               | Value                                    |
+| ------------------- | ---------------- | ---------------------------------------- |
+| `--sp-value`        | the bar          | `0` to `1`, the target of the CSS transition |
+| `--sp-speed`        | the bar          | the `speed` option                       |
+| `data-state`        | the bar          | `idle \| trickle \| active \| done`      |
+| `data-error`        | the bar          | during the done phase of a failed load   |
+| `data-sp-busy`      | `<html>`         | while any bar is visible                 |
+
+Everything else is CSS.
+
+## Size
+
+| Module                   | min  | gzip | brotli |
+| ------------------------ | ---- | ---- | ------ |
+| `sprogress`              | 4676 | 2143 | 1949   |
+| `createProgress` alone   | 1589 | 823  | 762    |
+| `sprogress/router`       | 1025 | 610  | 524    |
+| `sprogress/navigation`   | 933  | 503  | 425    |
+| `sprogress/style.css`    | 1167 | 531  | 437    |
+
+Zero dependencies.
+
+## Next
+
+[Installation](/docs/installation) · [Quick start](/docs/quick-start) · [Examples](/docs/examples)

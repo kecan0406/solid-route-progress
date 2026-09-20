@@ -1,0 +1,284 @@
+@import 'tailwindcss';
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import 'sprogress/style.css';
+
+/* ---------- theme tokens ---------- */
+/*
+ * The palette is hackerspub's (`web-next/src/app.css`): the shadcn neutral set, zero chroma
+ * throughout, so nothing on the page carries a hue but the bar itself.
+ *
+ * hackerspub declares its dark values in a `prefers-color-scheme` block. We keep `light-dark()`
+ * instead, so the header toggle still pins a scheme; the rendered colours are the same values.
+ */
+:root {
+  color-scheme: light dark;
+  --radius: 0.5rem;
+  --background: light-dark(oklch(1 0 0), oklch(0.145 0 0));
+  --foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --card: light-dark(oklch(1 0 0), oklch(0.145 0 0));
+  --muted: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --muted-foreground: light-dark(oklch(0.556 0 0), oklch(0.708 0 0));
+  --border: light-dark(oklch(0.922 0 0), oklch(0.269 0 0));
+  --primary: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --primary-foreground: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --ring: light-dark(oklch(0.708 0 0), oklch(0.439 0 0));
+  --destructive: light-dark(oklch(0.577 0.245 27.325), oklch(0.396 0.141 25.723));
+  --destructive-foreground: oklch(0.985 0 0);
+
+  /* Every bar on the site follows the theme, exactly as /docs/styling says to set it. The
+     playground overrides it inline on the two bars it drives. */
+  --sp-color: var(--primary);
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: 'Pretendard Variable', sans-serif;
+}
+
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  input[type='range'] {
+    accent-color: var(--primary);
+  }
+}
+
+/* ---------- /docs/examples: the Styling recipes, scoped to the bars that opt in ---------- */
+/* Nothing here ships in the package; these are the paste-in recipes from /docs/styling. */
+.ex-glow .sprogress-bar::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow:
+    0 0 10px var(--sp-color, oklch(0.65 0.14 241)),
+    0 0 5px var(--sp-color, oklch(0.65 0.14 241));
+  transform: rotate(3deg) translateY(-4px);
+}
+.ex-glow:dir(rtl) .sprogress-bar::after {
+  transform: rotate(-3deg) translateY(-4px);
+}
+
+.ex-spinner {
+  position: absolute;
+  top: 15px;
+  inset-inline-end: 15px;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-block-start-color: var(--sp-color, oklch(0.65 0.14 241));
+  border-inline-start-color: var(--sp-color, oklch(0.65 0.14 241));
+  border-radius: 50%;
+  animation: ex-spinner 400ms linear infinite;
+}
+/* nothing to spin while the bar is hidden */
+.sprogress[data-state='idle'] .ex-spinner {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ex-spinner {
+    display: none;
+  }
+}
+@keyframes ex-spinner {
+  to {
+    rotate: 1turn;
+  }
+}
+
+/* `--destructive` is sized for a filled button; a 3px bar at its dark value (L 0.396) is too
+   dim to read as a failure, so the dark half is lifted. */
+.ex-error[data-error] {
+  --sp-color: light-dark(var(--destructive), oklch(0.704 0.191 22.216));
+}
+
+/* Syntax colours for the playground snippet (`highlight.tsx`). `code-theme.ts` mirrors these
+   for Shiki, so the landing card and the docs read the same. */
+.tk-kw {
+  color: light-dark(oklch(0.45 0.16 285), oklch(0.78 0.12 285));
+}
+.tk-str {
+  color: light-dark(oklch(0.45 0.13 150), oklch(0.8 0.13 165));
+}
+.tk-cm {
+  color: light-dark(oklch(0.52 0.02 264), oklch(0.65 0.03 264));
+}
+.tk-tag {
+  color: light-dark(oklch(0.48 0.17 15), oklch(0.78 0.14 10));
+}
+.tk-prop {
+  color: light-dark(oklch(0.42 0.06 264), oklch(0.8 0.05 264));
+}
+/* a value the playground just changed */
+.tk-chg {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ---------- docs prose ---------- */
+@layer components {
+  .doc {
+    font-size: 15px;
+    overflow-x: auto;
+  }
+  .doc h1 {
+    margin: 0 0 14px;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .doc h2 {
+    margin: 40px 0 12px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .doc h3 {
+    margin: 26px 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .doc p,
+  .doc ul,
+  .doc ol {
+    margin: 0 0 14px;
+  }
+  .doc a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, var(--primary) 40%, transparent);
+    text-underline-offset: 3px;
+  }
+  .doc a:hover {
+    text-decoration-color: currentColor;
+  }
+  .doc ul,
+  .doc ol {
+    padding-left: 20px;
+    list-style: disc;
+  }
+  .doc ol {
+    list-style: decimal;
+  }
+  .doc li {
+    margin: 4px 0;
+  }
+  .doc li::marker {
+    color: var(--muted-foreground);
+  }
+  .doc strong {
+    font-weight: 600;
+  }
+  .doc code {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+  }
+  .doc :not(pre) > code {
+    padding: 1px 5px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--muted);
+  }
+  /* A signature heading is a heading, not a chip. */
+  .doc :is(h1, h2, h3) > code {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 0.92em;
+  }
+  /* Shiki's `editor.background` is transparent, so the card colour comes from here and
+     follows the theme like every other surface. */
+  .doc pre {
+    margin: 0 0 18px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .doc pre code {
+    font-size: inherit;
+  }
+  .doc table {
+    width: 100%;
+    margin: 0 0 18px;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .doc th,
+  .doc td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  /* key/value reference tables are written without headings */
+  .doc tr:has(> th:empty) {
+    display: none;
+  }
+  .doc th {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+  .doc blockquote {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--muted-foreground);
+  }
+  .doc blockquote p {
+    margin: 0;
+  }
+  /* Examples bring their own chrome; the prose rules would fight it. */
+  .doc .example p {
+    margin: 0;
+  }
+  .doc .example a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

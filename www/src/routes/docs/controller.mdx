@@ -1,0 +1,122 @@
+# Controller
+
+```ts
+import { createProgress } from 'sprogress'
+
+const progress = createProgress({ delay: 300 })
+```
+
+## Options
+
+| Option      | Default | Meaning                                              |
+| ----------- | ------- | ---------------------------------------------------- |
+| `trickleTo` | `0.95`  | value the bar drifts toward while loading            |
+| `delay`     | `200`   | ms a load must last before the bar shows             |
+| `stopDelay` | `0`     | ms to wait before completing once the last hold goes |
+| `speed`     | `200`   | ms for hops and fades; written to `--sp-speed`       |
+
+Read lazily, so reactive props work. They belong to whoever creates the controller.
+
+## `start()`
+
+```ts
+const release = progress.start()
+release()
+release('error')
+release('cancel')
+```
+
+```ts
+{
+  using hold = progress.start() // where the runtime has Symbol.dispose
+  await work()
+}
+```
+
+| | |
+| ---------------- | ---------------------------------------------------------- |
+| returns          | `Release`                                                   |
+| shows            | once the load has lasted `delay`                            |
+| completes        | when the last hold is released                              |
+| `release()`      | done                                                        |
+| `release('error')` | completes with `data-error`; wins over any other outcome  |
+| `release('cancel')` | fades out without reaching 100%                          |
+| releasing twice  | no-op                                                       |
+
+## `done()`
+
+```ts
+progress.done()
+progress.done('error')
+progress.done('cancel')
+```
+
+| | |
+| ------------- | ------------------------------------------------ |
+| drops         | every hold                                        |
+| after         | `stopDelay`                                       |
+| while hidden  | no-op                                             |
+| never painted | dropped silently                                  |
+
+## `set()`
+
+```ts
+progress.set(0.6)
+progress.set(1) // completes
+```
+
+| | |
+| ------------- | ---------------------------------------------- |
+| range         | `0` to `1`, clamped                             |
+| then          | resumes trickling toward `trickleTo`            |
+| while hidden  | shows the bar, unless `delay` is still pending  |
+
+## `track()`
+
+```ts
+const items = await progress.track(fetch('/api/items').then((r) => r.json()))
+
+progress.track(upload(file), { timeout: 30_000 })
+```
+
+| | |
+| ---------- | ----------------------------------------- |
+| holds      | one hold per call                         |
+| rejection  | releases as `'error'`                     |
+| returns    | the promise, unchanged                    |
+| `timeout`  | ms; lets go even if the promise never settles |
+
+## Signals
+
+| Accessor   | Type                                        | Meaning                                |
+| ---------- | ------------------------------------------- | -------------------------------------- |
+| `value()`  | `number`                                    | target value, `0` to `1`               |
+| `state()`  | `'idle' \| 'trickle' \| 'active' \| 'done'` | mirrored as `data-state`               |
+| `active()` | `boolean`                                   | visible                                |
+| `error()`  | `boolean`                                   | done phase of a failed load            |
+| `options`  | `ProgressOptions`                           | what it was created with               |
+
+| State     | Meaning                                              |
+| --------- | ---------------------------------------------------- |
+| `idle`    | hidden: faded out, `visibility: hidden`              |
+| `trickle` | drifting toward `trickleTo` on the long transition   |
+| `active`  | moving to a `set()` value on the short transition    |
+| `done`    | moving to 100%, then fading out                      |
+
+## On the server
+
+Every method is a no-op; `start()` still returns a release. `<Progress>` renders the idle shell.
+
+## Types
+
+```ts
+import type {
+  DisposableLike,
+  Outcome, // 'error' | 'cancel'
+  ProgressController,
+  ProgressOptions,
+  ProgressState,
+  Release,
+  TrackOptions,
+} from 'sprogress'
+```

@@ -1,0 +1,30 @@
+# Installation
+
+```sh
+pnpm add sprogress
+```
+
+| Peer               | Version                             |
+| ------------------ | ----------------------------------- |
+| `solid-js`         | ≥ 1.9                               |
+| `@solidjs/router`  | ≥ 0.15, for `sprogress/router`      |
+
+## Stylesheet
+
+```css
+/* app.css */
+@import 'tailwindcss'; /* optional */
+@import 'sprogress/style.css';
+```
+
+```ts
+import 'sprogress/style.css'
+```
+
+## Builds
+
+| Export condition | Build                                                                    |
+| ---------------- | ------------------------------------------------------------------------ |
+| `solid`          | JSX untouched; SolidStart and `vite-plugin-solid` compile it themselves   |
+| default          | DOM-compiled, no server rendering                                        |
+| `development`    | dev warnings; production resolves it to `false` and drops them           |

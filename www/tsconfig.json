@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "types": ["@solidjs/start/env"],
+    "paths": {
+      "~/*": ["./src/*"],
+      "sprogress": ["../src/index.ts"],
+      "sprogress/router": ["../src/router.tsx"],
+      "sprogress/navigation": ["../src/navigation.tsx"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}
