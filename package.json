@@ -1,0 +1,114 @@
+{
+  "name": "sprogress",
+  "version": "0.0.0",
+  "description": "Web-native, CSS-driven route progress bar for SolidJS. The loading drift is one CSS transition; Tailwind v4 friendly.",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kecan0406/solid-progress.git"
+  },
+  "homepage": "https://github.com/kecan0406/solid-progress#readme",
+  "bugs": {
+    "url": "https://github.com/kecan0406/solid-progress/issues"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "solid": "./dist/index.jsx",
+      "default": "./dist/index.js"
+    },
+    "./router": {
+      "types": "./dist/router.d.ts",
+      "solid": "./dist/router.jsx",
+      "default": "./dist/router.js"
+    },
+    "./navigation": {
+      "types": "./dist/navigation.d.ts",
+      "solid": "./dist/navigation.jsx",
+      "default": "./dist/navigation.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "router": [
+        "./dist/router.d.ts"
+      ],
+      "navigation": [
+        "./dist/navigation.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "dev": "vite serve dev",
+    "dev:www": "pnpm --filter sprogress-www dev",
+    "build:www": "pnpm --filter sprogress-www build",
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "size": "node scripts/size.mjs",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm size",
+    "format": "prettier -w \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
+    "prepublishOnly": "pnpm check",
+    "lint": "oxlint --deny-warnings",
+    "format:check": "prettier --check \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
+    "changeset": "changeset"
+  },
+  "peerDependencies": {
+    "@solidjs/router": ">=0.15.0",
+    "solid-js": "^1.9.0"
+  },
+  "peerDependenciesMeta": {
+    "@solidjs/router": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "solid",
+    "solidjs",
+    "solid-router",
+    "progress",
+    "progress-bar",
+    "nprogress",
+    "bprogress",
+    "navigation",
+    "tailwindcss"
+  ],
+  "packageManager": "pnpm@10.33.2",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@changesets/cli": "^3.0.3",
+    "@solidjs/router": "^1.0.0",
+    "@solidjs/testing-library": "^0.8.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@vitest/browser-playwright": "^4.1.11",
+    "eslint-plugin-solid": "^0.18.0",
+    "jsdom": "^30.0.1",
+    "oxlint": "^1.83.0",
+    "playwright": "^1.62.1",
+    "prettier": "^3.9.6",
+    "publint": "^0.3.24",
+    "solid-js": "^1.9.15",
+    "tailwindcss": "^4.3.3",
+    "tsdown": "^0.22.14",
+    "typescript": "^7.0.2",
+    "unplugin-solid": "^2.0.0",
+    "vite": "^8.2.2",
+    "vite-plugin-solid": "^2.11.14",
+    "vitest": "^4.1.11"
+  }
+}

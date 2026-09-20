@@ -1,0 +1,11 @@
+{
+  // The published entries only: isolated declarations let tsdown emit .d.ts with Oxc, and no
+  // Vite types, so library code cannot lean on bundler-specific globals.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "isolatedDeclarations": true,
+    "types": []
+  },
+  "include": ["src"]
+}

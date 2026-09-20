@@ -1,0 +1,5 @@
+---
+'sprogress': minor
+---
+
+Initial release.

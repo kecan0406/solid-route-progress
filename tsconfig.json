@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "sprogress": ["./src/index.ts"],
+      "sprogress/router": ["./src/router.tsx"],
+      "sprogress/navigation": ["./src/navigation.tsx"]
+    }
+  },
+  "include": ["src", "test", "dev", "tsdown.config.ts", "vitest.config.ts", "scripts"]
+}
