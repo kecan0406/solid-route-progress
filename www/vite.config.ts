@@ -6,11 +6,17 @@ import { nitro } from 'nitro/vite'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
 import { defineConfig } from 'vite'
+import pkg from '../package.json' with { type: 'json' }
 import { codeTheme, dropBackground } from './src/code-theme'
 
 const src = (p: string) => new URL(`../src/${p}`, import.meta.url).pathname
 
 export default defineConfig({
+  // `package.json` is the one place the site's version and repository URL live.
+  define: {
+    __SP_VERSION__: JSON.stringify(pkg.version),
+    __SP_REPO__: JSON.stringify(pkg.repository.url.replace(/^git\+/, '').replace(/\.git$/, '')),
+  },
   plugins: [
     {
       // MDX emits JSX first; vite-plugin-solid (inside solidStart) then compiles it like any .tsx.
@@ -34,10 +40,10 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      'sprogress/router': src('router.tsx'),
-      'sprogress/navigation': src('navigation.tsx'),
-      'sprogress/style.css': src('style.css'),
-      sprogress: src('index.ts'),
+      'solid-route-progress/router': src('router.tsx'),
+      'solid-route-progress/navigation': src('navigation.tsx'),
+      'solid-route-progress/style.css': src('style.css'),
+      'solid-route-progress': src('index.ts'),
     },
   },
   // The SolidStart 2.0.4 dev toolbar imports trace-mapping, whose UMD `resolve-uri` has no ESM

@@ -1,5 +1,5 @@
 import { createSignal, Show } from 'solid-js'
-import { Bar, createProgress, Progress } from 'sprogress'
+import { Bar, createProgress, Progress } from 'solid-route-progress'
 import { Btn, delay, fail, Panel, Row } from './ui'
 
 const Toggle = (props: { label: string; on: boolean; onChange: (on: boolean) => void }) => (

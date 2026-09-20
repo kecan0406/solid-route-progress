@@ -40,7 +40,7 @@ export default function Docs(props: RouteSectionProps) {
 
   return (
     <div class="mx-auto max-w-[1100px] px-5 md:px-10">
-      <Title>{`${current()?.title ?? 'Docs'} · sprogress`}</Title>
+      <Title>{`${current()?.title ?? 'Docs'} · solid-route-progress`}</Title>
       <Header />
       <div class="grid gap-8 py-6 lg:grid-cols-[190px_minmax(0,1fr)] lg:gap-12 lg:py-10">
         <nav

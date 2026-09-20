@@ -1,7 +1,7 @@
 import { A } from '@solidjs/router'
 import type { JSX } from 'solid-js'
-import { createProgress } from 'sprogress'
-import { RouteProgress } from 'sprogress/router'
+import { createProgress } from 'solid-route-progress'
+import { RouteProgress } from 'solid-route-progress/router'
 import { Panel, Readout, Row } from './ui'
 
 // These links only change the search string, so every navigation here is instant. `delay: 0`

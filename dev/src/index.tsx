@@ -2,8 +2,8 @@
 import { render } from 'solid-js/web'
 import { A, Route, Router, type RouteSectionProps } from '@solidjs/router'
 import { createSignal, For, Show, Suspense } from 'solid-js'
-import { Bar, ProgressProvider } from 'sprogress'
-import { RouteProgress } from 'sprogress/router'
+import { Bar, ProgressProvider } from 'solid-route-progress'
+import { RouteProgress } from 'solid-route-progress/router'
 import {
   Fast,
   Home,

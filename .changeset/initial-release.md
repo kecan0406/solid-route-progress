@@ -1,5 +1,5 @@
 ---
-'sprogress': minor
+'solid-route-progress': minor
 ---
 
 Initial release.

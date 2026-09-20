@@ -1,5 +1,5 @@
 import { createSignal, For, onCleanup, type JSX } from 'solid-js'
-import { Progress, type Outcome, type ProgressController } from 'sprogress'
+import { Progress, type Outcome, type ProgressController } from 'solid-route-progress'
 import { barVars, navLoading, setNavLoading } from '~/playground'
 
 type Route = '/' | '/new' | '/album/117' | '/checkout'

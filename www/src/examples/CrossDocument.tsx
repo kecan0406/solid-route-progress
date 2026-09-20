@@ -1,7 +1,6 @@
-import { createCrossDocumentProgress, createProgress, Progress } from 'sprogress'
+import { createCrossDocumentProgress, createProgress, Progress } from 'solid-route-progress'
+import { REPO } from '~/links'
 import { Panel, Readout, Row } from './ui'
-
-const REPO = 'https://github.com/kecan0406/solid-progress'
 
 /**
  * `<RouteProgress>` does this for you. Here it runs on its own, so the bar reacts only to

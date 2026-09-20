@@ -155,7 +155,7 @@ export function Progress(props: ProgressProps): JSX.Element {
       onMount(() => {
         // No client rects means nothing is laid out (display: none, or a DOM without layout such as jsdom).
         if (root.getClientRects().length && getComputedStyle(root).position === 'static')
-          warn("style.css is not loaded: import 'sprogress/style.css' once.")
+          warn("style.css is not loaded: import 'solid-route-progress/style.css' once.")
       })
     createBusyAttribute(
       'data-sp-busy',

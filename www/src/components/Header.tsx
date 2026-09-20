@@ -23,11 +23,13 @@ export function Header() {
   }
 
   return (
-    <header class="flex items-center gap-3.5 py-3">
-      <A href="/" class="flex items-center gap-2.5">
+    <header class="flex flex-wrap items-center gap-x-3.5 gap-y-1 py-3">
+      <A href="/" class="flex items-center gap-2.5 whitespace-nowrap">
         <span class="h-[5px] w-[26px] rounded-[3px] bg-primary" />
-        <span class="text-[19px] font-semibold tracking-tight">sprogress</span>
-        <span class="font-mono text-[11px] text-muted-foreground">v0.1.0</span>
+        <span class="text-[19px] font-semibold tracking-tight">solid-route-progress</span>
+        <span class="hidden font-mono text-[11px] text-muted-foreground sm:inline">
+          v{__SP_VERSION__}
+        </span>
       </A>
       <nav class="ml-auto flex items-center gap-1">
         <A

@@ -1,30 +1,30 @@
 # Installation
 
 ```sh
-pnpm add sprogress
+pnpm add solid-route-progress
 ```
 
-| Peer               | Version                             |
-| ------------------ | ----------------------------------- |
-| `solid-js`         | ≥ 1.9                               |
-| `@solidjs/router`  | ≥ 0.15, for `sprogress/router`      |
+| Peer              | Version                                  |
+| ----------------- | ---------------------------------------- |
+| `solid-js`        | ≥ 1.9                                    |
+| `@solidjs/router` | ≥ 1.0, for `solid-route-progress/router` |
 
 ## Stylesheet
 
 ```css
 /* app.css */
 @import 'tailwindcss'; /* optional */
-@import 'sprogress/style.css';
+@import 'solid-route-progress/style.css';
 ```
 
 ```ts
-import 'sprogress/style.css'
+import 'solid-route-progress/style.css'
 ```
 
 ## Builds
 
-| Export condition | Build                                                                    |
-| ---------------- | ------------------------------------------------------------------------ |
-| `solid`          | JSX untouched; SolidStart and `vite-plugin-solid` compile it themselves   |
-| default          | DOM-compiled, no server rendering                                        |
-| `development`    | dev warnings; production resolves it to `false` and drops them           |
+| Export condition | Build                                                                   |
+| ---------------- | ----------------------------------------------------------------------- |
+| `solid`          | JSX untouched; SolidStart and `vite-plugin-solid` compile it themselves |
+| default          | DOM-compiled, no server rendering                                       |
+| `development`    | dev warnings; production resolves it to `false` and drops them          |

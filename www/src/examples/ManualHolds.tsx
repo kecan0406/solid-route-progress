@@ -1,5 +1,5 @@
 import { createSignal } from 'solid-js'
-import { createProgress, Progress, type Release } from 'sprogress'
+import { createProgress, Progress, type Release } from 'solid-route-progress'
 import { Btn, Panel, Readout, Row } from './ui'
 
 export function ManualHolds() {
