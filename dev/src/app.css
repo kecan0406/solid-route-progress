@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+@import 'sprogress/style.css';
+
+/* Theme presets picked from the header. Plain custom properties — no JS involved. */
+[data-theme='glow'] .sprogress-bar::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow:
+    0 0 10px var(--sp-color, oklch(0.65 0.14 241)),
+    0 0 5px var(--sp-color, oklch(0.65 0.14 241));
+  transform: rotate(3deg) translateY(-4px);
+}
+[data-theme='glow'] .sprogress:dir(rtl) .sprogress-bar::after {
+  transform: rotate(-3deg) translateY(-4px);
+}
+[data-theme='rose'] {
+  --sp-color: var(--color-rose-500);
+  --sp-height: 4px;
+}
+[data-theme='mono'] {
+  --sp-color: currentColor;
+  --sp-height: 2px;
+}
+[data-theme='gradient'] {
+  --sp-height: 5px;
+}
+[data-theme='gradient'] .sprogress-bar {
+  background: linear-gradient(in oklch 90deg, var(--color-indigo-500), var(--color-fuchsia-500));
+}
+[data-theme='slow'] {
+  --sp-trickle-duration: 30s;
+  --sp-trickle-easing: cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* The spinner recipe from the docs: a child of the bar template. */
+.spinner {
+  position: absolute;
+  top: 15px;
+  inset-inline-end: 15px;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-block-start-color: var(--sp-color, oklch(0.65 0.14 241));
+  border-inline-start-color: var(--sp-color, oklch(0.65 0.14 241));
+  border-radius: 50%;
+  animation: spin 400ms linear infinite;
+}
+.sprogress[data-state='idle'] .spinner {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    display: none;
+  }
+}
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@layer components {
+  .link {
+    @apply text-zinc-700 hover:text-indigo-600 dark:text-zinc-200;
+  }
+  .btn {
+    @apply rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-500;
+  }
+}

@@ -1,0 +1,84 @@
+/*
+ * sprogress — all rendering lives here. JS only writes `--sp-value`, `--sp-speed` and `data-state`.
+ *
+ * Tunables (set them anywhere: `:root`, `@theme`, a class, or inline):
+ *   --sp-color            bar colour                       oklch(0.65 0.14 241)
+ *   --sp-height           bar thickness                    3px
+ *   --sp-z-index                                           9999
+ *   --sp-start            value the bar is revealed at     0.08
+ *   --sp-trickle-duration length of the loading drift      10s
+ *   --sp-trickle-easing   shape of the loading drift       linear() curve
+ *
+ * `--sp-speed` mirrors the `speed` option so CSS transitions and JS timers agree: read it in
+ * your own rules, set it through `speed`.
+ *
+ * Everything sits in the `components.sprogress` sublayer, so Tailwind utilities, your own
+ * `@layer components` rules and unlayered CSS all win without `!important`.
+ */
+
+@property --sp-value {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@layer components.sprogress {
+  .sprogress {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--sp-z-index, 9999);
+    height: var(--sp-height, 3px);
+    pointer-events: none;
+    visibility: visible;
+    transition:
+      opacity var(--sp-speed) ease,
+      visibility 0s;
+  }
+
+  .sprogress[data-state='idle'] {
+    opacity: 0;
+    visibility: hidden;
+    /* keep painting while the opacity fades, then drop out of the a11y tree / hit-testing */
+    transition:
+      opacity var(--sp-speed) ease,
+      visibility 0s var(--sp-speed);
+  }
+
+  .sprogress-bar {
+    position: absolute;
+    inset: 0;
+    background: var(--sp-color, oklch(0.65 0.14 241));
+    /* full-width bar slid in from the inline-start edge */
+    transform: translateX(calc((var(--sp-value) - 1) * 100%));
+    /* fast out of the gate, then a long crawl — never quite arriving */
+    transition: transform var(--sp-trickle-duration, 10s)
+      var(
+        --sp-trickle-easing,
+        linear(0, 0.25 5%, 0.4 10%, 0.55 18%, 0.7 30%, 0.8 45%, 0.88 60%, 0.94 75%, 0.98 90%, 1)
+      );
+  }
+
+  .sprogress:dir(rtl) .sprogress-bar {
+    transform: translateX(calc((1 - var(--sp-value)) * 100%));
+  }
+
+  /* hidden: park the bar at the start position, but only after the fade-out finished */
+  .sprogress[data-state='idle'] .sprogress-bar {
+    --sp-value: var(--sp-start, 0.08);
+    transition: transform 0s var(--sp-speed);
+  }
+
+  /* explicit set() / done(): short, eased hop instead of the long drift */
+  .sprogress:is([data-state='active'], [data-state='done']) .sprogress-bar {
+    transition-duration: var(--sp-speed);
+    transition-timing-function: ease;
+  }
+
+  /* forced colours strip backgrounds; paint the bar with the system highlight instead */
+  @media (forced-colors: active) {
+    .sprogress-bar {
+      forced-color-adjust: none;
+      background: Highlight;
+    }
+  }
+}
