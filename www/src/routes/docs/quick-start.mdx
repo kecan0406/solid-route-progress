@@ -1,0 +1,80 @@
+# Quick start
+
+## `@solidjs/router`
+
+```tsx
+import { Router, Route } from '@solidjs/router'
+import { Suspense } from 'solid-js'
+import { RouteProgress } from 'sprogress/router'
+import 'sprogress/style.css'
+
+const Layout = (props) => (
+  <>
+    <RouteProgress />
+    <Suspense>{props.children}</Suspense>
+  </>
+)
+
+<Router root={Layout}>
+  <Route path="/" component={Home} />
+</Router>
+```
+
+## SolidStart
+
+```tsx
+// src/app.tsx
+import { Router } from '@solidjs/router'
+import { FileRoutes } from '@solidjs/start/router'
+import { Suspense } from 'solid-js'
+import { RouteProgress } from 'sprogress/router'
+import './app.css'
+
+export default function App() {
+  return (
+    <Router
+      root={(props) => (
+        <>
+          <RouteProgress />
+          <Suspense>{props.children}</Suspense>
+        </>
+      )}
+    >
+      <FileRoutes />
+    </Router>
+  )
+}
+```
+
+## Without a router
+
+```tsx
+import { NavigationProgress } from 'sprogress/navigation'
+
+;<NavigationProgress />
+```
+
+[Navigation API](/docs/navigation-api)
+
+## Driving it yourself
+
+```tsx
+import { ProgressProvider, useProgress } from 'sprogress'
+
+<ProgressProvider>
+  <RouteProgress />
+  {children}
+</ProgressProvider>
+```
+
+```ts
+const progress = useProgress()
+
+await progress.track(fetch('/api/items'))
+
+const release = progress.start()
+progress.set(0.6)
+release() // release('error') · release('cancel')
+```
+
+[Controller](/docs/controller) · [Examples](/docs/examples)

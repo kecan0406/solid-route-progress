@@ -1,0 +1,77 @@
+# Router integration
+
+```tsx
+import { RouteProgress } from 'sprogress/router'
+
+<Router root={(props) => <><RouteProgress /><Suspense>{props.children}</Suspense></>}>
+```
+
+| Covered by `useIsRouting()`                                             |
+| ----------------------------------------------------------------------- |
+| `<A>` clicks · `navigate()` · back/forward · action redirects · every `<Suspense>` the new route waits on |
+
+## `<RouteProgress>`
+
+Every [`<Progress>` prop](/docs/components), plus:
+
+| Prop            | Default | Meaning                                                            |
+| --------------- | ------- | ------------------------------------------------------------------ |
+| `shallow`       | `false` | skip navigations that keep the `pathname`                          |
+| `filter`        |         | `(to, from) => boolean`; `false` skips it                          |
+| `crossDocument` | `true`  | also hold for navigations that leave the document                  |
+
+```tsx
+<RouteProgress shallow filter={(to) => !to.startsWith('/admin')} />
+```
+
+Each navigation takes its own [hold](/docs/controller#start).
+
+## Ignoring links
+
+```tsx
+<A href="/settings" data-sp-ignore>
+  Settings
+</A>
+```
+
+Works for `<A>`, plain anchors and Navigation API navigations alike.
+
+## Leaving the document
+
+| Navigation                                                          | Bar                                    |
+| ------------------------------------------------------------------- | -------------------------------------- |
+| external link, plain form post, `location` assignment, `reload()`   | holds until the document unloads        |
+| stopped, or superseded by a newer one                               | fades out without reaching 100%         |
+| back from the bfcache                                               | fades out                               |
+| intercepted after all                                               | completes on `navigatesuccess`          |
+| no response (a `204`, a server-sent download)                       | completes after `timeout`               |
+| started from the browser itself (reload button, address bar)        | nothing                                 |
+| `mailto:`, `tel:`, `download`, cancelled by another listener        | nothing                                 |
+
+```tsx
+<RouteProgress
+  crossDocument={{ timeout: 5000, filter: (event) => event.navigationType !== 'reload' }}
+/>
+```
+
+```tsx
+<RouteProgress crossDocument={false} />
+```
+
+```ts
+import { createCrossDocumentProgress } from 'sprogress'
+
+createCrossDocumentProgress(controller, options)
+```
+
+## `createRouteProgress()`
+
+```tsx
+import { createProgress, Progress } from 'sprogress'
+import { createRouteProgress } from 'sprogress/router'
+
+const progress = createProgress()
+createRouteProgress(progress, { shallow: true })
+
+<Progress controller={progress} />
+```

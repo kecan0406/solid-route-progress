@@ -1,0 +1,90 @@
+import { Example } from '~/components/Example'
+import { CrossDocument } from '~/examples/CrossDocument'
+import crossDocumentSource from '../../examples/CrossDocument.tsx?raw'
+import { CustomTemplate } from '~/examples/CustomTemplate'
+import customTemplateSource from '../../examples/CustomTemplate.tsx?raw'
+import { DeterminateValue } from '~/examples/DeterminateValue'
+import determinateValueSource from '../../examples/DeterminateValue.tsx?raw'
+import { ManualHolds } from '~/examples/ManualHolds'
+import manualHoldsSource from '../../examples/ManualHolds.tsx?raw'
+import { SkippingNavigations } from '~/examples/SkippingNavigations'
+import skippingNavigationsSource from '../../examples/SkippingNavigations.tsx?raw'
+import { StyleRecipes } from '~/examples/StyleRecipes'
+import styleRecipesSource from '../../examples/StyleRecipes.tsx?raw'
+import { TrackPromise } from '~/examples/TrackPromise'
+import trackPromiseSource from '../../examples/TrackPromise.tsx?raw'
+
+# Examples
+
+Each demo is a real component, and the code under it is that component's file, imported with `?raw`. Every bar sits in its own panel (the [container recipe](/docs/styling#inside-a-container)) and passes `busyAttribute={false}`.
+
+## `track()`
+
+| Button             | Result                                                     |
+| ------------------ | ---------------------------------------------------------- |
+| Fetch (1.5s)       | holds, then completes                                      |
+| Fail it (1.2s)     | releases as `'error'`, sets `data-error`, and turns [red](/docs/styling#failed-loads) |
+| Too fast (120ms)   | shorter than `delay`, so it is never painted               |
+
+<Example source={trackPromiseSource}>
+  <TrackPromise />
+</Example>
+
+## `start()` and `release()`
+
+| Button             | Result                                    |
+| ------------------ | ----------------------------------------- |
+| Take a hold        | one more hold                             |
+| Release one        | bar keeps going until the last hold goes  |
+| Release as cancel  | fades out without reaching 100%           |
+| Release as error   | completes with `data-error`               |
+
+<Example source={manualHoldsSource}>
+  <ManualHolds />
+</Example>
+
+## `set()`
+
+`aria-valuenow` and `getValueLabel`'s `aria-valuetext` appear once the value is known.
+
+<Example source={determinateValueSource}>
+  <DeterminateValue />
+</Example>
+
+## Custom template
+
+`<Progress>` renders `<Bar />` unless you give it children; children read the controller with `useProgress()`.
+
+<Example source={customTemplateSource}>
+  <CustomTemplate />
+</Example>
+
+## Skipping navigations
+
+Both bars are wired to this page's router. The links only change the search string.
+
+| Link           | default + `filter` | `shallow` |
+| -------------- | ------------------ | --------- |
+| `?skip=go`     | flashes            | ignores   |
+| `?skip=blocked` | `filter` returns `false` | ignores   |
+| `?skip=quiet`  | `data-sp-ignore`   | ignores   |
+
+<Example source={skippingNavigationsSource}>
+  <SkippingNavigations />
+</Example>
+
+## Leaving the document
+
+`createCrossDocumentProgress()` on its own, which is what [`<RouteProgress>`](/docs/router#leaving-the-document) does for you.
+
+<Example source={crossDocumentSource}>
+  <CrossDocument />
+</Example>
+
+## Styling recipes
+
+The [recipes](/docs/styling#recipes), pasted into `app.css` as `.ex-glow` and `.ex-spinner`.
+
+<Example source={styleRecipesSource}>
+  <StyleRecipes />
+</Example>
