@@ -21,7 +21,7 @@ A web-native route progress bar for [SolidJS](https://solidjs.com) and [`@solidj
 pnpm add solid-route-progress
 ```
 
-Peer dependencies: `solid-js ^1.9` and, for the router integration, `@solidjs/router >= 1.0`.
+Peer dependencies: `solid-js ^1.9` and, for the router integration, `@solidjs/router ^0.15 || >= 1.0`.
 
 Server rendering needs a bundler that resolves the `solid` export condition (`vite-plugin-solid`, SolidStart): the `default` export is compiled for the DOM.
 
