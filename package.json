@@ -62,7 +62,7 @@
     "size": "node scripts/size.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm size",
     "format": "prettier -w \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
-    "prepublishOnly": "pnpm check",
+    "prepublishOnly": "pnpm build && pnpm size",
     "lint": "oxlint --deny-warnings",
     "format:check": "prettier --check \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
     "changeset": "changeset"
@@ -90,6 +90,7 @@
   "packageManager": "pnpm@10.33.2",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
     "@solidjs/router": "^1.0.0",
     "@solidjs/testing-library": "^0.8.10",

@@ -1,4 +1,5 @@
 {
+  "changelog": ["@changesets/changelog-github", { "repo": "kecan0406/solid-route-progress" }],
   "access": "public",
   "baseBranch": "main"
 }
