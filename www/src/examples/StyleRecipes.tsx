@@ -15,7 +15,7 @@ const Toggle = (props: { label: string; on: boolean; onChange: (on: boolean) => 
 
 /** The recipes from the Styling docs, pasted into `app.css` as `.ex-glow` / `.ex-spinner`. */
 export function StyleRecipes() {
-  // `speed` is stretched from its 200ms default so the done phase (and the red of a failed
+  // `speed` is stretched from its 200 ms default so the done phase (and the red of a failed
   // load) lasts long enough to see.
   const progress = createProgress({ speed: 450 })
   const [glow, setGlow] = createSignal(true)

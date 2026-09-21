@@ -80,7 +80,7 @@ export interface ProgressController {
   start(): Release
   /**
    * Complete the bar (after `stopDelay`), dropping every hold. No-op while hidden. An
-   * `outcome` marks the load as failed or cancelled, as with a release.
+   * `outcome` marks the load as failed or canceled, as with a release.
    */
   done(outcome?: Outcome): void
   /**
@@ -178,10 +178,10 @@ export function createProgress(options: ProgressOptions = {}): ProgressControlle
   }
 
   /** Every hold is gone: complete or drop the bar, or cancel a reveal that is not due yet. */
-  const settle = (cancelled: boolean) => {
+  const settle = (canceled: boolean) => {
     const s = state()
     if (s === 'trickle' || s === 'active') {
-      const end = cancelled && !failed ? drop : finish
+      const end = canceled && !failed ? drop : finish
       const stopDelay = opt('stopDelay')
       clearTimeout(stopTimer)
       if (stopDelay > 0) stopTimer = setTimeout(end, stopDelay)

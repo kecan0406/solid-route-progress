@@ -67,7 +67,7 @@ function tokenize(source: string, lang: Lang): Token[] {
   return tokens
 }
 
-/** Syntax-coloured source for a `<pre>`, using the `.tk-*` palette from app.css. */
+/** Syntax-colored source for a `<pre>`, using the `.tk-*` palette from app.css. */
 export function Highlight(props: { text: string; lang: Lang }) {
   return (
     <For each={tokenize(props.text, props.lang)}>

@@ -5,7 +5,7 @@ import { disposalSignal, getNavigation, isIgnored, type NavigateEventLike } from
 export interface CrossDocumentOptions {
   /**
    * Safety net: a cross-document navigation that never unloads the page and is never
-   * reported as cancelled (a `204` response, a server-sent download) completes the bar after
+   * reported as canceled (a `204` response, a server-sent download) completes the bar after
    * this many milliseconds. `0` disables it.
    * @default 10000
    */
@@ -22,7 +22,7 @@ export interface CrossDocumentOptions {
  *
  * Uses the Navigation API `navigate` event, which fires before the request is made; where
  * the API is missing this does nothing. Links marked `data-sp-ignore` are skipped. The bar
- * fades out when the navigation is cancelled before the document unloads (`navigateerror`:
+ * fades out when the navigation is canceled before the document unloads (`navigateerror`:
  * a stop, a newer navigation) or the page is restored from the back/forward cache, and
  * completes after `timeout`, the only end for a `204` or a server-sent download, which
  * Chromium does not report back. A navigation a router intercepts instead completes on

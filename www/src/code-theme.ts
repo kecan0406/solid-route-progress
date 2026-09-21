@@ -16,7 +16,7 @@ export const dropBackground: ShikiTransformer = {
  * The playground snippet's palette (`.tk-*` in app.css) as a Shiki theme, so docs and playground
  * match. Shiki adds the theme name as a class on `<pre>`, so it must not be `sprogress`.
  *
- * Colours pass through verbatim, `light-dark()` included, so one theme serves both schemes; the
+ * Colors pass through verbatim, `light-dark()` included, so one theme serves both schemes; the
  * card behind them is `.doc pre`'s `var(--muted)`.
  */
 export const codeTheme: ThemeRegistrationRaw = {

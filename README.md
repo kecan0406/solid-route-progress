@@ -90,7 +90,7 @@ Every tunable is a CSS custom property with a fallback, so you can set it on `:r
 | ----------------------- | ---------------------- | -------------------------------- |
 | `--sp-color`            | `oklch(0.65 0.14 241)` | bar color                        |
 | `--sp-height`           | `3px`                  | bar thickness                    |
-| `--sp-z-index`          | `9999`                 |                                  |
+| `--sp-z-index`          | `9999`                 | bar stacking order               |
 | `--sp-start`            | `0.08`                 | value the bar is revealed at     |
 | `--sp-trickle-duration` | `10s`                  | how long the loading drift takes |
 | `--sp-trickle-easing`   | `linear(…)`            | shape of the drift               |
@@ -99,7 +99,7 @@ Every tunable is a CSS custom property with a fallback, so you can set it on `:r
 
 ```css
 :root {
-  /* any CSS colour, or a Tailwind v4 token: var(--color-indigo-500) */
+  /* any CSS color, or a Tailwind v4 token: var(--color-indigo-500) */
   --sp-color: oklch(0.62 0.19 264);
   --sp-height: 2px;
 }
@@ -247,7 +247,7 @@ Router-specific:
 | `filter`        | none    | `(to, from) => boolean`; return `false` to skip a navigation                                                                                                                                                                                                                                          |
 | `crossDocument` | `true`  | also show the bar when the page leaves the document (external links, plain form posts, `location.reload()`). Needs the Navigation API; browser-UI navigations (reload button, address bar) never reach the page. Pass `{ timeout, filter }` to tune the 10 s safety net or skip navigations by event. |
 
-A navigation that leaves the document but is cancelled (a stop, a newer navigation) or comes back from the back/forward cache fades the bar out instead of running it to 100 %. One a router intercepts completes on `navigatesuccess` / `navigateerror`; the timeout stops applying once it commits. `navigate` events another listener cancelled are skipped.
+A navigation that leaves the document but is canceled (a stop, a newer navigation) or comes back from the back/forward cache fades the bar out instead of running it to 100%. One a router intercepts completes on `navigatesuccess` / `navigateerror`; the timeout stops applying once it commits. `navigate` events another listener canceled are skipped.
 
 Mark any link (or a whole nav) with `data-sp-ignore` to keep the bar hidden for it. This works for `<A>`, plain anchors, and Navigation API navigations alike (plain anchors rely on `NavigateEvent.sourceElement`: Chrome 135, Firefox 147, Safari 26.2).
 
@@ -269,9 +269,9 @@ const Layout = (props) => (
 const progress = useProgress()
 
 const release = progress.start() // hold the bar open: show (after `delay`) + trickle
-progress.set(0.6) // hop to 60 %, then keep trickling (ignored while `delay` is still pending)
+progress.set(0.6) // hop to 60%, then keep trickling (ignored while `delay` is still pending)
 release() // let go; the bar completes once every hold is released
-// or: release('error') — completes with `data-error`; release('cancel') — fades out without reaching 100 %
+// or: release('error') — completes with `data-error`; release('cancel') — fades out without reaching 100%
 
 progress.track(fetch('/api/items')) // hold until the promise settles; a rejection is an 'error'
 progress.track(upload(file), { timeout: 30_000 }) // let go after 30 s even if it never settles
@@ -294,7 +294,7 @@ Or create your own with `createProgress(options)` and render it with `<Progress 
 
 ## Without `@solidjs/router`: the Navigation API
 
-`solid-route-progress/navigation` drives the bar from the browser's [Navigation API](https://developer.mozilla.org/docs/Web/API/Navigation_API) (Baseline since January 2026). It starts on `navigate` and completes once the navigation settles: on `navigatesuccess` or `navigateerror` for navigations a router intercepts, or right away for a plain `pushState` nobody intercepts (over before it paints, so nothing shows). An intercepted navigation starts as a `navigate` event whose `destination.sameDocument` is `false` (it only becomes same-document once intercepted), so it is held like a cross-document one, and the safety timeout stops applying once it commits. A `navigateerror` from an abort (a stop, a newer navigation) fades the bar out. Any other, such as a rejected intercept handler, completes it as an `'error'`. Cross-document navigations are covered exactly as with the router integration. Where the API is missing, nothing is tracked (development builds say so).
+`solid-route-progress/navigation` drives the bar from the browser's [Navigation API](https://developer.mozilla.org/docs/Web/API/Navigation_API) (Baseline since January 2026). It starts on `navigate` and completes once the navigation settles: on `navigatesuccess` or `navigateerror` for navigations a router intercepts, or right away for a plain `pushState` nobody intercepts (over before it paints, so nothing shows). An intercepted navigation starts as a `navigate` event whose `destination.sameDocument` is `false` (it only becomes same-document once intercepted), so it is held like a cross-document one, and the safety timeout stops applying once it commits. A `navigateerror` from an abort (a stop, a newer navigation) fades the bar out. Any other `navigateerror`, such as a rejected intercept handler, completes it as an `'error'`. Cross-document navigations are covered exactly as with the router integration. Where the API is missing, nothing is tracked (development builds say so).
 
 Routers that don't intercept through the Navigation API (including `@solidjs/router`) load their data outside of it, so their loads are invisible here. Use `solid-route-progress/router` for those.
 
@@ -346,7 +346,7 @@ IGNORE_ATTRIBUTE // 'data-sp-ignore'
 
 1. `start()` waits `delay` (200 ms), then flips `data-state` to `trickle` and sets `--sp-value` to `trickleTo` (0.95). The stylesheet's `trickle` rule has a 10 s transition on `transform` whose curve races out and then crawls. It is one transition, and no timer steps it.
 2. `set(n)` switches to the `active` rule (short `--sp-speed` transition) for the hop, then hands back to `trickle`. CSS transitions interrupt from the _current_ animated value, so there is nothing to sync.
-3. Once the last hold is released (or on `done()`), the bar moves to 100 % under the `done` rule (with `data-error` if a hold was released as an `'error'`; a `'cancel'` skips this step and fades straight out), then `idle` fades the whole bar out with `opacity` + a delayed `visibility: hidden`. The bar itself is parked back at `--sp-start` only after the fade has finished. Both steps take `speed`, which the bar also writes to `--sp-speed`, so the CSS and the timers never disagree.
+3. Once the last hold is released (or on `done()`), the bar moves to 100% under the `done` rule (with `data-error` if a hold was released as an `'error'`; a `'cancel'` skips this step and fades straight out), then `idle` fades the whole bar out with `opacity` + a delayed `visibility: hidden`. The bar itself is parked back at `--sp-start` only after the fade has finished. Both steps take `speed`, which the bar also writes to `--sp-speed`, so the CSS and the timers never disagree.
 4. If the load ends while `delay` is still pending, or before the browser painted the bar (tracked with a single `requestAnimationFrame`), the bar is dropped silently.
 
 ## Development

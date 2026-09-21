@@ -5,8 +5,8 @@ import { live } from '~/highlight'
 /**
  * Named so a swatch reads as "blue" to assistive tech, not as a wall of `oklch()`.
  *
- * `neutral` is the theme's own colour, so the bar flips with the colour scheme. The three hues
- * are hackerspub's status colours, which it declares once for both schemes.
+ * `neutral` is the theme's own color, so the bar flips with the color scheme. The three hues
+ * are hackerspub's status colors, which it declares once for both schemes.
  */
 export const SWATCHES = [
   { name: 'neutral', color: 'var(--primary)' },

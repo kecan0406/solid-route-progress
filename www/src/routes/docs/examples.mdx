@@ -22,9 +22,9 @@ Each demo is a real component, and the code under it is that component's file, i
 
 | Button             | Result                                                     |
 | ------------------ | ---------------------------------------------------------- |
-| Fetch (1.5s)       | holds, then completes                                      |
-| Fail it (1.2s)     | releases as `'error'`, sets `data-error`, and turns [red](/docs/styling#failed-loads) |
-| Too fast (120ms)   | shorter than `delay`, so it is never painted               |
+| Fetch (1.5 s)       | holds, then completes                                      |
+| Fail it (1.2 s)     | releases as `'error'`, sets `data-error`, and turns [red](/docs/styling#failed-loads) |
+| Too fast (120 ms)   | shorter than `delay`, so it is never painted               |
 
 <Example source={trackPromiseSource}>
   <TrackPromise />

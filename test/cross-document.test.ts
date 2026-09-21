@@ -45,7 +45,7 @@ describe('createCrossDocumentProgress', () => {
     expect(p.state()).toBe('trickle')
   })
 
-  it('times out cancelled navigations and honours timeout: 0', () => {
+  it('times out canceled navigations and honours timeout: 0', () => {
     const p = createProgress({ delay: 0 })
     createCrossDocumentProgress(p, { timeout: 0 })
     nav.dispatch(navigateEvent())
@@ -93,7 +93,7 @@ describe('createCrossDocumentProgress', () => {
     expect(p.state()).toBe('done')
   })
 
-  it('skips navigations another listener cancelled', () => {
+  it('skips navigations another listener canceled', () => {
     const p = createProgress({ delay: 0 })
     createCrossDocumentProgress(p)
     const event = navigateEvent()

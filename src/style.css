@@ -2,9 +2,9 @@
  * solid-route-progress — all rendering lives here. JS only writes `--sp-value`, `--sp-speed` and `data-state`.
  *
  * Tunables (set them anywhere: `:root`, `@theme`, a class, or inline):
- *   --sp-color            bar colour                       oklch(0.65 0.14 241)
+ *   --sp-color            bar color                       oklch(0.65 0.14 241)
  *   --sp-height           bar thickness                    3px
- *   --sp-z-index                                           9999
+ *   --sp-z-index          bar stacking order               9999
  *   --sp-start            value the bar is revealed at     0.08
  *   --sp-trickle-duration length of the loading drift      10s
  *   --sp-trickle-easing   shape of the loading drift       linear() curve
@@ -74,7 +74,7 @@
     transition-timing-function: ease;
   }
 
-  /* forced colours strip backgrounds; paint the bar with the system highlight instead */
+  /* forced colors strip backgrounds; paint the bar with the system highlight instead */
   @media (forced-colors: active) {
     .sprogress-bar {
       forced-color-adjust: none;

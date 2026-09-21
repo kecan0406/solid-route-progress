@@ -3,7 +3,7 @@ import { createProgress, Progress, type Release } from 'solid-route-progress'
 import { Btn, Panel, Readout, Row } from './ui'
 
 export function ManualHolds() {
-  // `speed` is stretched from its 200ms default so the done phase (and the red of a failed
+  // `speed` is stretched from its 200 ms default so the done phase (and the red of a failed
   // load) lasts long enough to see.
   const progress = createProgress({ speed: 450 })
   const [holds, setHolds] = createSignal<Release[]>([])

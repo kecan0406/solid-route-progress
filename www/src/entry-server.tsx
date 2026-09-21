@@ -2,7 +2,7 @@ import { createHandler, StartServer } from '@solidjs/start/server'
 
 const THEME_INIT = `try{var t=localStorage.getItem('sp-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`
 
-// The one place a colour stays hex: favicons are rasterised outside the page, without our tokens.
+// The one place a color stays hex: favicons are rasterized outside the page, without our tokens.
 // #737373 is `oklch(0.556 0 0)`, the palette's mid neutral — it reads on either browser chrome.
 const FAVICON =
   'data:image/svg+xml,' +
