@@ -366,7 +366,7 @@ pnpm check      # lint, typecheck, test, build, size
 pnpm changeset  # describe a change for the next release's notes
 ```
 
-CI runs `pnpm format:check`, `pnpm check` and the docs build on every push and pull request. Releases go through changesets with npm trusted publishing (provenance included).
+CI runs `pnpm format:check`, `pnpm check` and the docs build on every push and pull request. Releases go through changesets with npm trusted publishing (provenance included); see [Releasing](CONTRIBUTING.md#releasing).
 
 The package ships JSX untouched under the `solid` export condition, so SolidStart / `vite-plugin-solid` compile it for DOM or SSR as appropriate, plus a DOM-compiled build for everyone else. That build does not render on the server, so SSR needs a bundler that resolves `solid`.
 

@@ -5,8 +5,9 @@ what a pull request should include.
 
 ## Prerequisites
 
-You need Node.js 24, which is what CI uses, and pnpm 10. The `packageManager` field in
-`package.json` pins the exact pnpm version, so `corepack enable` picks it up.
+You need Node.js 24, which is what CI uses (`.node-version` holds it, for version managers and the
+workflows alike), and pnpm 10. The `packageManager` field in `package.json` pins the exact pnpm
+version, so `corepack enable` picks it up.
 
 ```sh
 pnpm install
@@ -49,3 +50,24 @@ page with `pnpm build:www`.
 - When behavior changes, update `README.md` and the matching page under `www/src/routes/docs/`.
 - If your change affects the published package, run `pnpm changeset` and describe it for the release
   notes. Docs-only and tooling-only changes do not need one.
+
+## Releasing
+
+Releases are automated with changesets and npm trusted publishing, so nobody publishes from a
+laptop.
+
+1. A pull request that changes the published package carries a changeset (`pnpm changeset`).
+2. Once it lands on `main`, the Release workflow opens or updates a "chore: version packages" pull
+   request. That pull request bumps the version and writes `CHANGELOG.md`, with links to the pull
+   requests behind each entry.
+3. Merging it publishes to npm, pushes the `solid-route-progress@x.y.z` tag, and creates the GitHub
+   Release.
+
+If the publish job fails with `ENEEDAUTH`, check that npm still lists the trusted publisher with
+`npx -y npm@latest trust list solid-route-progress` (it needs a 2FA confirmation). The workflow file
+must be `release.yml` in `kecan0406/solid-route-progress`.
+
+As a last resort, publish by hand from an up-to-date `main`. Run `npm login` and `npm publish`; its
+`prepublishOnly` step builds the package, which also runs publint and the type checks, and enforces
+the size budget. Then create the tag and Release with
+`gh release create solid-route-progress@x.y.z --title solid-route-progress@x.y.z --notes-file <notes>`.
