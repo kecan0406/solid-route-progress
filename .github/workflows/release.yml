@@ -1,6 +1,6 @@
 # Changesets with npm trusted publishing (provenance included), after
 # changesets/changesets site/guide/_snippets/automating-trusted-publishing.yaml.
-# Merging the "Version Packages" pull request that this workflow opens publishes to npm.
+# Merging the "chore: version packages" pull request that this workflow opens publishes to npm.
 name: Release
 
 on:
@@ -51,6 +51,9 @@ jobs:
           package-manager-cache: false
       - run: pnpm install --frozen-lockfile
       - uses: changesets/action/version@v2
+        with:
+          commit-message: 'chore: version packages'
+          pr-title: 'chore: version packages'
 
   pack:
     if: needs.select-mode.outputs.mode == 'publish'
