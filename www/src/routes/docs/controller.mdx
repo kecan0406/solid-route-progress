@@ -70,6 +70,7 @@ progress.set(1) // completes
 | range         | `0` to `1`, clamped                             |
 | then          | resumes trickling toward `trickleTo`            |
 | while hidden  | shows the bar, unless `delay` is still pending  |
+| trickle       | not compared: a value below it moves the bar back |
 
 ## `track()`
 
@@ -90,11 +91,11 @@ progress.track(upload(file), { timeout: 30_000 })
 
 | Accessor   | Type                                        | Meaning                                |
 | ---------- | ------------------------------------------- | -------------------------------------- |
-| `value()`  | `number`                                    | target value, `0` to `1`               |
+| `value()`  | `number`                                    | target value, `0` to `1`; `trickleTo` while trickling |
 | `state()`  | `'idle' \| 'trickle' \| 'active' \| 'done'` | mirrored as `data-state`               |
 | `active()` | `boolean`                                   | visible                                |
 | `error()`  | `boolean`                                   | done phase of a failed load            |
-| `options`  | `ProgressOptions`                           | what it was created with               |
+| `options`  | `Readonly<ProgressOptions>`                 | what it was created with               |
 
 | State     | Meaning                                              |
 | --------- | ---------------------------------------------------- |

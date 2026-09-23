@@ -64,6 +64,24 @@ import { createCrossDocumentProgress } from 'solid-route-progress'
 createCrossDocumentProgress(controller, options)
 ```
 
+## Actions without a redirect
+
+An action that only revalidates runs outside `useIsRouting()`, so the bar stays hidden. Hold it for the actions you want covered:
+
+```tsx
+import { useSubmission } from '@solidjs/router'
+import { createEffect, onCleanup } from 'solid-js'
+import { useProgress } from 'solid-route-progress'
+
+const saving = useSubmission(saveProfile)
+const progress = useProgress()
+createEffect(() => {
+  if (saving.pending) onCleanup(progress.start())
+})
+```
+
+The submission stays pending until the action and its revalidation have both finished.
+
 ## `createRouteProgress()`
 
 ```tsx

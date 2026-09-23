@@ -68,9 +68,18 @@ The stylesheet sits in the `components.sprogress` sublayer, so utilities, your o
 ## Your own template
 
 ```tsx
+import { Show } from 'solid-js'
 import { Bar, useProgress } from 'solid-route-progress'
 
-const Percent = () => <output>{Math.round(useProgress().value() * 100)}%</output>
+const Percent = () => {
+  const progress = useProgress()
+  // `value()` is the target, and while trickling that is `trickleTo`, not the drawn position
+  return (
+    <Show when={progress.state() !== 'trickle'}>
+      <output>{Math.round(progress.value() * 100)}%</output>
+    </Show>
+  )
+}
 
 <RouteProgress>
   <Bar class="rounded-r-full" />
