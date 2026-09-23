@@ -1,0 +1,46 @@
+name: Bug report
+description: The bar shows, hides, or animates in a way the docs say it should not.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: What you did, what you expected, and what the bar did instead.
+    validations:
+      required: true
+  - type: input
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: A link to a StackBlitz, a repository, or a gist. A bug with a reproduction gets fixed first.
+      placeholder: https://stackblitz.com/edit/...
+  - type: input
+    id: version
+    attributes:
+      label: solid-route-progress version
+      placeholder: 1.0.2
+    validations:
+      required: true
+  - type: dropdown
+    id: entry
+    attributes:
+      label: Entry point
+      options:
+        - solid-route-progress/router
+        - solid-route-progress/navigation
+        - solid-route-progress (createProgress / Progress)
+    validations:
+      required: true
+  - type: input
+    id: stack
+    attributes:
+      label: solid-js, @solidjs/router and SolidStart versions
+      placeholder: solid-js 1.9.15, @solidjs/router 1.0.0, @solidjs/start 2.0.4
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 152, Safari 26.2
+    validations:
+      required: true

@@ -1,0 +1,20 @@
+name: Feature request
+description: Something the bar cannot do yet.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The library stays small on purpose: CSS draws, JavaScript reports state. Please read [What fits the project](https://github.com/kecan0406/solid-route-progress/blob/main/CONTRIBUTING.md#what-fits-the-project) first.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do, and why the current options do not cover it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+      description: The API or CSS you have in mind, if any.

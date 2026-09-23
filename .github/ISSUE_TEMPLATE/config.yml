@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://solid-route-progress.vercel.app/docs
+    about: Options, recipes and examples, with a live demo.
+  - name: Security vulnerability
+    url: https://github.com/kecan0406/solid-route-progress/security/advisories/new
+    about: Report it privately, as described in SECURITY.md.
