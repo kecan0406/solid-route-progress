@@ -135,6 +135,20 @@ describe('createProgress', () => {
     expect(p.state()).toBe('trickle')
   })
 
+  it('start() during the done phase still waits for `delay` when it outlasts the fade', () => {
+    const p = createProgress({ delay: 600 })
+    const first = p.start()
+    vi.advanceTimersByTime(600)
+    paint()
+    first()
+    expect(p.state()).toBe('done')
+    p.start()
+    vi.advanceTimersByTime(599)
+    expect(p.state()).toBe('idle')
+    vi.advanceTimersByTime(1)
+    expect(p.state()).toBe('trickle')
+  })
+
   it('reads options lazily so reactive props work', () => {
     const options = { delay: 0 }
     const p = createProgress(options)

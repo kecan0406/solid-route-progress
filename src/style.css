@@ -58,6 +58,15 @@
       );
   }
 
+  /* without linear() the fallback above invalidates the whole shorthand, and the bar would jump
+     straight to its target; a cubic-bezier() fit of the same curve keeps the drift */
+  @supports not (transition-timing-function: linear(0, 1)) {
+    .sprogress-bar {
+      transition: transform var(--sp-trickle-duration, 10s)
+        var(--sp-trickle-easing, cubic-bezier(0.07, 0.44, 0.18, 0.84));
+    }
+  }
+
   .sprogress:dir(rtl) .sprogress-bar {
     transform: translateX(calc((1 - var(--sp-value)) * 100%));
   }
