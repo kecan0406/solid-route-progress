@@ -207,10 +207,11 @@ export function createProgress(options: ProgressOptions = {}): ProgressControlle
       clearTimeout(stopTimer)
       const s = state()
       // Let a completed bar fade out fully before starting a fresh one, otherwise it would
-      // visibly travel backwards from 100% to the trickle target.
+      // visibly travel backwards from 100% to the trickle target. `delay` still applies, so a
+      // quick follow-up load never flashes.
       if (s === 'done') {
         hide()
-        schedule(show, opt('speed'))
+        schedule(show, Math.max(opt('speed'), opt('delay')))
       } else if (s === 'idle' && !pending()) {
         const delay = opt('delay')
         if (delay > 0) schedule(show, delay)
@@ -246,12 +247,14 @@ export function createProgress(options: ProgressOptions = {}): ProgressControlle
 
   const track = <P extends PromiseLike<unknown>>(promise: P, options?: TrackOptions): P => {
     const releaseHold = start()
-    promise.then(
-      () => releaseHold(),
-      () => releaseHold('error'),
-    )
     const timeout = options?.timeout
-    if (timeout && !isServer) setTimeout(releaseHold, timeout)
+    const timer = timeout && !isServer ? setTimeout(releaseHold, timeout) : undefined
+    promise
+      .then(
+        () => releaseHold(),
+        () => releaseHold('error'),
+      )
+      .then(() => clearTimeout(timer))
     return promise
   }
 
