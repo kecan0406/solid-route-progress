@@ -85,6 +85,10 @@
     "nprogress",
     "bprogress",
     "navigation",
+    "navigation-api",
+    "solid-start",
+    "loading-bar",
+    "top-loader",
     "tailwindcss"
   ],
   "packageManager": "pnpm@10.33.2",
