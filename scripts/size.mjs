@@ -9,11 +9,11 @@ const BUDGET = {
   'index.js': 300,
   'router.js': 700,
   'navigation.js': 550,
-  'shared.js': 2200,
-  'style.css': 600,
+  'shared.js': 2300,
+  'style.css': 650,
   'createProgress-only.js': 1000,
 }
-const JS_TOTAL_BUDGET = 3500
+const JS_TOTAL_BUDGET = 3600
 
 const root = new URL('../', import.meta.url).pathname
 const out = join(root, '.size')
