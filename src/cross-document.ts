@@ -1,5 +1,5 @@
 import { isServer } from 'solid-js/web'
-import type { Outcome, ProgressController, Release } from './core'
+import { createHandoff, type Outcome, type ProgressController } from './core'
 import { disposalSignal, getNavigation, isIgnored, type NavigateEventLike } from './navigation-api'
 
 export interface CrossDocumentOptions {
@@ -36,13 +36,12 @@ export function createCrossDocumentProgress(
   if (isServer || !navigation) return
   const signal = disposalSignal()
   let timer: ReturnType<typeof setTimeout> | undefined
-  /** Releases the hold of the navigation still in flight. */
-  let release: Release | undefined
+  /** Holds the navigation still in flight. */
+  const hold = createHandoff(controller)
 
   const finish = (outcome?: Outcome) => {
     clearTimeout(timer)
-    release?.(outcome)
-    release = undefined
+    hold.end(outcome)
   }
 
   navigation.addEventListener(
@@ -58,10 +57,7 @@ export function createCrossDocumentProgress(
         options.filter?.(event) === false
       )
         return
-      // Hold the new navigation before letting go of the one it replaces: no gap to complete in.
-      const previous = release
-      release = controller.start()
-      previous?.()
+      hold.next()
       clearTimeout(timer)
       const timeout = options.timeout ?? 10_000
       if (timeout > 0) timer = setTimeout(finish, timeout)

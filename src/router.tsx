@@ -2,7 +2,7 @@ import { createEffect, on, onCleanup, splitProps, type JSX } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { useBeforeLeave, useIsRouting, type Location } from '@solidjs/router'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
-import type { ProgressController } from './core'
+import { createHandoff, type ProgressController } from './core'
 import { createCrossDocumentProgress, type CrossDocumentOptions } from './cross-document'
 import { disposalSignal, isIgnored } from './navigation-api'
 
@@ -68,16 +68,16 @@ export function createRouteProgress(
   })
 
   // One hold per navigation, so other holders (`track()`, cross-document) keep theirs.
-  let release: (() => void) | undefined
+  const hold = createHandoff(controller)
   // `on()` keeps the controller's own signals out of this effect's dependencies.
   createEffect(
     on(isRouting, (routing) => {
-      release?.()
-      release = routing && !skip ? controller.start() : undefined
+      if (routing && !skip) hold.next()
+      else hold.end()
       if (routing) skip = false
     }),
   )
-  onCleanup(() => release?.())
+  onCleanup(() => hold.end())
 
   if (options.crossDocument !== false)
     createCrossDocumentProgress(
