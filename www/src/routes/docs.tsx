@@ -1,53 +1,40 @@
-import { Title } from '@solidjs/meta'
+import { Link } from '@solidjs/meta'
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router'
-import { For } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 import { MDXProvider } from 'solid-mdx'
 import { CodeBlock } from '~/components/CodeBlock'
 import { Header } from '~/components/Header'
-
-const NAV = [
-  {
-    group: 'Getting started',
-    pages: [
-      { href: '/docs', title: 'Introduction' },
-      { href: '/docs/installation', title: 'Installation' },
-      { href: '/docs/quick-start', title: 'Quick start' },
-      { href: '/docs/styling', title: 'Styling' },
-    ],
-  },
-  {
-    group: 'Examples',
-    pages: [{ href: '/docs/examples', title: 'Examples' }],
-  },
-  {
-    group: 'API',
-    pages: [
-      { href: '/docs/controller', title: 'Controller' },
-      { href: '/docs/components', title: 'Components' },
-      { href: '/docs/router', title: 'Router integration' },
-      { href: '/docs/navigation-api', title: 'Navigation API' },
-    ],
-  },
-]
+import { PageMeta } from '~/components/PageMeta'
+import { DOC_PAGES, DOCS, markdownPath } from '~/docs'
 
 /** Docs layout: sidebar + the MDX page. Links inside pages go through the router, code blocks get a copy button. */
 export default function Docs(props: RouteSectionProps) {
   const location = useLocation()
-  const current = () =>
-    NAV.flatMap((group) => group.pages).find(
-      (page) => page.href === location.pathname.replace(/\/$/, ''),
-    )
+  const current = () => DOC_PAGES.find((page) => page.href === location.pathname.replace(/\/$/, ''))
 
   return (
     <div class="mx-auto max-w-[1100px] px-5 md:px-10">
-      <Title>{`${current()?.title ?? 'Docs'} · solid-route-progress`}</Title>
+      <Show when={current()}>
+        {(page) => (
+          <>
+            <PageMeta
+              title={`${page().title} · solid-route-progress`}
+              description={page().description}
+              path={page().href}
+            />
+            {/* the Markdown twin and the llms.txt that indexes it (https://llmstxt.org) */}
+            <Link rel="alternate" type="text/markdown" href={markdownPath(page().href)} />
+            <Link rel="describedby" href="/llms.txt" />
+          </>
+        )}
+      </Show>
       <Header />
       <div class="grid gap-8 py-6 lg:grid-cols-[190px_minmax(0,1fr)] lg:gap-12 lg:py-10">
         <nav
           aria-label="Documentation"
           class="flex gap-8 overflow-x-auto pb-2 lg:sticky lg:top-10 lg:block lg:self-start lg:pb-0"
         >
-          <For each={NAV}>
+          <For each={DOCS}>
             {(group) => (
               <div class="min-w-max lg:mb-7">
                 <p class="mb-2 font-mono text-[9.5px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
@@ -74,9 +61,46 @@ export default function Docs(props: RouteSectionProps) {
           </For>
         </nav>
         <article class="doc min-w-0 pb-16">
+          <Show when={current()}>{(page) => <CopyMarkdown href={page().href} />}</Show>
           <MDXProvider components={{ a: A, pre: CodeBlock }}>{props.children}</MDXProvider>
         </article>
       </div>
     </div>
+  )
+}
+
+/** Copies the page as Markdown, for pasting into an assistant. */
+function CopyMarkdown(props: { href: string }) {
+  const [copied, setCopied] = createSignal(false)
+
+  const copy = async () => {
+    // Safari only writes to the clipboard inside the click, so it gets the pending text, not the
+    // fetched one. The page URL answers Markdown to this Accept header (`src/middleware.ts`).
+    const href = props.href
+    const text = fetch(href, { headers: { Accept: 'text/markdown' } }).then(async (res) => {
+      if (!res.ok) throw new Error(`${res.status} ${href}`)
+      return new Blob([await res.text()], { type: 'text/plain' })
+    })
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ 'text/plain': text })])
+    } catch {
+      return
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1200)
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      class="float-right mt-1.5 ml-4 rounded-md border border-border bg-muted px-2 py-1 font-mono text-[10.5px] font-medium"
+      classList={{
+        'text-foreground': copied(),
+        'text-muted-foreground hover:text-foreground': !copied(),
+      }}
+    >
+      {copied() ? 'copied' : 'Copy Markdown'}
+    </button>
   )
 }

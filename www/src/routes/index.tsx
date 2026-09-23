@@ -4,6 +4,7 @@ import { CodeCard } from '~/components/CodeCard'
 import { Dock } from '~/components/Dock'
 import { Header } from '~/components/Header'
 import { Hero } from '~/components/Hero'
+import { PageMeta } from '~/components/PageMeta'
 import { REPO } from '~/links'
 import { Simulator } from '~/components/Simulator'
 import { cfg } from '~/playground'
@@ -20,6 +21,11 @@ export default function Landing() {
 
   return (
     <div class="mx-auto max-w-[1280px] px-5 md:px-10 lg:px-12">
+      <PageMeta
+        title="Progress, drawn in CSS · solid-route-progress"
+        description="Web-native, CSS-driven route progress bar for SolidJS. The loading drift is one CSS transition, themeable from any stylesheet."
+        path="/"
+      />
       <Header />
       <main class="flex flex-col gap-8 pb-8">
         <Hero />

@@ -47,7 +47,8 @@ page with `pnpm build:www`.
 
 - Add or update tests in `test/` for the behavior you change. They run in jsdom, in an SSR
   environment, and in real Chromium, Firefox, and WebKit.
-- When behavior changes, update `README.md` and the matching page under `www/src/routes/docs/`.
+- When behavior changes, update `README.md` and the matching page under `www/src/routes/docs/`. A
+  new page also needs an entry in `www/src/docs.ts`, which feeds the sidebar and `llms.txt`.
 - If your change affects the published package, run `pnpm changeset` and describe it for the release
   notes. Docs-only and tooling-only changes do not need one.
 

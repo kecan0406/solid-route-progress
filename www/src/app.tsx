@@ -1,5 +1,5 @@
 // @refresh reload
-import { MetaProvider, Title } from '@solidjs/meta'
+import { MetaProvider } from '@solidjs/meta'
 import { Router } from '@solidjs/router'
 import { FileRoutes } from '@solidjs/start/router'
 import { Suspense } from 'solid-js'
@@ -13,7 +13,6 @@ export default function App() {
     <Router
       root={(props) => (
         <MetaProvider>
-          <Title>Progress, drawn in CSS · solid-route-progress</Title>
           {/* The site's own bar: route changes, external links and the playground all drive it. */}
           <ProgressProvider speed={cfg.speed}>
             <RouteProgress style={barVars()} />

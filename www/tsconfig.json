@@ -18,5 +18,5 @@
       "solid-route-progress/navigation": ["../src/navigation.tsx"]
     }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts", "llms.ts"]
 }

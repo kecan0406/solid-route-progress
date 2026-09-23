@@ -4,7 +4,7 @@
 [![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Docs and a live demo: https://solid-route-progress.vercel.app
+Docs and a live demo: https://solid-route-progress.vercel.app. For AI assistants, the docs are also Markdown: [`llms.txt`](https://solid-route-progress.vercel.app/llms.txt), [`llms-full.txt`](https://solid-route-progress.vercel.app/llms-full.txt).
 
 A web-native route progress bar for [SolidJS](https://solidjs.com) and [`@solidjs/router`](https://github.com/solidjs/solid-router), in the spirit of [NProgress](https://github.com/rstacruz/nprogress) and [BProgress](https://bprogress.vercel.app/):
 
