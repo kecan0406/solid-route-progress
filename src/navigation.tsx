@@ -1,7 +1,7 @@
 import { splitProps, type JSX } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
-import type { Outcome, ProgressController, Release } from './core'
+import { createHandoff, type ProgressController } from './core'
 import { createCrossDocumentProgress, type CrossDocumentOptions } from './cross-document'
 import { DEV, warn } from './dev'
 import { disposalSignal, getNavigation, isIgnored } from './navigation-api'
@@ -27,11 +27,7 @@ export function createNavigationProgress(
   }
   createCrossDocumentProgress(controller, options)
   const signal = disposalSignal()
-  let release: Release | undefined
-  const done = (outcome?: Outcome) => {
-    release?.(outcome)
-    release = undefined
-  }
+  const hold = createHandoff(controller)
 
   navigation.addEventListener(
     'navigate',
@@ -44,26 +40,23 @@ export function createNavigationProgress(
         options.filter?.(event) === false
       )
         return
-      // Hold the new navigation before letting go of the one it replaces: no gap to complete in.
-      const previous = release
-      release = controller.start()
-      previous?.()
+      hold.next()
     },
     { signal },
   )
   // Only intercepted navigations settle through `navigatesuccess` / `navigateerror`. A plain
   // `pushState` commits synchronously, never sets `transition`, and is over right here.
-  navigation.addEventListener('currententrychange', () => navigation.transition || done(), {
+  navigation.addEventListener('currententrychange', () => navigation.transition || hold.end(), {
     signal,
   })
-  navigation.addEventListener('navigatesuccess', () => done(), { signal })
+  navigation.addEventListener('navigatesuccess', () => hold.end(), { signal })
   // An abort (a newer navigation, a stop) is not a failure; a rejected handler is.
   navigation.addEventListener(
     'navigateerror',
-    (event) => done(event.error?.name === 'AbortError' ? 'cancel' : 'error'),
+    (event) => hold.end(event.error?.name === 'AbortError' ? 'cancel' : 'error'),
     { signal },
   )
-  signal.addEventListener('abort', () => done())
+  signal.addEventListener('abort', () => hold.end())
 }
 
 export interface NavigationProgressProps extends ProgressProps, NavigationProgressOptions {}

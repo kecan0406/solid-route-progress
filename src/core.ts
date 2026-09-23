@@ -94,8 +94,34 @@ export interface ProgressController {
    * `promise` itself, so it can wrap a call in place.
    */
   track<P extends PromiseLike<unknown>>(promise: P, options?: TrackOptions): P
-  /** The options this controller was created with (read lazily, so reactive props work). */
-  readonly options: ProgressOptions
+  /**
+   * The options this controller was created with, read lazily so reactive props work.
+   * Read-only: change them where the controller is created.
+   */
+  readonly options: Readonly<ProgressOptions>
+}
+
+/**
+ * One hold at a time, for integrations that track a single navigation: `next()` holds the new
+ * one before letting go of the one it replaces, so there is no gap to complete in, and `end()`
+ * lets go of whatever is held.
+ */
+export function createHandoff(controller: ProgressController): {
+  next(): void
+  end(outcome?: Outcome): void
+} {
+  let release: Release | undefined
+  return {
+    next() {
+      const previous = release
+      release = controller.start()
+      previous?.()
+    },
+    end(outcome) {
+      release?.(outcome)
+      release = undefined
+    },
+  }
 }
 
 /** `Symbol.dispose` where the runtime has it. */
