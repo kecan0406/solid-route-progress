@@ -11,7 +11,7 @@ A web-native route progress bar for [SolidJS](https://solidjs.com) and [`@solidj
 - CSS does the animating: JavaScript writes the target value (`--sp-value`), the hop speed (`--sp-speed`), and one attribute (`data-state`). The loading trickle is a single long CSS transition, and no JS timer steps the bar forward. You can change its motion, color, and shape in CSS. `--sp-value` is registered with `@property`, so an element of your own can transition it too, such as a `conic-gradient()` ring.
 - Quick loads never draw: A navigation shorter than `delay` (200 ms by default) shows nothing. Even with `delay: 0`, one that settles before the next frame is dropped.
 - Tailwind CSS v4 ready: Styles ship in the `components.sprogress` sublayer, so utilities, your own `@layer components` rules, and unlayered CSS all win without `!important`. `data-state`, `data-error`, and `<html data-sp-busy>` work as Tailwind variants.
-- Tiny: The core is about 2.1 kB min+gzip (the headless `createProgress` alone tree-shakes to about 0.8 kB), the router integration about 0.6 kB, the Navigation API one about 0.5 kB, and the CSS about 0.5 kB. It has no dependencies.
+- Small: The router integration costs about 2.8 kB of JavaScript min+gzip in total, the Navigation API one about 2.7 kB, and the CSS about 0.6 kB. That covers the Solid components and cross-document tracking; the headless `createProgress` alone tree-shakes to about 0.8 kB. It has no dependencies.
 - Covers the whole navigation: It hooks `useIsRouting()`, so `<A>` clicks, `navigate()`, back/forward, action redirects, and every `<Suspense>` the new route waits on all show the bar. Navigations the page starts that leave the document (external links, plain form posts, `location.reload()`) show it too, through the Navigation API.
 - SSR-safe and RTL-aware: It renders the idle shell on the server and exposes a labeled `role="progressbar"`. The bar is indeterminate while trickling, and once you `set()` a value it gets `aria-valuenow`, plus `aria-valuetext` from `getValueLabel`. It flips direction under `dir="rtl"` and paints with the system `Highlight` color under forced colors.
 
@@ -25,7 +25,14 @@ Peer dependencies: `solid-js ^1.9` and, for the router integration, `@solidjs/ro
 
 Server rendering needs a bundler that resolves the `solid` export condition (`vite-plugin-solid`, SolidStart): the `default` export is compiled for the DOM.
 
-The stylesheet uses modern CSS: `@layer`, `@property`, `linear()`, `oklch()` and `:dir()`. A browser without one of them may draw the bar wrongly or not at all.
+The bar draws in Chrome and Edge 111, Firefox 113, and Safari 15.4 or later: the stylesheet needs `@layer`, and `oklch()` for the default color (a `--sp-color` of your own lifts that part). Newer features degrade on their own:
+
+| Feature                                                          | Chrome / Edge | Firefox | Safari | Without it                                    |
+| ---------------------------------------------------------------- | ------------- | ------- | ------ | --------------------------------------------- |
+| `linear()` trickle curve                                         | 113           | 112     | 17.2   | a `cubic-bezier()` fit of the same curve      |
+| `@property`, for transitioning `--sp-value` on your own elements | 85            | 128     | 16.4   | those elements jump; the bar is unaffected    |
+| `:dir()`, for right-to-left pages                                | 120           | 49      | 16.4   | the bar fills from the left under `dir="rtl"` |
+| Navigation API, for cross-document and `NavigationProgress`      | 102           | 147     | 26.2   | those navigations are not tracked             |
 
 ## Quick start (with `@solidjs/router`)
 
@@ -144,6 +151,7 @@ The bar is a normal component. Render it inside the container and make it `absol
 The default template is a single `<Bar />`. Compose whatever you need. Children can read the controller with `useProgress()`:
 
 ```tsx
+import { Show } from 'solid-js'
 import { Bar, useProgress } from 'solid-route-progress'
 
 ;<RouteProgress>
@@ -151,7 +159,15 @@ import { Bar, useProgress } from 'solid-route-progress'
   <Percent />
 </RouteProgress>
 
-const Percent = () => <output>{Math.round(useProgress().value() * 100)}%</output>
+const Percent = () => {
+  const progress = useProgress()
+  // `value()` is the target, and while trickling that is `trickleTo`, not the drawn position
+  return (
+    <Show when={progress.state() !== 'trickle'}>
+      <output>{Math.round(progress.value() * 100)}%</output>
+    </Show>
+  )
+}
 ```
 
 `--sp-value` is registered as a `<number>`, so an element of your own can transition it, e.g. a ring. Keep the `var()` fallbacks: without them the declarations are invalid unless you set those properties yourself.
@@ -290,6 +306,25 @@ progress.error() // Accessor<boolean> — true during the done phase of a failed
 
 Every source holds the bar separately: `<RouteProgress>`, cross-document navigations, and each `track()`. A route that finishes first therefore never cuts a tracked fetch short. `done()` overrides them all and ends every hold. An `'error'` from any hold wins when the last one lets go; `'cancel'` only fades the bar out when nothing failed. A load that settles before the bar shows (within `delay`, or before the first frame) draws nothing, failed or not.
 
+`set()` moves to the value you give it and does not compare it with how far the trickle has drifted: `set(0.3)` after the bar crawled to about 70% moves it back. For stepwise progress such as an upload, set `trickleTo` equal to `--sp-start` so the bar waits for your values instead of racing ahead of them.
+
+### Actions that do not navigate
+
+An action without a redirect only revalidates its queries, and `@solidjs/router` runs that outside `useIsRouting()`, so the bar stays hidden. Hold it for the actions you want covered; a submission stays pending until the action and its revalidation have both finished:
+
+```tsx
+import { useSubmission } from '@solidjs/router'
+import { createEffect, onCleanup } from 'solid-js'
+
+const saving = useSubmission(saveProfile)
+const progress = useProgress()
+createEffect(() => {
+  if (saving.pending) onCleanup(progress.start())
+})
+```
+
+Optimistic actions that already update the page usually read better without the bar, which is why this is left to you.
+
 Or create your own with `createProgress(options)` and render it with `<Progress controller={…} />`, which works without a router.
 
 ## Without `@solidjs/router`: the Navigation API
@@ -346,7 +381,7 @@ IGNORE_ATTRIBUTE // 'data-sp-ignore'
 
 1. `start()` waits `delay` (200 ms), then flips `data-state` to `trickle` and sets `--sp-value` to `trickleTo` (0.95). The stylesheet's `trickle` rule has a 10 s transition on `transform` whose curve races out and then crawls. It is one transition, and no timer steps it.
 2. `set(n)` switches to the `active` rule (short `--sp-speed` transition) for the hop, then hands back to `trickle`. CSS transitions interrupt from the _current_ animated value, so there is nothing to sync.
-3. Once the last hold is released (or on `done()`), the bar moves to 100% under the `done` rule (with `data-error` if a hold was released as an `'error'`; a `'cancel'` skips this step and fades straight out), then `idle` fades the whole bar out with `opacity` + a delayed `visibility: hidden`. The bar itself is parked back at `--sp-start` only after the fade has finished. Both steps take `speed`, which the bar also writes to `--sp-speed`, so the CSS and the timers never disagree.
+3. Once the last hold is released (or on `done()`), the bar moves to 100% under the `done` rule (with `data-error` if a hold was released as an `'error'`; a `'cancel'` skips this step and fades straight out), then `idle` fades the whole bar out with `opacity` + a delayed `visibility: hidden`. The bar itself is parked back at `--sp-start` only after the fade has finished. Both steps take `speed`, which the bar also writes to `--sp-speed`, so the CSS and the timers never disagree. A load that starts during this phase waits for the fade and for `delay`, whichever is longer.
 4. If the load ends while `delay` is still pending, or before the browser painted the bar (tracked with a single `requestAnimationFrame`), the bar is dropped silently.
 
 ## Development

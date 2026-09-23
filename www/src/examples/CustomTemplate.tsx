@@ -1,13 +1,19 @@
+import { Show } from 'solid-js'
 import { Bar, createProgress, Progress, useProgress } from 'solid-route-progress'
 import { Btn, delay, Panel, Row } from './ui'
 
-/** Children of `<Progress>` read its controller with `useProgress()`. */
+/**
+ * Children of `<Progress>` read its controller with `useProgress()`. `value()` is the target,
+ * which is `trickleTo` while trickling, so the number only shows once it is known.
+ */
 const Percent = () => {
   const progress = useProgress()
   return (
-    <output class="absolute top-3 right-3 font-mono text-[11px] text-muted-foreground">
-      {Math.round(progress.value() * 100)}%
-    </output>
+    <Show when={progress.state() !== 'trickle'}>
+      <output class="absolute top-3 right-3 font-mono text-[11px] text-muted-foreground">
+        {Math.round(progress.value() * 100)}%
+      </output>
+    </Show>
   )
 }
 

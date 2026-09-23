@@ -21,6 +21,17 @@ pnpm add solid-route-progress
 import 'solid-route-progress/style.css'
 ```
 
+## Browsers
+
+The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later (`@layer`, plus `oklch()` for the default color).
+
+| Feature                                                     | Chrome / Edge | Firefox | Safari | Without it                                    |
+| ----------------------------------------------------------- | ------------- | ------- | ------ | --------------------------------------------- |
+| `linear()` trickle curve                                    | 113           | 112     | 17.2   | a `cubic-bezier()` fit of the same curve      |
+| `@property`, for `--sp-value` on your own elements          | 85            | 128     | 16.4   | those elements jump; the bar is unaffected    |
+| `:dir()`, for right-to-left pages                           | 120           | 49      | 16.4   | the bar fills from the left under `dir="rtl"` |
+| Navigation API, for cross-document and `NavigationProgress` | 102           | 147     | 26.2   | those navigations are not tracked             |
+
 ## Builds
 
 | Export condition | Build                                                                   |
