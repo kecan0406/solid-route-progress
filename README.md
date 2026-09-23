@@ -151,13 +151,19 @@ The bar is a normal component. Render it inside the container and make it `absol
 The default template is a single `<Bar />`. Compose whatever you need. Children can read the controller with `useProgress()`:
 
 ```tsx
-import { Show } from 'solid-js'
+import { Show, Suspense } from 'solid-js'
 import { Bar, useProgress } from 'solid-route-progress'
+import { RouteProgress } from 'solid-route-progress/router'
 
-;<RouteProgress>
-  <Bar class="rounded-r-full" />
-  <Percent />
-</RouteProgress>
+const Layout = (props) => (
+  <>
+    <RouteProgress>
+      <Bar class="rounded-r-full" />
+      <Percent />
+    </RouteProgress>
+    <Suspense>{props.children}</Suspense>
+  </>
+)
 
 const Percent = () => {
   const progress = useProgress()
@@ -336,7 +342,12 @@ Routers that don't intercept through the Navigation API (including `@solidjs/rou
 ```tsx
 import { NavigationProgress } from 'solid-route-progress/navigation'
 
-;<NavigationProgress filter={(e) => e.navigationType !== 'replace'} />
+const Layout = (props) => (
+  <>
+    <NavigationProgress filter={(e) => e.navigationType !== 'replace'} />
+    {props.children}
+  </>
+)
 ```
 
 ## Coming from NProgress / BProgress

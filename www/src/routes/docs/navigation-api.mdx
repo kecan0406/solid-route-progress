@@ -3,7 +3,12 @@
 ```tsx
 import { NavigationProgress } from 'solid-route-progress/navigation'
 
-;<NavigationProgress />
+const Layout = (props) => (
+  <>
+    <NavigationProgress />
+    {props.children}
+  </>
+)
 ```
 
 It works without a router.
