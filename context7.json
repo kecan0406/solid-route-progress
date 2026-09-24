@@ -1,0 +1,14 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "solid-route-progress",
+  "description": "Route progress bar for SolidJS and SolidStart, the thin loading bar along the top of the page, drawn with one CSS transition.",
+  "folders": ["www/src/routes/docs", "www/src/examples", "examples/solidstart/src", "skills"],
+  "rules": [
+    "Import 'solid-route-progress/style.css' once; the bar is invisible without it.",
+    "With @solidjs/router or SolidStart, render <RouteProgress /> from 'solid-route-progress/router' once, inside the Router's root layout, never beside <Router>.",
+    "Without a router, render <NavigationProgress /> from 'solid-route-progress/navigation'.",
+    "Theme with CSS custom properties (--sp-color, --sp-height) or utility classes, not props or !important.",
+    "Never step the bar with JavaScript timers; the drift is one CSS transition. Use track(promise), start()/release() or set(n) from useProgress().",
+    "Under a <ProgressProvider>, set delay, speed, trickleTo and stopDelay on the provider, not on the bar."
+  ]
+}

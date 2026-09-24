@@ -1,7 +1,7 @@
 {
   "name": "solid-route-progress",
   "version": "1.0.3",
-  "description": "Web-native, CSS-driven route progress bar for SolidJS. The loading drift is one CSS transition; Tailwind v4 friendly.",
+  "description": "Route progress bar for SolidJS and SolidStart: the thin loading bar along the top of the page. The loading drift is one CSS transition; about 2.8 kB, no dependencies, Tailwind v4 friendly.",
   "license": "MIT",
   "author": "kecan0406 (https://github.com/kecan0406)",
   "repository": {
@@ -87,7 +87,10 @@
     "navigation",
     "navigation-api",
     "solid-start",
+    "solidstart",
+    "route-progress",
     "loading-bar",
+    "loading-indicator",
     "top-loader",
     "tailwindcss"
   ],

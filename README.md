@@ -3,8 +3,9 @@
 [![npm](https://img.shields.io/npm/v/solid-route-progress.svg)](https://www.npmjs.com/package/solid-route-progress)
 [![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kecan0406/solid-route-progress)
 
-A route progress bar for [SolidJS](https://solidjs.com). The loading drift is one CSS transition, so you theme and retime it from CSS.
+A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin loading bar along the top of the page while the next route loads. The loading drift is one CSS transition, so you theme and retime it from CSS.
 
 [![Progress, drawn in CSS](https://solid-route-progress.vercel.app/og.png)](https://solid-route-progress.vercel.app)
 
@@ -94,7 +95,19 @@ Without `@solidjs/router`, render `<NavigationProgress />` from `solid-route-pro
 | [Navigation API](https://solid-route-progress.vercel.app/docs/navigation-api) | `<NavigationProgress>`, for apps without a router                                  |
 | [Examples](https://solid-route-progress.vercel.app/docs/examples)             | live demos of each API                                                             |
 
-The docs are also Markdown for AI assistants: [`llms.txt`](https://solid-route-progress.vercel.app/llms.txt) and [`llms-full.txt`](https://solid-route-progress.vercel.app/llms-full.txt).
+### For AI coding assistants
+
+The package ships these docs as Markdown for the installed version, in `node_modules/solid-route-progress/dist/docs/` (start at `README.md`). To have your agent read them first, add a line to your `AGENTS.md` or `CLAUDE.md`:
+
+```md
+Before using solid-route-progress, read node_modules/solid-route-progress/dist/docs/README.md.
+```
+
+The site serves the same docs as [`llms.txt`](https://solid-route-progress.vercel.app/llms.txt), [`llms-full.txt`](https://solid-route-progress.vercel.app/llms-full.txt), and a `.md` copy of every page. There is also an [agent skill](skills/solid-route-progress/SKILL.md) for Claude Code, Codex, Cursor and other agents that read skills:
+
+```sh
+npx skills add kecan0406/solid-route-progress
+```
 
 ## Coming from NProgress / BProgress
 
