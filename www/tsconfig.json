@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "types": ["@solidjs/start/env"],

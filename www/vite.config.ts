@@ -7,17 +7,17 @@ import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
 import { defineConfig } from 'vite'
 import pkg from '../package.json' with { type: 'json' }
-import { llms } from './llms'
+import { llms, siteOf } from './llms'
 import { codeTheme, dropBackground } from './src/code-theme'
 
 const src = (p: string) => new URL(`../src/${p}`, import.meta.url).pathname
-const repo = pkg.repository.url.replace(/^git\+/, '').replace(/\.git$/, '')
+const site = siteOf(pkg)
 
 export default defineConfig({
   // `package.json` is the one place the site's version, origin and repository URL live.
   define: {
     __SP_VERSION__: JSON.stringify(pkg.version),
-    __SP_REPO__: JSON.stringify(repo),
+    __SP_REPO__: JSON.stringify(site.repo),
     __SP_SITE__: JSON.stringify(pkg.homepage),
   },
   plugins: [
@@ -38,13 +38,7 @@ export default defineConfig({
       }),
     },
     tailwindcss(),
-    llms({
-      origin: pkg.homepage,
-      name: pkg.name,
-      description: pkg.description,
-      repo,
-      peers: pkg.peerDependencies,
-    }),
+    llms(site),
     solidStart({ extensions: ['mdx'], middleware: 'src/middleware.ts' }),
     nitro(),
   ],

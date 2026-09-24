@@ -17,7 +17,8 @@
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -55,16 +56,16 @@
     "dev": "vite serve dev",
     "dev:www": "pnpm --filter solid-route-progress-www dev",
     "build:www": "pnpm --filter solid-route-progress-www build",
-    "build": "tsdown",
+    "build": "tsdown && node scripts/docs.mjs",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "size": "node scripts/size.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm size",
-    "format": "prettier -w \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"examples/*/src/**/*.{ts,tsx,css}\" \"examples/*/*.{ts,json,md}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
+    "format": "prettier -w \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"examples/*/src/**/*.{ts,tsx,css}\" \"examples/*/*.{ts,json,md}\" \"skills/**/*.md\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
     "prepublishOnly": "pnpm build && pnpm size",
     "lint": "oxlint --deny-warnings",
-    "format:check": "prettier --check \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"examples/*/src/**/*.{ts,tsx,css}\" \"examples/*/*.{ts,json,md}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
+    "format:check": "prettier --check \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"examples/*/src/**/*.{ts,tsx,css}\" \"examples/*/*.{ts,json,md}\" \"skills/**/*.md\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
     "changeset": "changeset"
   },
   "peerDependencies": {

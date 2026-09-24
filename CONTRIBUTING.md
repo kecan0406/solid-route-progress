@@ -24,7 +24,7 @@ pnpm format:check
 pnpm test       # Vitest: jsdom, SSR, and real Chromium, Firefox and WebKit
                 # (once: pnpm exec playwright install chromium firefox webkit)
 pnpm typecheck  # the whole repo, plus the published entries under isolatedDeclarations
-pnpm build      # tsdown → dist/*.js (DOM), dist/*.jsx (`solid` condition), d.ts, style.css
+pnpm build      # tsdown → dist/*.js (DOM), dist/*.jsx (`solid` condition), d.ts, style.css, docs/*.md
 pnpm size       # minified gzip/brotli budget, incl. `createProgress` tree-shaken on its own
 pnpm check      # lint, typecheck, test, build, size
 pnpm changeset  # describe a change for the next release's notes
