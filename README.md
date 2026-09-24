@@ -4,7 +4,7 @@
 [![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A route progress bar for [SolidJS](https://solidjs.com), in the spirit of [NProgress](https://github.com/rstacruz/nprogress) and [BProgress](https://bprogress.vercel.app/). The loading drift is one CSS transition, so you theme and retime it from CSS.
+A route progress bar for [SolidJS](https://solidjs.com). The loading drift is one CSS transition, so you theme and retime it from CSS.
 
 [![Progress, drawn in CSS](https://solid-route-progress.vercel.app/og.png)](https://solid-route-progress.vercel.app)
 

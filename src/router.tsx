@@ -9,7 +9,7 @@ import { disposalSignal, isIgnored } from './navigation-api'
 export interface RouteProgressOptions {
   /**
    * Skip the bar when a navigation keeps the same `pathname` and only changes the search
-   * string or hash (BProgress' "shallow routing").
+   * string or hash.
    * @default false
    */
   shallow?: boolean
