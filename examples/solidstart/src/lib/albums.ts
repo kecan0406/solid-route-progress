@@ -8,7 +8,8 @@ const ALBUMS = [
 
 export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
-// Slow on purpose, so the bar has something to show. Each <Suspense> a route waits on keeps it open.
+// Slow on purpose, so the bar has something to show: it stays open while the next route's
+// <Suspense> waits on these, with nothing to wire up beyond ★ 4.
 export const getAlbums = query(async () => {
   await sleep(800)
   return ALBUMS

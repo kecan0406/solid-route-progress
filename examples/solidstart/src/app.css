@@ -1,12 +1,16 @@
+/* ★ 1. Import the stylesheet once, after Tailwind. It sits in a cascade layer, so utilities win. */
 @import 'tailwindcss';
 @import 'solid-route-progress/style.css';
 
+/* ★ 2. Color the bar. These are the landing page's: its neutral primary, near-black on light and
+   near-white on dark, and a red for failed loads. Any CSS color or Tailwind token works. */
 @theme {
-  --color-brand: oklch(0.6 0.2 285);
+  --color-bar: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --color-bar-error: light-dark(oklch(0.577 0.245 27.325), oklch(0.704 0.191 22.216));
 }
 
-/* The bar reads these custom properties: any CSS color works, Tailwind tokens included. */
 :root {
-  --sp-color: var(--color-brand);
+  color-scheme: light dark;
+  --sp-color: var(--color-bar);
   --sp-height: 3px;
 }

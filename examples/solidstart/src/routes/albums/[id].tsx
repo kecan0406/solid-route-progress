@@ -15,10 +15,10 @@ export default function Album() {
       {(album) => (
         <>
           <h1 class="mb-2 text-3xl font-semibold tracking-tight">{album().title}</h1>
-          <p class="mb-8 text-zinc-600">
+          <p class="mb-8 text-zinc-600 dark:text-zinc-400">
             {album().artist} · {album().year}
           </p>
-          <A href="/albums" class="text-sm text-brand">
+          <A href="/albums" class="text-sm underline">
             ← All albums
           </A>
         </>

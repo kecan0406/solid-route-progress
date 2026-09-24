@@ -10,7 +10,7 @@ export default createHandler(() => (
           <title>solid-route-progress · SolidStart</title>
           {assets}
         </head>
-        <body>
+        <body class="bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
           <div id="app">{children}</div>
           {scripts}
         </body>

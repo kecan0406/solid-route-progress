@@ -1,3 +1,4 @@
+// Lines marked ★ are the solid-route-progress setup; the rest is an ordinary SolidStart app.
 import { A, Router } from '@solidjs/router'
 import { FileRoutes } from '@solidjs/start/router'
 import { For, Suspense } from 'solid-js'
@@ -15,26 +16,26 @@ export default function App() {
   return (
     <Router
       root={(props) => (
-        // The provider shares one controller: route changes and `useProgress()` both drive it.
+        // ★ 3. One provider shares the controller: route changes and `useProgress()` both drive it.
         <ProgressProvider>
-          {/* A failed load turns the bar red: `data-error` is a Tailwind variant. */}
-          <RouteProgress class="data-error:[--sp-color:var(--color-red-500)]" />
-          <div class="mx-auto max-w-2xl px-6 py-10 font-sans text-zinc-900">
+          {/* ★ 4. The bar. Anywhere under <Router>; failed loads turn it red via `data-error:`. */}
+          <RouteProgress class="data-error:[--sp-color:var(--color-bar-error)]" />
+          <div class="mx-auto max-w-2xl px-6 py-10">
             <nav class="mb-10 flex gap-5 text-sm">
               <For each={LINKS}>
                 {(link) => (
                   <A
                     href={link.href}
                     end
-                    class="text-zinc-500 hover:text-zinc-900"
-                    activeClass="font-medium text-zinc-900"
+                    class="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    activeClass="font-medium text-zinc-900 dark:text-zinc-100"
                   >
                     {link.label}
                   </A>
                 )}
               </For>
             </nav>
-            {/* `data-sp-busy` sits on <html> while the bar shows: dim the page meanwhile. */}
+            {/* ★ 5. `data-sp-busy` sits on <html> while the bar shows: dim the page meanwhile. */}
             <main class="transition-opacity [[data-sp-busy]_&]:opacity-50">
               <Suspense>{props.children}</Suspense>
             </main>
