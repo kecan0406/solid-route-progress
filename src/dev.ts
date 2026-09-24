@@ -4,4 +4,8 @@
  */
 export { isDev as DEV } from 'solid-js/web'
 
-export const warn = (message: string): void => console.warn(`[sprogress] ${message}`)
+/** A message that ends with the docs section explaining the fix, e.g. `installation#stylesheet`. */
+export const explain = (message: string, docs: string): string =>
+  `[sprogress] ${message} See https://solid-route-progress.vercel.app/docs/${docs}`
+
+export const warn = (message: string, docs: string): void => console.warn(explain(message, docs))

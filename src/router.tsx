@@ -4,6 +4,7 @@ import { useBeforeLeave, useIsRouting, type Location } from '@solidjs/router'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
 import { createHandoff, type ProgressController } from './core'
 import { createCrossDocumentProgress, type CrossDocumentOptions } from './cross-document'
+import { DEV, explain } from './dev'
 import { disposalSignal, isIgnored } from './navigation-api'
 
 export interface RouteProgressOptions {
@@ -38,7 +39,7 @@ export function createRouteProgress(
   options: RouteProgressOptions = {},
 ): void {
   if (isServer) return
-  const isRouting = useIsRouting()
+  const isRouting = DEV ? explainedIsRouting() : useIsRouting()
   let skip = false
   const skipNext = () => {
     skip = true
@@ -84,6 +85,21 @@ export function createRouteProgress(
       controller,
       typeof options.crossDocument === 'object' ? options.crossDocument : undefined,
     )
+}
+
+/** The router's own error names neither this component nor the fix, and both usually go wrong together. */
+function explainedIsRouting() {
+  try {
+    return useIsRouting()
+  } catch (cause) {
+    throw new Error(
+      explain(
+        '<RouteProgress> must render under <Router>: put it in the root layout, or use <NavigationProgress> from solid-route-progress/navigation without a router.',
+        'quick-start',
+      ),
+      { cause },
+    )
+  }
 }
 
 const samePathname = (to: string, pathname: string) => {

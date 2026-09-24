@@ -22,7 +22,11 @@ export function createNavigationProgress(
   if (isServer) return
   const navigation = getNavigation()
   if (!navigation) {
-    if (DEV) warn('Navigation API unavailable: NavigationProgress shows nothing in this browser.')
+    if (DEV)
+      warn(
+        'Navigation API unavailable: NavigationProgress shows nothing in this browser.',
+        'navigation-api#where-the-api-is-missing',
+      )
     return
   }
   createCrossDocumentProgress(controller, options)

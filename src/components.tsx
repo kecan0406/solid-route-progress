@@ -54,6 +54,7 @@ export function useController(
     if (dropped.length)
       warn(
         `${dropped.join(', ')} ignored: this bar drives an existing controller, so set options where it is created (createProgress() or <ProgressProvider>).`,
+        'components#progressprovider',
       )
   }
   return provided
@@ -155,7 +156,10 @@ export function Progress(props: ProgressProps): JSX.Element {
       onMount(() => {
         // No client rects means nothing is laid out (display: none, or a DOM without layout such as jsdom).
         if (root.getClientRects().length && getComputedStyle(root).position === 'static')
-          warn("style.css is not loaded: import 'solid-route-progress/style.css' once.")
+          warn(
+            "style.css is not loaded: import 'solid-route-progress/style.css' once.",
+            'installation#stylesheet',
+          )
       })
     createBusyAttribute(
       'data-sp-busy',

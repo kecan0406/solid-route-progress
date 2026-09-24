@@ -17,7 +17,9 @@ const production: UserConfig = {
       name: 'production-dev',
       resolveId: (id) => (id === './dev' ? '\0dev' : null),
       load: (id) =>
-        id === '\0dev' ? 'export const DEV = false; export const warn = () => {}' : null,
+        id === '\0dev'
+          ? 'export const DEV = false; export const warn = () => {}; export const explain = () => ""'
+          : null,
     },
   ],
 }
