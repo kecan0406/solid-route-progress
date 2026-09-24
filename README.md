@@ -8,17 +8,17 @@ A route progress bar for [SolidJS](https://solidjs.com), in the spirit of [NProg
 
 [![Progress, drawn in CSS](https://solid-route-progress.vercel.app/og.png)](https://solid-route-progress.vercel.app)
 
-**[Documentation](https://solid-route-progress.vercel.app/docs)** · **[Live demo](https://solid-route-progress.vercel.app)** · **[Example on StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/main/examples/solidstart?file=src/app.tsx)**
+[Documentation](https://solid-route-progress.vercel.app/docs) · [Live demo](https://solid-route-progress.vercel.app) · [Example on StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/main/examples/solidstart?file=src/app.tsx)
 
 ## Why solid-route-progress?
 
-- **One line with `@solidjs/router`.** `<RouteProgress />` follows `useIsRouting()`, so links, `navigate()`, back/forward, action redirects and every `<Suspense>` the next route waits on all show the bar.
-- **Drawn in CSS.** No JavaScript timer steps the bar forward: the drift is a single CSS transition, and color, height and timing are custom properties.
-- **Quick loads never flash.** A navigation shorter than `delay` (200 ms) draws nothing.
-- **Every load holds it separately.** Routes, `track(fetch(...))` and your own `start()` each hold the bar, and it completes when the last one lets go.
-- **Beyond the router.** Navigations that leave the page (external links, form posts, reloads) show it through the Navigation API, and `solid-route-progress/navigation` works without a router at all.
-- **Tailwind v4, SSR and accessibility.** Styles sit in a cascade layer so utilities win without `!important`, `data-state` works as a variant, it renders on the server, and it is a labeled `role="progressbar"` that follows `dir="rtl"` and forced colors.
-- **Small.** About 2.8 kB min+gzip with the router integration, and no dependencies.
+- With `@solidjs/router` it takes one component. `<RouteProgress />` follows `useIsRouting()`, so links, `navigate()`, back/forward, action redirects and every `<Suspense>` the next route waits on show the bar.
+- The drift toward completion is a single CSS transition, and no JavaScript timer steps it. Color, height and timing are custom properties.
+- A navigation shorter than `delay` (200 ms) draws nothing, so quick loads never flash.
+- Routes, `track(fetch(...))` and your own `start()` each hold the bar, and it completes when the last one lets go.
+- Navigations that leave the page (external links, form posts, reloads) show it too, through the Navigation API. `solid-route-progress/navigation` works without a router.
+- Styles sit in a cascade layer, so Tailwind v4 utilities win without `!important`, and `data-state` works as a variant. The bar renders on the server and is a labeled `role="progressbar"` that follows `dir="rtl"` and forced colors.
+- It weighs about 2.8 kB min+gzip with the router integration and has no dependencies.
 
 ## Installation
 
