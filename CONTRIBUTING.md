@@ -14,8 +14,24 @@ pnpm install
 pnpm exec playwright install chromium firefox webkit # once, for the browser tests
 ```
 
-The commands for the playground, the landing page, and the individual checks are listed in the
-[Development section of the README](README.md#development).
+## Commands
+
+```sh
+pnpm dev        # Vite + Tailwind v4 playground at http://localhost:5199 (and /navigation.html)
+pnpm dev:www    # landing page + docs (SolidStart, MDX) at http://localhost:5200
+pnpm lint       # oxlint, with eslint-plugin-solid loaded as a JS plugin
+pnpm format:check
+pnpm test       # Vitest: jsdom, SSR, and real Chromium, Firefox and WebKit
+                # (once: pnpm exec playwright install chromium firefox webkit)
+pnpm typecheck  # the whole repo, plus the published entries under isolatedDeclarations
+pnpm build      # tsdown → dist/*.js (DOM), dist/*.jsx (`solid` condition), d.ts, style.css
+pnpm size       # minified gzip/brotli budget, incl. `createProgress` tree-shaken on its own
+pnpm check      # lint, typecheck, test, build, size
+pnpm changeset  # describe a change for the next release's notes
+```
+
+The package ships JSX untouched under the `solid` export condition, so SolidStart and
+`vite-plugin-solid` compile it for DOM or SSR, plus a DOM-compiled build for everyone else.
 
 ## What fits the project
 
@@ -47,8 +63,9 @@ page with `pnpm build:www`.
 
 - Add or update tests in `test/` for the behavior you change. They run in jsdom, in an SSR
   environment, and in real Chromium, Firefox, and WebKit.
-- When behavior changes, update `README.md` and the matching page under `www/src/routes/docs/`. A
-  new page also needs an entry in `www/src/docs.ts`, which feeds the sidebar and `llms.txt`.
+- When behavior changes, update the matching page under `www/src/routes/docs/`, and `README.md` if
+  it mentions that behavior. A new page also needs an entry in `www/src/docs.ts`, which feeds the
+  sidebar and `llms.txt`.
 - If your change affects the published package, run `pnpm changeset` and describe it for the release
   notes. Docs-only and tooling-only changes do not need one.
 

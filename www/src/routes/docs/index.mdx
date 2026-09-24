@@ -37,6 +37,13 @@ import 'solid-route-progress/style.css'
 
 Everything else is CSS.
 
+## How it works
+
+1. `start()` waits `delay` (200 ms), then flips `data-state` to `trickle` and sets `--sp-value` to `trickleTo` (0.95). The stylesheet's `trickle` rule has a 10 s transition on `transform` whose curve races out and then crawls. It is one transition, and no timer steps it.
+2. `set(n)` switches to the `active` rule (short `--sp-speed` transition) for the hop, then hands back to `trickle`. CSS transitions interrupt from the _current_ animated value, so there is nothing to sync.
+3. Once the last hold is released (or on `done()`), the bar moves to 100% under the `done` rule (with `data-error` if a hold was released as an `'error'`; a `'cancel'` skips this step and fades straight out), then `idle` fades the whole bar out with `opacity` + a delayed `visibility: hidden`. The bar itself is parked back at `--sp-start` only after the fade has finished. Both steps take `speed`, which the bar also writes to `--sp-speed`, so the CSS and the timers never disagree. A load that starts during this phase waits for the fade and for `delay`, whichever is longer.
+4. If the load ends while `delay` is still pending, or before the browser painted the bar (tracked with a single `requestAnimationFrame`), the bar is dropped silently.
+
 ## Size
 
 | Module                            | min  | gzip | brotli |
