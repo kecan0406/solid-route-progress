@@ -61,10 +61,10 @@
     "test:watch": "vitest",
     "size": "node scripts/size.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm size",
-    "format": "prettier -w \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
+    "format": "prettier -w \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"examples/*/src/**/*.{ts,tsx,css}\" \"examples/*/*.{ts,json,md}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
     "prepublishOnly": "pnpm build && pnpm size",
     "lint": "oxlint --deny-warnings",
-    "format:check": "prettier --check \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
+    "format:check": "prettier --check \"{src,test,dev,scripts}/**/*.{ts,tsx,css,mjs}\" \"www/src/**/*.{ts,tsx,css}\" \"www/*.{ts,json}\" \"examples/*/src/**/*.{ts,tsx,css}\" \"examples/*/*.{ts,json,md}\" \"*.{ts,md,json}\" \".github/**/*.yml\"",
     "changeset": "changeset"
   },
   "peerDependencies": {

@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import 'solid-route-progress/style.css';
+
+@theme {
+  --color-brand: oklch(0.6 0.2 285);
+}
+
+/* The bar reads these custom properties: any CSS color works, Tailwind tokens included. */
+:root {
+  --sp-color: var(--color-brand);
+  --sp-height: 3px;
+}

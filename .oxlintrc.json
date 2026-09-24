@@ -1,7 +1,14 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "jsPlugins": ["eslint-plugin-solid"],
-  "ignorePatterns": ["dist", ".size", "www/.output", "www/.vinxi", "www/dist"],
+  "ignorePatterns": [
+    "dist",
+    ".size",
+    "www/.output",
+    "www/.vinxi",
+    "www/dist",
+    "examples/*/.output"
+  ],
   "rules": {
     "solid/jsx-no-duplicate-props": "error",
     "solid/jsx-no-undef": "error",

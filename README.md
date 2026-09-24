@@ -65,6 +65,8 @@ Render `<RouteProgress />` once anywhere under `<Router>`, and import the styles
 
 It takes the same two steps: import the stylesheet in `src/app.css`, and render the bar in the `<Router>` root of `src/app.tsx`.
 
+A complete app, themed with Tailwind: [`examples/solidstart`](examples/solidstart) ([open in StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/main/examples/solidstart)).
+
 ```tsx
 // src/app.tsx
 import { Router } from '@solidjs/router'
