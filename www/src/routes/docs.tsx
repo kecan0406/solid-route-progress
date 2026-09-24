@@ -61,13 +61,46 @@ export default function Docs(props: RouteSectionProps) {
           </For>
         </nav>
         <article class="doc min-w-0 pb-16">
-          <Show when={current()}>{(page) => <CopyMarkdown href={page().href} />}</Show>
+          <Show when={current()}>{(page) => <PageActions href={page().href} />}</Show>
           <MDXProvider components={{ a: A, pre: CodeBlock }}>{props.children}</MDXProvider>
         </article>
       </div>
     </div>
   )
 }
+
+/** Hands the page to an assistant: its Markdown on the clipboard, or a chat that reads its `.md` copy. */
+function PageActions(props: { href: string }) {
+  const prompt = () =>
+    encodeURIComponent(
+      `Read ${__SP_SITE__}${markdownPath(props.href)}, I want to ask questions about it.`,
+    )
+  const chats = () => [
+    { name: 'Claude', href: `https://claude.ai/new?q=${prompt()}` },
+    { name: 'ChatGPT', href: `https://chatgpt.com/?hints=search&prompt=${prompt()}` },
+  ]
+
+  return (
+    <div class="float-right mt-1.5 ml-4 flex gap-1.5">
+      <CopyMarkdown href={props.href} />
+      <For each={chats()}>
+        {(chat) => (
+          <a
+            href={chat.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`${ACTION} text-muted-foreground no-underline hover:text-foreground`}
+          >
+            Open in {chat.name}
+          </a>
+        )}
+      </For>
+    </div>
+  )
+}
+
+const ACTION =
+  'rounded-md border border-border bg-muted px-2 py-1 font-mono text-[10.5px] font-medium'
 
 /** Copies the page as Markdown, for pasting into an assistant. */
 function CopyMarkdown(props: { href: string }) {
@@ -94,11 +127,7 @@ function CopyMarkdown(props: { href: string }) {
     <button
       type="button"
       onClick={copy}
-      class="float-right mt-1.5 ml-4 rounded-md border border-border bg-muted px-2 py-1 font-mono text-[10.5px] font-medium"
-      classList={{
-        'text-foreground': copied(),
-        'text-muted-foreground hover:text-foreground': !copied(),
-      }}
+      class={`${ACTION} ${copied() ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
     >
       {copied() ? 'copied' : 'Copy Markdown'}
     </button>
