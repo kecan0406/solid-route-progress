@@ -1,5 +1,11 @@
 # solid-route-progress
 
+## 1.0.3
+
+### Patch Changes
+
+- [`e2745a4`](https://github.com/kecan0406/solid-route-progress/commit/e2745a44842729e763de35d83c60ee78a7a45b5e) Thanks [@kecan0406](https://github.com/kecan0406)! - Refresh the README shown on npm: a shorter overview with install and usage, a map of the docs, a SolidStart example on StackBlitz, and links to `llms.txt` for AI assistants. The package keywords and the `shallow` option's doc comment are updated too; the code is unchanged.
+
 ## 1.0.2
 
 ### Patch Changes
