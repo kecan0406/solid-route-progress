@@ -33,7 +33,7 @@ yarn add solid-route-progress
 bun add solid-route-progress
 ```
 
-It needs `solid-js` 1.9 or later, and `@solidjs/router` 0.15 or later for the router integration. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
+It needs `solid-js` 1.9 or a later 1.x, and `@solidjs/router` 0.15 or 1.x for the router integration; Solid 2 is not supported yet. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
 
 ## Usage
 
