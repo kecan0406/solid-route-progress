@@ -1,6 +1,6 @@
 {
   "name": "solid-route-progress",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Route progress bar for SolidJS and SolidStart: the thin loading bar along the top of the page. The loading drift is one CSS transition; about 2.8 kB, no dependencies, Tailwind v4 friendly.",
   "license": "MIT",
   "author": "kecan0406 (https://github.com/kecan0406)",
