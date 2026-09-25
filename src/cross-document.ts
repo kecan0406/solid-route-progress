@@ -1,5 +1,5 @@
 import { isServer } from 'solid-js/web'
-import { listenCrossDocument, type CrossDocumentOptions } from './engine/cross-document'
+import { listenNavigation, type CrossDocumentOptions } from './engine/navigation-api'
 import type { ProgressController } from './engine/progress'
 import { disposalSignal } from './owner'
 
@@ -21,5 +21,5 @@ export function createCrossDocumentProgress(
   controller: ProgressController,
   options: CrossDocumentOptions = {},
 ): void {
-  if (!isServer) listenCrossDocument(controller, options, disposalSignal())
+  if (!isServer) listenNavigation(controller, options, disposalSignal())
 }

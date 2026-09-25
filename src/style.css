@@ -13,7 +13,8 @@
  * your own rules, set it through `speed`.
  *
  * Everything sits in the `components.sprogress` sublayer, so Tailwind utilities, your own
- * `@layer components` rules and unlayered CSS all win without `!important`.
+ * `@layer components` rules and unlayered CSS all win without `!important`. Motion is
+ * `opacity` and `translate` only, so it runs on the compositor even while the page is busy.
  */
 
 @property --sp-value {
@@ -25,54 +26,53 @@
 @layer components.sprogress {
   .sprogress {
     position: fixed;
-    inset: 0 0 auto 0;
+    inset: 0 0 auto;
     z-index: var(--sp-z-index, 9999);
     height: var(--sp-height, 3px);
     pointer-events: none;
     visibility: visible;
     transition:
-      opacity var(--sp-speed) ease,
+      opacity var(--sp-speed),
       visibility 0s;
   }
 
   .sprogress[data-state='idle'] {
     opacity: 0;
     visibility: hidden;
-    /* keep painting while the opacity fades, then drop out of the a11y tree / hit-testing */
-    transition:
-      opacity var(--sp-speed) ease,
-      visibility 0s var(--sp-speed);
+    /* keep painting while the opacity fades, then drop out of the a11y tree / hit-testing. A
+       delayed 0s step, not a timed one: the main thread sleeps through the fade */
+    transition-delay: 0s, var(--sp-speed);
   }
 
   .sprogress-bar {
     position: absolute;
     inset: 0;
     background: var(--sp-color, oklch(0.65 0.14 241));
-    /* full-width bar slid in from the inline-start edge */
-    transform: translateX(calc((var(--sp-value) - 1) * 100%));
-    /* fast out of the gate, then a long crawl — never quite arriving. The curve is a longhand
-       so a browser without linear() loses only the curve (falling back to ease), not the drift */
-    transition: transform var(--sp-trickle-duration, 10s);
+    /* full-width bar slid in from the inline-start edge; `translate` leaves `transform` to you */
+    translate: calc((var(--sp-value) - 1) * 100%);
+    /* set() / done(): a short, eased hop */
+    transition: translate var(--sp-speed);
+  }
+
+  .sprogress:dir(rtl) .sprogress-bar {
+    translate: calc((1 - var(--sp-value)) * 100%);
+  }
+
+  /* loading: fast out of the gate, then a long crawl — never quite arriving. Longhands, so a
+     browser without linear() loses only the curve (falling back to ease), not the drift */
+  .sprogress[data-state='trickle'] .sprogress-bar {
+    transition-duration: var(--sp-trickle-duration, 10s);
     transition-timing-function: var(
       --sp-trickle-easing,
       linear(0, 0.25 5%, 0.4 10%, 0.55 18%, 0.7 30%, 0.8 45%, 0.88 60%, 0.94 75%, 0.98 90%, 1)
     );
   }
 
-  .sprogress:dir(rtl) .sprogress-bar {
-    transform: translateX(calc((1 - var(--sp-value)) * 100%));
-  }
-
   /* hidden: park the bar at the start position, but only after the fade-out finished */
   .sprogress[data-state='idle'] .sprogress-bar {
     --sp-value: var(--sp-start, 0.08);
-    transition: transform 0s var(--sp-speed);
-  }
-
-  /* explicit set() / done(): short, eased hop instead of the long drift */
-  .sprogress:is([data-state='active'], [data-state='done']) .sprogress-bar {
-    transition-duration: var(--sp-speed);
-    transition-timing-function: ease;
+    transition-duration: 0s;
+    transition-delay: var(--sp-speed);
   }
 
   /* forced colors strip backgrounds; paint the bar with the system highlight instead */

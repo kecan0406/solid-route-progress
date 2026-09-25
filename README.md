@@ -19,7 +19,7 @@ A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin
 - Routes, `track(fetch(...))` and your own `start()` each hold the bar, and it completes when the last one lets go.
 - Navigations that leave the page (external links, form posts, reloads) show it too, through the Navigation API. `solid-route-progress/navigation` works without a router.
 - Styles sit in a cascade layer, so Tailwind v4 utilities win without `!important`, and `data-state` works as a variant. The bar renders on the server and is a labeled `role="progressbar"` that follows `dir="rtl"` and forced colors.
-- It weighs about 2.8 kB min+gzip with the router integration and has no dependencies.
+- `<RouteProgress />` adds about 2.4 kB min+gzip to your bundle, and there are no dependencies. The bar only animates `opacity` and `translate`, so it stays smooth on the compositor thread while the next route keeps the main thread busy.
 
 ## Installation
 
