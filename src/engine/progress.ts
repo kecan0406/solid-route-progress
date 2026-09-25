@@ -146,6 +146,9 @@ export const DEFAULTS: Required<ProgressOptions> = {
   speed: 200,
 }
 
+// `ReturnType<typeof setTimeout>` so the same code type-checks under DOM and Node libs.
+type Timer = ReturnType<typeof setTimeout> | undefined
+
 /**
  * Headless progress state machine. Rendering is left to CSS: the controller only exposes a
  * target `value` and a `state`, which a bar mirrors to `--sp-value` and `data-state`. Its
@@ -161,45 +164,43 @@ export function createProgressEngine(
   const [error, setError] = cell(false)
   const opt = <K extends keyof typeof DEFAULTS>(key: K): (typeof DEFAULTS)[K] =>
     options[key] ?? DEFAULTS[key]
-  const holds = new Set<object>()
+  /** The release of every hold still open: each one is its own key. */
+  const holds = new Set<Release>()
 
-  // Timers are `ReturnType<typeof setTimeout>` so the same code type-checks under DOM and Node libs.
   /** The one scheduled step: reveal while `idle`, resume trickling while `active`, hide while `done`. */
-  let timer: ReturnType<typeof setTimeout> | undefined
-  let stopTimer: ReturnType<typeof setTimeout> | undefined
+  let timer: Timer
+  let stopTimer: Timer
   /** `true` once the browser has had a chance to paint the visible bar. */
   let painted = false
   /** A hold was released as an `'error'` during the current load. */
   let failed = false
 
-  const schedule = (step: () => void, ms: number) => {
+  /** Replace the scheduled step with `step` in `ms`, or with nothing. */
+  const schedule = (step?: () => void, ms?: number) => {
     clearTimeout(timer)
-    timer = setTimeout(() => {
-      timer = undefined
-      step()
-    }, ms)
-  }
-  const cancel = () => {
-    clearTimeout(timer)
-    timer = undefined
+    timer =
+      step &&
+      setTimeout(() => {
+        timer = undefined
+        step()
+      }, ms)
   }
   /** A reveal is scheduled: the load has not lasted `delay` yet. */
   const pending = () => state() === 'idle' && timer !== undefined
 
-  const move = (s: ProgressState, v: number) =>
+  /** One update for everything a bar mirrors. The error mark only ever shows while `done`. */
+  const move = (s: ProgressState, v: number, e = false) =>
     batch(() => {
       setState(s)
       setValue(v)
+      setError(e)
     })
   const hide = () => {
     failed = false
-    batch(() => {
-      setError(false)
-      move('idle', 0)
-    })
+    move('idle', 0)
   }
   const drop = () => {
-    cancel()
+    schedule()
     hide()
   }
   const reveal = (s: ProgressState, v: number) => {
@@ -212,39 +213,37 @@ export function createProgressEngine(
   const finish = () => {
     // Nothing was ever painted: drop the bar silently instead of flashing it.
     if (!painted) return drop()
-    batch(() => {
-      setError(failed)
-      move('done', 1)
-    })
+    move('done', 1, failed)
     schedule(hide, opt('speed'))
   }
 
-  /** Every hold is gone: complete or drop the bar, or cancel a reveal that is not due yet. */
-  const settle = (canceled: boolean) => {
+  /**
+   * A hold ended, or `done()` dropped them all. Once none is left, complete or drop the bar, or
+   * cancel a reveal that is not due yet.
+   */
+  const end = (outcome?: Outcome) => {
+    if (outcome === 'error') failed = true
+    if (holds.size) return
     const s = state()
-    if (s === 'trickle' || s === 'active') {
-      const end = canceled && !failed ? drop : finish
+    if (s === 'idle') {
+      // Nothing shown, and nothing left to report.
+      schedule()
+      failed = false
+    } else if (s !== 'done') {
+      const stop = outcome === 'cancel' && !failed ? drop : finish
       const stopDelay = opt('stopDelay')
       clearTimeout(stopTimer)
-      if (stopDelay > 0) stopTimer = setTimeout(end, stopDelay)
-      else end()
-    } else if (s === 'idle') {
-      // Nothing shown, and nothing left to report.
-      cancel()
-      failed = false
+      if (stopDelay > 0) stopTimer = setTimeout(stop, stopDelay)
+      else stop()
     }
   }
 
-  const release = (hold: object, outcome?: Outcome) => {
-    if (!holds.delete(hold)) return
-    if (outcome === 'error') failed = true
-    if (!holds.size) settle(outcome === 'cancel')
-  }
-
   const start = (): Release => {
-    const hold = {}
+    const release = ((outcome?: Outcome) => {
+      if (holds.delete(release)) end(outcome)
+    }) as Release
     if (!server) {
-      holds.add(hold)
+      holds.add(release)
       // A pending stop is superseded by the new load.
       clearTimeout(stopTimer)
       const s = state()
@@ -260,15 +259,13 @@ export function createProgressEngine(
         else show()
       }
     }
-    const releaseHold = (outcome?: Outcome) => release(hold, outcome)
-    if (dispose) (releaseHold as unknown as Record<symbol, () => void>)[dispose] = releaseHold
-    return releaseHold as Release
+    if (dispose) (release as unknown as Record<symbol, () => void>)[dispose] = release
+    return release
   }
 
   const done = (outcome?: Outcome) => {
     holds.clear()
-    if (outcome === 'error') failed = true
-    settle(outcome === 'cancel')
+    end(outcome)
   }
 
   const set = (n: number) => {
@@ -284,17 +281,17 @@ export function createProgressEngine(
     // value already sits past the trickle target, in which case hold there.
     const trickleTo = opt('trickleTo')
     if (n < trickleTo) schedule(() => move('trickle', trickleTo), opt('speed'))
-    else cancel()
+    else schedule()
   }
 
   const track = <P extends PromiseLike<unknown>>(promise: P, options?: TrackOptions): P => {
-    const releaseHold = start()
+    const release = start()
     const timeout = options?.timeout
-    const timer = timeout && !server ? setTimeout(releaseHold, timeout) : undefined
+    const timer = timeout && !server ? setTimeout(release, timeout) : undefined
     promise
       .then(
-        () => releaseHold(),
-        () => releaseHold('error'),
+        () => release(),
+        () => release('error'),
       )
       .then(() => clearTimeout(timer))
     return promise

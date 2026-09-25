@@ -12,6 +12,8 @@ const BUDGET = {
   'shared.js': 2300,
   'style.css': 650,
   'createProgress-only.js': 1000,
+  'RouteProgress-only.js': 2500,
+  'NavigationProgress-only.js': 2250,
 }
 const JS_TOTAL_BUDGET = 3600
 

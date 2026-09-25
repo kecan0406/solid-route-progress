@@ -2,10 +2,8 @@ import { createEffect, on, onCleanup, splitProps, type JSX } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { useBeforeLeave, useIsRouting, type Location } from '@solidjs/router'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
-import { createCrossDocumentProgress } from './cross-document'
 import { DEV, explain } from './dev'
-import type { CrossDocumentOptions } from './engine/cross-document'
-import { isIgnored } from './engine/navigation-api'
+import { isIgnored, listenNavigation, type CrossDocumentOptions } from './engine/navigation-api'
 import { createHandoff, type ProgressController } from './engine/progress'
 import { disposalSignal } from './owner'
 
@@ -42,6 +40,7 @@ export function createRouteProgress(
 ): void {
   if (isServer) return
   const isRouting = DEV ? explainedIsRouting() : useIsRouting()
+  const signal = disposalSignal()
   let skip = false
   const skipNext = () => {
     skip = true
@@ -58,7 +57,7 @@ export function createRouteProgress(
     (event) => {
       if (isIgnored(event.target)) skipNext()
     },
-    { capture: true, signal: disposalSignal() },
+    { capture: true, signal },
   )
 
   useBeforeLeave((event) => {
@@ -83,9 +82,10 @@ export function createRouteProgress(
   onCleanup(() => hold.end())
 
   if (options.crossDocument !== false)
-    createCrossDocumentProgress(
+    listenNavigation(
       controller,
-      typeof options.crossDocument === 'object' ? options.crossDocument : undefined,
+      typeof options.crossDocument === 'object' ? options.crossDocument : {},
+      signal,
     )
 }
 
@@ -104,11 +104,10 @@ function explainedIsRouting() {
   }
 }
 
-const samePathname = (to: string, pathname: string) => {
-  const end = to.search(/[?#]/)
-  const target = end === -1 ? to : to.slice(0, end)
-  return target.replace(/\/+$/, '') === pathname.replace(/\/+$/, '')
-}
+/** The pathname alone: no trailing slashes, no search string, no hash. */
+const bare = (path: string) => path.replace(/\/*([?#].*)?$/, '')
+
+const samePathname = (to: string, pathname: string) => bare(to) === bare(pathname)
 
 export interface RouteProgressProps extends ProgressProps, RouteProgressOptions {}
 

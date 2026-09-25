@@ -32,10 +32,16 @@ export default defineConfig([
     outDir: '.size',
     outputOptions: { chunkFileNames: 'shared.js' },
   },
-  // One import at a time, tree-shaken on its own: catches the core dragging in the components.
-  {
+  // One import at a time, tree-shaken on its own: catches the core dragging in the components,
+  // and measures what the two drop-in bars really cost.
+  ...Object.entries({
+    'createProgress-only': 'scripts/size-entries/create-progress.ts',
+    'RouteProgress-only': 'scripts/size-entries/route-progress.ts',
+    'NavigationProgress-only': 'scripts/size-entries/navigation-progress.ts',
+  }).map(([name, file]): UserConfig => ({
     ...production,
-    entry: { 'createProgress-only': 'scripts/size-entries/create-progress.ts' },
+    entry: { [name]: file },
     outDir: '.size-exports',
-  },
+    clean: false,
+  })),
 ])

@@ -1,12 +1,9 @@
 import { splitProps, type JSX } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
-import { createCrossDocumentProgress } from './cross-document'
 import { DEV, warn } from './dev'
-import type { CrossDocumentOptions } from './engine/cross-document'
-import { getNavigation } from './engine/navigation-api'
+import { getNavigation, listenNavigation, type CrossDocumentOptions } from './engine/navigation-api'
 import type { ProgressController } from './engine/progress'
-import { listenSameDocument } from './engine/same-document'
 import { disposalSignal } from './owner'
 
 export type NavigationProgressOptions = CrossDocumentOptions
@@ -28,8 +25,7 @@ export function createNavigationProgress(
       'Navigation API unavailable: NavigationProgress shows nothing in this browser.',
       'navigation-api#where-the-api-is-missing',
     )
-  createCrossDocumentProgress(controller, options)
-  listenSameDocument(controller, options, disposalSignal())
+  listenNavigation(controller, options, disposalSignal(), true)
 }
 
 export interface NavigationProgressProps extends ProgressProps, NavigationProgressOptions {}

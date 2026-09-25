@@ -118,22 +118,41 @@ const LOCAL = [
   'class',
 ] as const
 
-/** Bars currently marking the page busy, per attribute: it stays until the last one goes idle. */
-const busyBars = new Map<string, Set<object>>()
+/** How many bars mark the page busy, per attribute: it stays until the last one goes idle. */
+const busy: Record<string, number> = {}
 
+/**
+ * Mirror `active` onto `<html>` as `attribute`. Only a real change is written, and only by the
+ * first bar to show or the last to hide, so moves within a load never touch `<html>` (no
+ * mutation records, no style invalidation for rules keyed on the attribute).
+ */
 function createBusyAttribute(attribute: string, value: string, active: () => boolean): void {
-  let bars = busyBars.get(attribute)
-  if (!bars) busyBars.set(attribute, (bars = new Set()))
-  const bar = {}
+  let counted = false
   const sync = (on: boolean) => {
-    if (on) bars.add(bar)
-    else bars.delete(bar)
-    if (bars.size) document.documentElement.setAttribute(attribute, value)
-    else document.documentElement.removeAttribute(attribute)
+    if (on === counted) return
+    counted = on
+    const count = (busy[attribute] = (busy[attribute] ?? 0) + (on ? 1 : -1))
+    const html = document.documentElement
+    if (on && count === 1) html.setAttribute(attribute, value)
+    else if (!count) html.removeAttribute(attribute)
   }
   createEffect(() => sync(active()))
   onCleanup(() => sync(false))
 }
+
+/** `base`, plus the classes a caller passed. */
+const classes = (base: string, extra: string | undefined) => (extra ? `${base} ${extra}` : base)
+
+/** Development only: say so once the bar mounts laid out but unstyled. */
+const checkStylesheet = (root: HTMLElement) =>
+  onMount(() => {
+    // No client rects means nothing is laid out (display: none, or a DOM without layout such as jsdom).
+    if (root.getClientRects().length && getComputedStyle(root).position === 'static')
+      warn(
+        "style.css is not loaded: import 'solid-route-progress/style.css' once.",
+        'installation#stylesheet',
+      )
+  })
 
 /**
  * The bar shell. Renders a fixed, full-width `role="progressbar"` element and mirrors the
@@ -144,7 +163,6 @@ export function Progress(props: ProgressProps): JSX.Element {
   const [local, options, rest] = splitProps(props, LOCAL, OPTION_KEYS)
   // eslint-disable-next-line solid/reactivity -- the controller is picked once, at setup
   const controller = useController(local.controller, options)
-  let root!: HTMLDivElement
 
   // While trickling the target is a guess, so the bar reports as indeterminate.
   const valueNow = () =>
@@ -155,15 +173,6 @@ export function Progress(props: ProgressProps): JSX.Element {
   }
 
   if (!isServer) {
-    if (DEV)
-      onMount(() => {
-        // No client rects means nothing is laid out (display: none, or a DOM without layout such as jsdom).
-        if (root.getClientRects().length && getComputedStyle(root).position === 'static')
-          warn(
-            "style.css is not loaded: import 'solid-route-progress/style.css' once.",
-            'installation#stylesheet',
-          )
-      })
     createBusyAttribute(
       'data-sp-busy',
       '',
@@ -177,7 +186,8 @@ export function Progress(props: ProgressProps): JSX.Element {
       <div
         // Spread first: the attributes below mirror the controller and must win.
         {...rest}
-        ref={root}
+        // `undefined` in production builds, so no ref runs there.
+        ref={DEV ? checkStylesheet : undefined}
         role="progressbar"
         aria-label={local.label ?? 'Loading'}
         aria-valuemin={0}
@@ -186,7 +196,7 @@ export function Progress(props: ProgressProps): JSX.Element {
         aria-valuetext={valueText()}
         data-state={controller.state()}
         data-error={controller.error() ? '' : undefined}
-        class={local.class ? `sprogress ${local.class}` : 'sprogress'}
+        class={classes('sprogress', local.class)}
         style={{
           ...local.style,
           '--sp-value': controller.value(),
@@ -194,7 +204,8 @@ export function Progress(props: ProgressProps): JSX.Element {
           '--sp-speed': `${controller.options.speed ?? DEFAULTS.speed}ms`,
         }}
       >
-        {local.children ?? <Bar />}
+        {/* What `<Bar />` renders, as a static template: no component, spread or effect. */}
+        {local.children ?? <div class="sprogress-bar" />}
       </div>
     </ProgressContext.Provider>
   )
@@ -202,6 +213,6 @@ export function Progress(props: ProgressProps): JSX.Element {
 
 /** The sliding bar: a full-width strip slid in from the inline-start edge. */
 export function Bar(props: ParentProps<JSX.HTMLAttributes<HTMLDivElement>>): JSX.Element {
-  const [local, rest] = splitProps(props, ['class'])
-  return <div class={local.class ? `sprogress-bar ${local.class}` : 'sprogress-bar'} {...rest} />
+  // The class comes after the spread, so it wins over `props.class`, which it already contains.
+  return <div {...props} class={classes('sprogress-bar', props.class)} />
 }

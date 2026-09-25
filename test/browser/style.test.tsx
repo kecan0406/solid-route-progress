@@ -7,8 +7,9 @@ import '../../src/style.css'
 /** The JS ↔ CSS contract: `data-state` / `--sp-value` / `--sp-speed` must drive the stylesheet. */
 
 const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-/** Horizontal translation of the bar in px. */
-const tx = (el: Element) => new DOMMatrix(getComputedStyle(el).transform).m41
+/** Horizontal offset of the bar from its root in px, as drawn, whichever property moves it. */
+const tx = (el: Element) =>
+  el.getBoundingClientRect().left - el.parentElement!.getBoundingClientRect().left
 
 let dispose = () => {}
 afterEach(() => {
