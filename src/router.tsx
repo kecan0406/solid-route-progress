@@ -2,10 +2,12 @@ import { createEffect, on, onCleanup, splitProps, type JSX } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { useBeforeLeave, useIsRouting, type Location } from '@solidjs/router'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
-import { createHandoff, type ProgressController } from './core'
-import { createCrossDocumentProgress, type CrossDocumentOptions } from './cross-document'
+import { createCrossDocumentProgress } from './cross-document'
 import { DEV, explain } from './dev'
-import { disposalSignal, isIgnored } from './navigation-api'
+import type { CrossDocumentOptions } from './engine/cross-document'
+import { isIgnored } from './engine/navigation-api'
+import { createHandoff, type ProgressController } from './engine/progress'
+import { disposalSignal } from './owner'
 
 export interface RouteProgressOptions {
   /**

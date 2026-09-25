@@ -1,10 +1,13 @@
 import { splitProps, type JSX } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
-import { createHandoff, type ProgressController } from './core'
-import { createCrossDocumentProgress, type CrossDocumentOptions } from './cross-document'
+import { createCrossDocumentProgress } from './cross-document'
 import { DEV, warn } from './dev'
-import { disposalSignal, getNavigation, isIgnored } from './navigation-api'
+import type { CrossDocumentOptions } from './engine/cross-document'
+import { getNavigation } from './engine/navigation-api'
+import type { ProgressController } from './engine/progress'
+import { listenSameDocument } from './engine/same-document'
+import { disposalSignal } from './owner'
 
 export type NavigationProgressOptions = CrossDocumentOptions
 
@@ -20,47 +23,13 @@ export function createNavigationProgress(
   options: NavigationProgressOptions = {},
 ): void {
   if (isServer) return
-  const navigation = getNavigation()
-  if (!navigation) {
-    if (DEV)
-      warn(
-        'Navigation API unavailable: NavigationProgress shows nothing in this browser.',
-        'navigation-api#where-the-api-is-missing',
-      )
-    return
-  }
+  if (DEV && !getNavigation())
+    warn(
+      'Navigation API unavailable: NavigationProgress shows nothing in this browser.',
+      'navigation-api#where-the-api-is-missing',
+    )
   createCrossDocumentProgress(controller, options)
-  const signal = disposalSignal()
-  const hold = createHandoff(controller)
-
-  navigation.addEventListener(
-    'navigate',
-    (event) => {
-      if (
-        event.defaultPrevented ||
-        !event.destination.sameDocument ||
-        event.hashChange ||
-        isIgnored(event.sourceElement) ||
-        options.filter?.(event) === false
-      )
-        return
-      hold.next()
-    },
-    { signal },
-  )
-  // Only intercepted navigations settle through `navigatesuccess` / `navigateerror`. A plain
-  // `pushState` commits synchronously, never sets `transition`, and is over right here.
-  navigation.addEventListener('currententrychange', () => navigation.transition || hold.end(), {
-    signal,
-  })
-  navigation.addEventListener('navigatesuccess', () => hold.end(), { signal })
-  // An abort (a newer navigation, a stop) is not a failure; a rejected handler is.
-  navigation.addEventListener(
-    'navigateerror',
-    (event) => hold.end(event.error?.name === 'AbortError' ? 'cancel' : 'error'),
-    { signal },
-  )
-  signal.addEventListener('abort', () => hold.end())
+  listenSameDocument(controller, options, disposalSignal())
 }
 
 export interface NavigationProgressProps extends ProgressProps, NavigationProgressOptions {}

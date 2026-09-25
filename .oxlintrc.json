@@ -33,6 +33,22 @@
       "rules": {
         "no-unassigned-vars": "off"
       }
+    },
+    {
+      "files": ["src/engine/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["solid-js", "solid-js/*", "@solidjs/*"],
+                "message": "src/engine stays framework-free: take reactivity, server checks and cleanup as arguments."
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

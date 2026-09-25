@@ -10,8 +10,9 @@ import {
   type ParentProps,
 } from 'solid-js'
 import { isServer } from 'solid-js/web'
-import { createProgress, DEFAULTS, type ProgressController, type ProgressOptions } from './core'
+import { createProgress } from './core'
 import { DEV, warn } from './dev'
+import { DEFAULTS, type ProgressController, type ProgressOptions } from './engine/progress'
 
 /** Context carrying the active controller. Exposed for integrations; prefer `useProgress()`. */
 export const ProgressContext: Context<ProgressController | undefined> =

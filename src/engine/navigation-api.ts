@@ -1,5 +1,3 @@
-import { getOwner, onCleanup } from 'solid-js'
-
 /**
  * Minimal structural typings for the Navigation API (Baseline 2026-01), kept local so the
  * library type-checks against any `lib.dom` version.
@@ -51,13 +49,3 @@ export const IGNORE_ATTRIBUTE = 'data-sp-ignore'
 /** Whether `target` is, or sits inside, an element marked `data-sp-ignore`. */
 export const isIgnored = (target: EventTarget | null | undefined): boolean =>
   target instanceof Element && target.closest(`[${IGNORE_ATTRIBUTE}]`) !== null
-
-/**
- * An `AbortSignal` that fires when the surrounding Solid owner is disposed. Pass it to
- * `addEventListener` and the listener removes itself.
- */
-export function disposalSignal(): AbortSignal {
-  const controller = new AbortController()
-  if (getOwner()) onCleanup(() => controller.abort())
-  return controller.signal
-}

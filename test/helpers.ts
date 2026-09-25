@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import type { NavigateEventLike } from '../src/navigation-api'
+import type { NavigateEventLike } from '../src/engine/navigation-api'
 
 /** Fake timers and rAF only: listing them keeps `performance`, `queueMicrotask` and friends real. */
 export const useFakeTimers = () =>

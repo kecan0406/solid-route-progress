@@ -42,6 +42,9 @@ The library is small on purpose, so a change has to fit these rules:
   scope.
 - Styles live in `src/style.css`, inside a cascade layer, so utilities and your own rules win
   without `!important`.
+- `src/engine/` stays framework-free: the state machine and the Navigation API listeners take
+  their reactive primitives, the server flag, and an `AbortSignal` as arguments, and lint rejects
+  Solid imports there. The files at the root of `src/` bind them to Solid.
 - The default template stays a single bar. A spinner and an indeterminate mode are documented as
   recipes instead.
 - The size budget is enforced per entry point by `pnpm size`. A change that goes over it needs a
