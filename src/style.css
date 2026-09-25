@@ -50,21 +50,13 @@
     background: var(--sp-color, oklch(0.65 0.14 241));
     /* full-width bar slid in from the inline-start edge */
     transform: translateX(calc((var(--sp-value) - 1) * 100%));
-    /* fast out of the gate, then a long crawl — never quite arriving */
-    transition: transform var(--sp-trickle-duration, 10s)
-      var(
-        --sp-trickle-easing,
-        linear(0, 0.25 5%, 0.4 10%, 0.55 18%, 0.7 30%, 0.8 45%, 0.88 60%, 0.94 75%, 0.98 90%, 1)
-      );
-  }
-
-  /* without linear() the fallback above invalidates the whole shorthand, and the bar would jump
-     straight to its target; a cubic-bezier() fit of the same curve keeps the drift */
-  @supports not (transition-timing-function: linear(0, 1)) {
-    .sprogress-bar {
-      transition: transform var(--sp-trickle-duration, 10s)
-        var(--sp-trickle-easing, cubic-bezier(0.07, 0.44, 0.18, 0.84));
-    }
+    /* fast out of the gate, then a long crawl — never quite arriving. The curve is a longhand
+       so a browser without linear() loses only the curve (falling back to ease), not the drift */
+    transition: transform var(--sp-trickle-duration, 10s);
+    transition-timing-function: var(
+      --sp-trickle-easing,
+      linear(0, 0.25 5%, 0.4 10%, 0.55 18%, 0.7 30%, 0.8 45%, 0.88 60%, 0.94 75%, 0.98 90%, 1)
+    );
   }
 
   .sprogress:dir(rtl) .sprogress-bar {

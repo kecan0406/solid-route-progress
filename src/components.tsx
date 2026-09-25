@@ -26,7 +26,9 @@ export function useProgress(): ProgressController {
   const controller = useContext(ProgressContext)
   if (!controller)
     throw new Error(
-      'useProgress(): no progress controller in scope. Wrap the app in <ProgressProvider> (the route bar picks it up automatically) or call it inside <Progress>.',
+      DEV
+        ? 'useProgress(): no progress controller in scope. Wrap the app in <ProgressProvider> (the route bar picks it up automatically) or call it inside <Progress>.'
+        : 'useProgress(): no progress controller in scope.',
     )
   return controller
 }
