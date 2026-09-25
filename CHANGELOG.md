@@ -1,5 +1,11 @@
 # solid-route-progress
 
+## 1.0.6
+
+### Patch Changes
+
+- [`0343639`](https://github.com/kecan0406/solid-route-progress/commit/034363956d193ec109c822354c8fab71247f369e) Thanks [@kecan0406](https://github.com/kecan0406)! - Cap the `@solidjs/router` peer range at 1.x (`^0.15.0 || ^1.0.0`), matching `solid-js`: Solid 2 is not supported yet, and the docs now say so. The package also carries the `tanstack-intent` keyword, so TanStack Intent finds the agent skill it ships.
+
 ## 1.0.5
 
 ### Patch Changes
