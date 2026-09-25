@@ -25,9 +25,15 @@ A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin
 
 ```sh
 npm i solid-route-progress
+# or
+pnpm add solid-route-progress
+# or
+yarn add solid-route-progress
+# or
+bun add solid-route-progress
 ```
 
-Or `pnpm add`, `yarn add`, `bun add`. It needs `solid-js` 1.9 or later, and `@solidjs/router` 0.15 or later for the router integration. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
+It needs `solid-js` 1.9 or later, and `@solidjs/router` 0.15 or later for the router integration. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
 
 ## Usage
 
