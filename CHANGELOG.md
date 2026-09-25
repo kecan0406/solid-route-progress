@@ -1,5 +1,11 @@
 # solid-route-progress
 
+## 1.0.5
+
+### Patch Changes
+
+- [`83926cb`](https://github.com/kecan0406/solid-route-progress/commit/83926cbbf4455dc4a4544aa113f4c806a9ede616) Thanks [@kecan0406](https://github.com/kecan0406)! - Trim the bundle. The error `useProgress()` throws outside a controller keeps its full guidance in development and is shorter in production. `style.css` drops its `cubic-bezier()` fallback for the trickle curve: browsers without `linear()` (Safari before 17.2) now drift with `ease` instead.
+
 ## 1.0.4
 
 ### Patch Changes
