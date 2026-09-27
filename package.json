@@ -114,7 +114,7 @@
     "publint": "^0.3.24",
     "solid-js": "^1.9.15",
     "tailwindcss": "^4.3.3",
-    "tsdown": "^0.22.14",
+    "tsdown": "^0.23.0",
     "typescript": "^7.0.2",
     "unplugin-solid": "^2.0.0",
     "vite": "^8.2.2",
