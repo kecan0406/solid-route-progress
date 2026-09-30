@@ -2,6 +2,9 @@ import { A } from '@solidjs/router'
 import { createSignal, onMount, Show } from 'solid-js'
 import { REPO } from '~/links'
 
+const LINK =
+  'rounded-lg px-3 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground'
+
 const effectiveDark = () =>
   document.documentElement.dataset.theme
     ? document.documentElement.dataset.theme === 'dark'
@@ -32,17 +35,13 @@ export function Header() {
         </span>
       </A>
       <nav class="ml-auto flex items-center gap-1">
-        <A
-          href="/docs"
-          class="rounded-lg px-3 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground"
-          activeClass="text-foreground"
-        >
+        <A href="/docs" class={LINK} activeClass="text-foreground">
           Docs
         </A>
-        <a
-          href={REPO}
-          class="rounded-lg px-3 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground"
-        >
+        <A href="/showcase" class={LINK} activeClass="text-foreground">
+          Showcase
+        </A>
+        <a href={REPO} class={LINK}>
           GitHub
         </a>
         <button

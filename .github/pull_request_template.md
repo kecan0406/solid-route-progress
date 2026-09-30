@@ -1,4 +1,5 @@
 <!-- For anything larger than a bug fix, please open an issue first. See CONTRIBUTING.md. -->
+<!-- Adding a site to the showcase (a file in www/showcase/)? Name the site below and skip the checklist. -->
 
 ## What changes
 

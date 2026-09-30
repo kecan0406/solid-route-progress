@@ -1,11 +1,11 @@
-import { A } from '@solidjs/router'
 import { createProgress, useProgress } from 'solid-route-progress'
 import { CodeCard } from '~/components/CodeCard'
 import { Dock } from '~/components/Dock'
+import { Footer } from '~/components/Footer'
 import { Header } from '~/components/Header'
 import { Hero } from '~/components/Hero'
 import { PageMeta } from '~/components/PageMeta'
-import { REPO } from '~/links'
+import { ShowcaseSection } from '~/components/ShowcaseSection'
 import { Simulator } from '~/components/Simulator'
 import { cfg } from '~/playground'
 
@@ -32,23 +32,9 @@ export default function Landing() {
         <Simulator pageCtl={pageCtl} winCtl={winCtl} />
         <Dock winCtl={winCtl} />
         <CodeCard />
+        <ShowcaseSection />
       </main>
-      <footer class="mx-auto flex w-full max-w-[960px] items-center gap-4 pb-8 text-[13px] text-muted-foreground">
-        <span>MIT</span>
-        <A href="/docs" class="underline underline-offset-4 hover:text-foreground">
-          Docs
-        </A>
-        <a href={REPO} class="underline underline-offset-4 hover:text-foreground">
-          GitHub
-        </a>
-        <a
-          href="https://github.com/orioncactus/pretendard/blob/main/LICENSE"
-          class="underline underline-offset-4 hover:text-foreground"
-        >
-          Pretendard (OFL 1.1)
-        </a>
-        <span class="ml-auto font-mono text-[11px]">v{__SP_VERSION__}</span>
-      </footer>
+      <Footer />
     </div>
   )
 }

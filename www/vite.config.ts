@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm'
 import { defineConfig } from 'vite'
 import pkg from '../package.json' with { type: 'json' }
 import { llms, siteOf } from './llms'
+import { showcase } from './showcase.ts'
 import { codeTheme, dropBackground } from './src/code-theme'
 
 const src = (p: string) => new URL(`../src/${p}`, import.meta.url).pathname
@@ -39,6 +40,7 @@ export default defineConfig({
     },
     tailwindcss(),
     llms(site),
+    showcase(),
     solidStart({ extensions: ['mdx'], middleware: 'src/middleware.ts' }),
     nitro(),
   ],
