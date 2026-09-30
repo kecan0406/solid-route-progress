@@ -1,6 +1,7 @@
 import { createSignal, Show } from 'solid-js'
 import { copyText } from '~/clipboard'
-import { Highlight, plain } from '~/highlight'
+import { CodeFile } from '~/components/CodeFile'
+import { plain } from '~/highlight'
 import { usageText } from '~/playground'
 
 /** The code the playground produces. Every control lands in it, so one snippet is enough. */
@@ -14,9 +15,12 @@ export function CodeCard() {
   }
 
   return (
-    <div class="mx-auto w-full max-w-[960px] overflow-hidden rounded-xl border border-border bg-muted">
-      <div class="flex items-center border-b border-border px-3.5 py-2">
-        <span class="font-mono text-[11px] font-medium text-muted-foreground">app.tsx</span>
+    <CodeFile
+      class="mx-auto w-full max-w-[960px]"
+      file="app.tsx"
+      text={usageText()}
+      lang="tsx"
+      action={
         <button
           type="button"
           onClick={copy}
@@ -57,10 +61,7 @@ export function CodeCard() {
             </svg>
           </Show>
         </button>
-      </div>
-      <pre class="overflow-x-auto px-4 py-3.5 font-mono text-[12px] leading-[1.7]">
-        <Highlight text={usageText()} lang="tsx" />
-      </pre>
-    </div>
+      }
+    />
   )
 }

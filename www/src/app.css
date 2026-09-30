@@ -119,6 +119,47 @@
   }
 }
 
+/* /showcase previews: a bar drifting like the library's — fast out of the gate, a long crawl, a
+   hop to the end, a fade. Plain CSS on `translate`; nothing here is driven by the package. */
+.showcase-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  translate: -100% 0;
+  animation: showcase-drift 7s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .showcase-bar::before {
+    animation: none;
+    translate: -38% 0;
+  }
+}
+@keyframes showcase-drift {
+  0% {
+    translate: -100% 0;
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.08, 0.6, 0.2, 1);
+  }
+  78% {
+    translate: -9% 0;
+    opacity: 1;
+    animation-timing-function: ease-in;
+  }
+  86% {
+    translate: 0 0;
+    opacity: 1;
+  }
+  93% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  100% {
+    translate: -100% 0;
+    opacity: 0;
+  }
+}
+
 /* `--destructive` is sized for a filled button; a 3px bar at its dark value (L 0.396) is too
    dim to read as a failure, so the dark half is lifted. */
 .ex-error[data-error] {

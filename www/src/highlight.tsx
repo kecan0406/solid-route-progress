@@ -1,6 +1,6 @@
 import { For } from 'solid-js'
 
-export type Lang = 'tsx' | 'css'
+export type Lang = 'tsx' | 'json' | 'css'
 
 const LIVE_OPEN = ''
 const LIVE_CLOSE = ''
@@ -25,6 +25,8 @@ const GRAMMAR: Record<Lang, RegExp> = {
     ].join('|'),
     'g',
   ),
+  // a key is a string followed by a `:`
+  json: new RegExp([LIVE, String.raw`(?<prop>"[^"\n]*"(?=\s*:))`, STRING].join('|'), 'g'),
   css: new RegExp(
     [
       LIVE,

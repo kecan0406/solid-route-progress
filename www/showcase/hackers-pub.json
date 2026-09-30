@@ -1,0 +1,12 @@
+{
+  "name": "hackers.pub",
+  "url": "https://hackers.pub/",
+  "description": "ActivityPub-enabled social network for hackers.",
+  "image": "/img/showcase/hackers-pub.svg",
+  "credit": {
+    "text": "Hackers' Pub cat by Bak Eunji",
+    "url": "https://github.com/hackers-pub/visual-identity",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  }
+}
