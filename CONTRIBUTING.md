@@ -1,7 +1,8 @@
 # Contributing
 
 Thanks for taking the time to contribute. This guide covers what you need to set up the project and
-what a pull request should include.
+what a pull request should include. To add your site to the showcase, skip to
+[Add a site to the showcase](#add-a-site-to-the-showcase): it takes one small file and no setup.
 
 ## Prerequisites
 
@@ -72,6 +73,35 @@ page with `pnpm build:www`.
   sidebar and `llms.txt`.
 - If your change affects the published package, run `pnpm changeset` and describe it for the release
   notes. Docs-only and tooling-only changes do not need one.
+
+## Add a site to the showcase
+
+The [showcase](https://solid-route-progress.vercel.app/showcase) lists sites that run
+solid-route-progress in production. Each site is one JSON file in `www/showcase/`:
+
+```json
+{
+  "name": "hackers.pub",
+  "url": "https://hackers.pub/",
+  "description": "ActivityPub-enabled social network for hackers."
+}
+```
+
+`image` is optional: a mark shown left of the name, as a file in `www/public/img/showcase/`
+referenced as `/img/showcase/<file>`. You do not have to add it yourself. Drop your logo (SVG or PNG)
+in a comment on your pull request, or in the showcase issue form, and say where it comes from and
+under which license. We commit the file, note the license in the `README.md` next to it, and add a
+`credit` (the maker and the license, each with a link) that the card shows under the site.
+
+The quickest way needs no clone:
+[add the file on GitHub](https://github.com/kecan0406/solid-route-progress/new/main?filename=www%2Fshowcase%2Fmy-site.json&value=%7B%0A++%2F%2F+Delete+the+%2F%2F+lines+before+you+propose+the+change.%0A++%2F%2F+The+site%27s+domain+or+name.%0A++%22name%22%3A+%22%22%2C%0A++%2F%2F+Starting+with+https%3A%2F%2F%0A++%22url%22%3A+%22https%3A%2F%2F%22%2C%0A++%2F%2F+One+line+on+what+the+site+is.%0A++%22description%22%3A+%22%22%0A++%2F%2F+Optional+logo%3A+drop+the+file+in+a+comment+on+your+pull+request%2C+and+we+add+these.%0A++%2F%2F+%22image%22%3A+%22%2Fimg%2Fshowcase%2Fyour-site.svg%22%2C%0A++%2F%2F+%22credit%22%3A+%7B%0A++%2F%2F+++%22text%22%3A+%22Logo+by+Jane+Doe%22%2C%0A++%2F%2F+++%22url%22%3A+%22https%3A%2F%2Fexample.com%2Fjane%22%2C%0A++%2F%2F+++%22license%22%3A+%22CC+BY+4.0%22%2C%0A++%2F%2F+++%22licenseUrl%22%3A+%22https%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F4.0%2F%22%0A++%2F%2F+%7D%0A%7D%0A),
+fill in the three fields, and propose the change. GitHub forks the repository and opens the pull
+request for you. If you would rather fill in a form, use the
+[showcase issue](https://github.com/kecan0406/solid-route-progress/issues/new?template=showcase.yml)
+instead.
+
+CI builds the site, and the build fails with the file and the field if an entry does not fit. A
+showcase entry needs no tests, docs, or changeset.
 
 ## Releasing
 

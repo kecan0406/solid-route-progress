@@ -1,0 +1,44 @@
+name: Add a site to the showcase
+description: Have you adopted solid-route-progress? Tell us where.
+title: 'Showcase: '
+labels: [showcase]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer to send it yourself? [Add a file on GitHub](https://github.com/kecan0406/solid-route-progress/new/main?filename=www%2Fshowcase%2Fmy-site.json&value=%7B%0A++%2F%2F+Delete+the+%2F%2F+lines+before+you+propose+the+change.%0A++%2F%2F+The+site%27s+domain+or+name.%0A++%22name%22%3A+%22%22%2C%0A++%2F%2F+Starting+with+https%3A%2F%2F%0A++%22url%22%3A+%22https%3A%2F%2F%22%2C%0A++%2F%2F+One+line+on+what+the+site+is.%0A++%22description%22%3A+%22%22%0A++%2F%2F+Optional+logo%3A+drop+the+file+in+a+comment+on+your+pull+request%2C+and+we+add+these.%0A++%2F%2F+%22image%22%3A+%22%2Fimg%2Fshowcase%2Fyour-site.svg%22%2C%0A++%2F%2F+%22credit%22%3A+%7B%0A++%2F%2F+++%22text%22%3A+%22Logo+by+Jane+Doe%22%2C%0A++%2F%2F+++%22url%22%3A+%22https%3A%2F%2Fexample.com%2Fjane%22%2C%0A++%2F%2F+++%22license%22%3A+%22CC+BY+4.0%22%2C%0A++%2F%2F+++%22licenseUrl%22%3A+%22https%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F4.0%2F%22%0A++%2F%2F+%7D%0A%7D%0A) and GitHub opens the pull request for you.
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: The site's domain or name.
+      placeholder: example.com
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      placeholder: https://example.com/
+    validations:
+      required: true
+  - type: input
+    id: description
+    attributes:
+      label: Description
+      description: One line on what the site is.
+      placeholder: A social network for hackers.
+    validations:
+      required: true
+  - type: textarea
+    id: mark
+    attributes:
+      label: Mark
+      description: Optional. Drag your logo here (SVG or PNG), and say where it comes from and under which license.
+  - type: checkboxes
+    id: live
+    attributes:
+      label: Confirm
+      options:
+        - label: The site runs solid-route-progress in production.
+          required: true
