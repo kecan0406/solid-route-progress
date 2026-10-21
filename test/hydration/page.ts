@@ -14,11 +14,21 @@ import { update } from '../helpers'
 
 const pages = inject('pages')
 
-/** Run the code of each `<script>` in `html` in the page's global scope, as parsing would. */
-const runScripts = (html: string) => {
-  for (const [, code] of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g))
+/**
+ * Run the inline scripts under `parent` in the page's global scope, in document order, as the
+ * browser does while it parses them. Markup set with `innerHTML` leaves them inert.
+ */
+const runScripts = (parent: ParentNode) => {
+  for (const script of parent.querySelectorAll('script'))
     // eslint-disable-next-line no-eval -- the server's own inline scripts, which a browser runs
-    (0, eval)(code!)
+    (0, eval)(script.text)
+}
+
+/** `html` parsed as a document fragment, the way a parser sees it. */
+const parse = (html: string) => {
+  const template = document.createElement('template')
+  template.innerHTML = html
+  return template.content
 }
 
 /** Load page `name` as the server sent it, with the hydration script in its head, and hydrate it. */
@@ -26,13 +36,13 @@ export async function hydratePage(
   name: Exclude<keyof typeof pages, 'script'>,
   ui: () => JSX.Element,
 ) {
-  runScripts(pages.script)
+  runScripts(parse(pages.script))
   const warnings: string[] = []
   for (const level of ['warn', 'error'] as const)
     vi.spyOn(console, level).mockImplementation((...args) => void warnings.push(args.join(' ')))
   const root = document.body.appendChild(document.createElement('div'))
   root.innerHTML = pages[name]
-  runScripts(pages[name])
+  runScripts(root)
   const served = [...root.querySelectorAll('*')]
   hydrate(ui, root)
   // Long enough for a load the client made itself to land.
