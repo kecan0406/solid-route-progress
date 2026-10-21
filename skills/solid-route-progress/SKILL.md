@@ -29,30 +29,32 @@ Then pick one entry by how the app navigates:
 
 | The app uses                            | Render                                                | Import from                       |
 | --------------------------------------- | ----------------------------------------------------- | --------------------------------- |
-| `@solidjs/router`, including SolidStart | `<RouteProgress />` once, in the router's root layout | `solid-route-progress/router`     |
+| `@solidjs/router`, including Start mode | `<RouteProgress />` once, in the router's root layout | `solid-route-progress/router`     |
 | no router (MPA, plain links)            | `<NavigationProgress />` once, in the layout          | `solid-route-progress/navigation` |
 | loads that are not navigations          | `<ProgressProvider>` + `useProgress()`                | `solid-route-progress`            |
 
-SolidStart (`src/app.tsx`):
+This version targets Solid 2 (`solid-js`, `@solidjs/web` and `@solidjs/router` 2.x). On Solid 1, install `solid-route-progress@1` and read its docs instead.
+
+`src/App.tsx`:
 
 ```tsx
-import { Router } from '@solidjs/router'
-import { FileRoutes } from '@solidjs/start/router'
-import { Suspense } from 'solid-js'
+import { createRouter } from '@solidjs/router'
+import { Loading } from 'solid-js'
 import { RouteProgress } from 'solid-route-progress/router'
+import { routes } from './routes'
 import './app.css' // holds the @import above
+
+const Router = createRouter({ routes })
 
 export default function App() {
   return (
-    <Router
-      root={(props) => (
+    <Router>
+      {(props) => (
         <>
           <RouteProgress />
-          <Suspense>{props.children}</Suspense>
+          <Loading>{props.children}</Loading>
         </>
       )}
-    >
-      <FileRoutes />
     </Router>
   )
 }
@@ -76,7 +78,7 @@ release() // release('error') marks a failed load, release('cancel') fades out
 
 - Do not write your own trickle: no `setInterval`, no JS-animated width. The drift toward completion is one CSS transition, and JavaScript only writes `--sp-value` and `data-state`.
 - Render one bar, in the root layout. Not in each page.
-- `<RouteProgress>` must be under `<Router>`: inside the `root` component, not beside `<Router>` in `app.tsx`.
+- `<RouteProgress>` must be under `<Router>`: inside its render-prop child, not beside `<Router>` in `App.tsx`.
 - Theme with custom properties, not props or `!important`:
 
   ```css
@@ -91,7 +93,7 @@ release() // release('error') marks a failed load, release('cancel') fades out
 - Options (`delay`, `speed`, `trickleTo`, `stopDelay`) belong where the controller is created. Under a `<ProgressProvider>`, set them on the provider; on the bar they are ignored with a dev warning.
 - `useProgress()` throws outside `<ProgressProvider>`, `<Progress>`, `<RouteProgress>` or `<NavigationProgress>`.
 - A load shorter than `delay` (200 ms) draws nothing on purpose. To see the bar while testing, throttle the network or pass `delay={0}`.
-- Actions that only revalidate (no redirect) do not route, so they show no bar. Hold it with `useSubmission(action).pending` and `progress.start()`; the router docs have the snippet.
+- Actions that only revalidate (no redirect) do not route, so they show no bar. Hold it around the call, `progress.track(save(data))`, or inside the action body, `yield progress.track(api.save(data))`.
 - Skip a link with `data-sp-ignore`; skip navigations with `shallow` or `filter={(to, from) => boolean}`.
 
 ## Not in this package
@@ -111,4 +113,4 @@ These come from other progress bar libraries. Map them instead of inventing them
 
 - The dev console shows no `[sprogress]` warnings. Each one ends with a docs link that explains the fix.
 - With network throttling, a navigation shows the bar, and `<html>` carries `data-sp-busy` while it is visible.
-- Server rendering needs a bundler that resolves the `solid` export condition. SolidStart and `vite-plugin-solid` do.
+- Server rendering needs a bundler that resolves the `solid` export condition. `@solidjs/vite-plugin` does, Start mode included.

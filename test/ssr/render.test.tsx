@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { renderToString } from 'solid-js/web'
-import { Route, Router } from '@solidjs/router'
+import { renderToString } from '@solidjs/web'
+import { createRouter, memoryHistory } from '@solidjs/router'
 import { createProgress, Progress } from '../../src'
 import { RouteProgress } from '../../src/router'
 
@@ -23,17 +23,18 @@ describe('server rendering', () => {
   })
 
   it('<RouteProgress> renders under <Router>', () => {
+    const Router = createRouter({
+      routes: [{ path: '/', component: () => <p>page</p> }],
+      history: memoryHistory('/'),
+    })
     const html = renderToString(() => (
-      <Router
-        url="/"
-        root={(props) => (
+      <Router>
+        {(props) => (
           <>
             <RouteProgress />
             {props.children}
           </>
         )}
-      >
-        <Route path="/" component={() => <p>page</p>} />
       </Router>
     ))
     expect(html).toContain('role="progressbar"')

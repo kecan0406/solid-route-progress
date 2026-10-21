@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { render } from 'solid-js/web'
-import type { JSX } from 'solid-js'
+import { render, type JSX } from '@solidjs/web'
 import { createProgress, Progress, ProgressProvider } from '../../src'
 import '../../src/style.css'
 

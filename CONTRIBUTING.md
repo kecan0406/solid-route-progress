@@ -19,10 +19,12 @@ pnpm exec playwright install chromium firefox webkit # once, for the browser tes
 
 ```sh
 pnpm dev        # Vite + Tailwind v4 playground at http://localhost:5199 (and /navigation.html)
-pnpm dev:www    # landing page + docs (SolidStart, MDX) at http://localhost:5200
+pnpm dev:www    # landing page + docs (SolidStart, MDX) at http://localhost:5200; still on
+                # Solid 1 and the published 1.x package until the site moves to Solid 2
 pnpm lint       # oxlint, with eslint-plugin-solid loaded as a JS plugin
 pnpm format:check
-pnpm test       # Vitest: jsdom, SSR, and real Chromium, Firefox and WebKit
+pnpm test       # Vitest: jsdom, SSR, hydration of server-rendered pages, and real Chromium,
+                # Firefox and WebKit
                 # (once: pnpm exec playwright install chromium firefox webkit)
 pnpm typecheck  # the whole repo, plus the published entries under isolatedDeclarations
 pnpm build      # tsdown → dist/*.js (DOM), dist/*.jsx (`solid` condition), d.ts, style.css, docs/*.md
@@ -32,8 +34,8 @@ pnpm check      # lint, typecheck, test, build, size
 pnpm changeset  # describe a change for the next release's notes
 ```
 
-The package ships JSX untouched under the `solid` export condition, so SolidStart and
-`vite-plugin-solid` compile it for DOM or SSR, plus a DOM-compiled build for everyone else.
+The package ships JSX untouched under the `solid` export condition, so `@solidjs/vite-plugin`
+compiles it for DOM or SSR, plus a DOM-compiled build for everyone else.
 
 ## What fits the project
 
@@ -67,7 +69,8 @@ pnpm check
 page with `pnpm build:www`.
 
 - Add or update tests in `test/` for the behavior you change. They run in jsdom, in an SSR
-  environment, and in real Chromium, Firefox, and WebKit.
+  environment, against pages the server rendered and the client hydrates, and in real Chromium,
+  Firefox, and WebKit.
 - When behavior changes, update the matching page under `www/src/routes/docs/`, and `README.md` if
   it mentions that behavior. A new page also needs an entry in `www/src/docs.ts`, which feeds the
   sidebar and `llms.txt`.

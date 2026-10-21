@@ -1,4 +1,4 @@
-import { isServer } from 'solid-js/web'
+import { isServer } from '@solidjs/web'
 import { listenNavigation, type CrossDocumentOptions } from './engine/navigation-api'
 import type { ProgressController } from './engine/progress'
 import { disposalSignal } from './owner'
