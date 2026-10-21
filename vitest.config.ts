@@ -10,7 +10,10 @@ const alias = {
   'solid-route-progress': src('index.ts'),
 }
 
-/** One project per runtime: the same source compiled for the DOM, for the server, and run in real browsers. */
+/**
+ * One project per runtime: the same source compiled for the DOM, for the server, for hydrating
+ * what the server rendered, and run in real browsers.
+ */
 const project = (
   name: string,
   test: ViteUserConfig['test'],
@@ -30,6 +33,17 @@ export default defineConfig({
         include: ['test/*.test.{ts,tsx}'],
       }),
       project('ssr', { environment: 'node', include: ['test/ssr/*.test.tsx'] }, { ssr: true }),
+      project(
+        'hydration',
+        {
+          environment: 'jsdom',
+          setupFiles: ['./test/setup.ts'],
+          include: ['test/hydration/*.test.tsx'],
+          globalSetup: ['./test/hydration/global-setup.ts'],
+        },
+        // The plugin compiles non-hydratable client code under Vitest unless told otherwise.
+        { solid: { hydratable: true } },
+      ),
       project('browser', {
         include: ['test/browser/*.test.tsx'],
         browser: {
