@@ -1,6 +1,6 @@
 /* @refresh reload */
-import { render } from 'solid-js/web'
-import { createSignal, onMount } from 'solid-js'
+import { render } from '@solidjs/web'
+import { createSignal, onSettled } from 'solid-js'
 import { NavigationProgress } from 'solid-route-progress/navigation'
 
 /**
@@ -9,10 +9,10 @@ import { NavigationProgress } from 'solid-route-progress/navigation'
  */
 const App = () => {
   const [path, setPath] = createSignal(location.pathname + location.hash)
-  onMount(() => {
+  onSettled(() => {
     const navigation = (window as { navigation?: any }).navigation
     if (!navigation) return
-    navigation.addEventListener('navigate', (event: any) => {
+    const intercept = (event: any) => {
       const url = new URL(event.destination.url)
       if (!event.canIntercept || event.hashChange || url.origin !== location.origin) return
       const ms = Number(url.searchParams.get('ms') ?? 0)
@@ -22,7 +22,9 @@ const App = () => {
           setPath(url.pathname + url.search)
         },
       })
-    })
+    }
+    navigation.addEventListener('navigate', intercept)
+    return () => navigation.removeEventListener('navigate', intercept)
   })
   return (
     <>

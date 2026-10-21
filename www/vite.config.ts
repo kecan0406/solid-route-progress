@@ -11,7 +11,6 @@ import { llms, siteOf } from './llms'
 import { showcase } from './showcase.ts'
 import { codeTheme, dropBackground } from './src/code-theme'
 
-const src = (p: string) => new URL(`../src/${p}`, import.meta.url).pathname
 const site = siteOf(pkg)
 
 export default defineConfig({
@@ -44,14 +43,6 @@ export default defineConfig({
     solidStart({ extensions: ['mdx'], middleware: 'src/middleware.ts' }),
     nitro(),
   ],
-  resolve: {
-    alias: {
-      'solid-route-progress/router': src('router.tsx'),
-      'solid-route-progress/navigation': src('navigation.tsx'),
-      'solid-route-progress/style.css': src('style.css'),
-      'solid-route-progress': src('index.ts'),
-    },
-  },
   // The SolidStart 2.0.4 dev toolbar imports trace-mapping, whose UMD `resolve-uri` has no ESM
   // default export unless Vite pre-bundles it.
   optimizeDeps: { include: ['@solidjs/start > @jridgewell/trace-mapping'] },

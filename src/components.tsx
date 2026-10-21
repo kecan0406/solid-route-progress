@@ -1,22 +1,25 @@
 import {
   createContext,
   createEffect,
-  onCleanup,
-  onMount,
-  splitProps,
+  createMemo,
+  omit,
+  onSettled,
+  untrack,
   useContext,
   type Context,
-  type JSX,
   type ParentProps,
 } from 'solid-js'
-import { isServer } from 'solid-js/web'
+import { isServer, type JSX } from '@solidjs/web'
 import { createProgress } from './core'
 import { DEV, warn } from './dev'
 import { DEFAULTS, type ProgressController, type ProgressOptions } from './engine/progress'
 
-/** Context carrying the active controller. Exposed for integrations; prefer `useProgress()`. */
-export const ProgressContext: Context<ProgressController | undefined> =
-  createContext<ProgressController>()
+/**
+ * Context carrying the active controller, `null` outside any. Exposed for integrations; prefer
+ * `useProgress()`.
+ */
+export const ProgressContext: Context<ProgressController | null> =
+  createContext<ProgressController | null>(null)
 
 /**
  * Read the nearest progress controller — from `<ProgressProvider>`, `<Progress>`,
@@ -41,19 +44,22 @@ export const OPTION_KEYS: readonly (keyof ProgressOptions)[] = [
   'speed',
 ]
 
+/** The option props alone, read when the controller needs them, so reactive props work. */
+const optionsOf = (props: ProgressOptions): ProgressOptions =>
+  omit(props, (key) => !OPTION_KEYS.includes(key as keyof ProgressOptions))
+
 /**
- * The controller a bar drives: the `controller` prop, else the nearest `<ProgressProvider>`,
- * else a new one built from `options`. Options only apply in the last case, so development
- * builds say so when they would be dropped.
+ * The controller a bar drives, picked once at setup: the `controller` prop, else the nearest
+ * `<ProgressProvider>`, else a new one built from the option props. Options only apply in the
+ * last case, so development builds say so when they would be dropped.
  */
 export function useController(
-  controller: ProgressController | undefined,
-  options: ProgressOptions,
+  props: ProgressOptions & { controller?: ProgressController | undefined },
 ): ProgressController {
-  const provided = controller ?? useContext(ProgressContext)
-  if (!provided) return createProgress(options)
+  const provided = untrack(() => props.controller) ?? useContext(ProgressContext)
+  if (!provided) return createProgress(optionsOf(props))
   if (DEV) {
-    const dropped = OPTION_KEYS.filter((key) => options[key] !== undefined)
+    const dropped = untrack(() => OPTION_KEYS.filter((key) => props[key] !== undefined))
     if (dropped.length)
       warn(
         `${dropped.join(', ')} ignored: this bar drives an existing controller, so set options where it is created (createProgress() or <ProgressProvider>).`,
@@ -71,10 +77,9 @@ export interface ProgressProviderProps extends ProgressOptions {
 
 /** Provides a controller to descendants without rendering anything. */
 export function ProgressProvider(props: ProgressProviderProps): JSX.Element {
-  const [local, options] = splitProps(props, ['controller', 'children'])
-  // eslint-disable-next-line solid/reactivity -- the controller is picked once, at setup
-  const controller = local.controller ?? createProgress(options)
-  return <ProgressContext.Provider value={controller}>{local.children}</ProgressContext.Provider>
+  // Picked once, at setup.
+  const controller = untrack(() => props.controller) ?? createProgress(optionsOf(props))
+  return <ProgressContext value={controller}>{props.children}</ProgressContext>
 }
 
 export interface ProgressProps
@@ -118,6 +123,12 @@ const LOCAL = [
   'class',
 ] as const
 
+/**
+ * For a memo or effect the server never creates: it takes no hydration id, so the ids of the
+ * nodes after it still match the server's.
+ */
+export const CLIENT_ONLY = { transparent: true } as const
+
 /** How many bars mark the page busy, per attribute: it stays until the last one goes idle. */
 const busy: Record<string, number> = {}
 
@@ -127,25 +138,26 @@ const busy: Record<string, number> = {}
  * mutation records, no style invalidation for rules keyed on the attribute).
  */
 function createBusyAttribute(attribute: string, value: string, active: () => boolean): void {
-  let counted = false
-  const sync = (on: boolean) => {
-    if (on === counted) return
-    counted = on
-    const count = (busy[attribute] = (busy[attribute] ?? 0) + (on ? 1 : -1))
-    const html = document.documentElement
-    if (on && count === 1) html.setAttribute(attribute, value)
-    else if (!count) html.removeAttribute(attribute)
-  }
-  createEffect(() => sync(active()))
-  onCleanup(() => sync(false))
+  const count = (by: number) => (busy[attribute] = (busy[attribute] ?? 0) + by)
+  // The memo drops repeats, so the effect runs only when the bar shows or hides.
+  createEffect(
+    createMemo(active, CLIENT_ONLY),
+    (on) => {
+      if (!on) return
+      const html = document.documentElement
+      if (count(1) === 1) html.setAttribute(attribute, value)
+      // Runs once the bar hides, or when it is disposed while visible.
+      return () => {
+        if (!count(-1)) html.removeAttribute(attribute)
+      }
+    },
+    CLIENT_ONLY,
+  )
 }
-
-/** `base`, plus the classes a caller passed. */
-const classes = (base: string, extra: string | undefined) => (extra ? `${base} ${extra}` : base)
 
 /** Development only: say so once the bar mounts laid out but unstyled. */
 const checkStylesheet = (root: HTMLElement) =>
-  onMount(() => {
+  onSettled(() => {
     // No client rects means nothing is laid out (display: none, or a DOM without layout such as jsdom).
     if (root.getClientRects().length && getComputedStyle(root).position === 'static')
       warn(
@@ -160,59 +172,58 @@ const checkStylesheet = (root: HTMLElement) =>
  * visual lives in `style.css`. Renders the idle shell on the server.
  */
 export function Progress(props: ProgressProps): JSX.Element {
-  const [local, options, rest] = splitProps(props, LOCAL, OPTION_KEYS)
-  // eslint-disable-next-line solid/reactivity -- the controller is picked once, at setup
-  const controller = useController(local.controller, options)
+  const controller = useController(props)
+  const rest = omit(props, ...LOCAL, ...OPTION_KEYS)
 
   // While trickling the target is a guess, so the bar reports as indeterminate.
   const valueNow = () =>
     controller.state() === 'trickle' ? undefined : Math.round(controller.value() * 100)
   const valueText = () => {
     const percent = valueNow()
-    return percent === undefined ? undefined : local.getValueLabel?.(percent)
+    return percent === undefined ? undefined : props.getValueLabel?.(percent)
   }
 
   if (!isServer) {
     createBusyAttribute(
       'data-sp-busy',
       '',
-      () => local.busyAttribute !== false && controller.active(),
+      () => props.busyAttribute !== false && controller.active(),
     )
-    createBusyAttribute('aria-busy', 'true', () => local.ariaBusy === true && controller.active())
+    createBusyAttribute('aria-busy', 'true', () => props.ariaBusy === true && controller.active())
   }
 
   return (
-    <ProgressContext.Provider value={controller}>
+    <ProgressContext value={controller}>
       <div
         // Spread first: the attributes below mirror the controller and must win.
         {...rest}
         // `undefined` in production builds, so no ref runs there.
         ref={DEV ? checkStylesheet : undefined}
         role="progressbar"
-        aria-label={local.label ?? 'Loading'}
+        aria-label={props.label ?? 'Loading'}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={valueNow()}
         aria-valuetext={valueText()}
         data-state={controller.state()}
         data-error={controller.error() ? '' : undefined}
-        class={classes('sprogress', local.class)}
+        class={['sprogress', props.class]}
         style={{
-          ...local.style,
+          ...props.style,
           '--sp-value': controller.value(),
           // Always written, so the CSS transitions run on the same clock as the JS timers.
           '--sp-speed': `${controller.options.speed ?? DEFAULTS.speed}ms`,
         }}
       >
         {/* What `<Bar />` renders, as a static template: no component, spread or effect. */}
-        {local.children ?? <div class="sprogress-bar" />}
+        {props.children ?? <div class="sprogress-bar" />}
       </div>
-    </ProgressContext.Provider>
+    </ProgressContext>
   )
 }
 
 /** The sliding bar: a full-width strip slid in from the inline-start edge. */
 export function Bar(props: ParentProps<JSX.HTMLAttributes<HTMLDivElement>>): JSX.Element {
-  // The class comes after the spread, so it wins over `props.class`, which it already contains.
-  return <div {...props} class={classes('sprogress-bar', props.class)} />
+  // The class comes after the spread, so it wins over `props.class`, which it already holds.
+  return <div {...props} class={['sprogress-bar', props.class]} />
 }

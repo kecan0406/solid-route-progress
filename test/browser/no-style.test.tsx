@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { render } from 'solid-js/web'
+import { render } from '@solidjs/web'
 import { Progress } from '../../src'
 
 // Deliberately no `style.css` import: this file runs in its own page.

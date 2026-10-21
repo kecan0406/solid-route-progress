@@ -12,7 +12,7 @@ const production: UserConfig = {
   attw: false,
   plugins: [
     solid({ solid: { generate: 'dom', hydratable: true } }),
-    // What a production build sees: solid-js/web's `isDev` is `false`, so the diagnostics fold away.
+    // What a production build sees: @solidjs/web's `isDev` is `false`, so the diagnostics fold away.
     {
       name: 'production-dev',
       resolveId: (id) => (id === './dev' ? '\0dev' : null),
