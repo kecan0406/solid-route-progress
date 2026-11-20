@@ -1,4 +1,4 @@
-import { For } from 'solid-js'
+import { For, Show } from 'solid-js'
 
 export type Lang = 'tsx' | 'json' | 'css'
 
@@ -72,8 +72,16 @@ function tokenize(source: string, lang: Lang): Token[] {
 /** Syntax-colored source for a `<pre>`, using the `.tk-*` palette from app.css. */
 export function Highlight(props: { text: string; lang: Lang }) {
   return (
-    <For each={tokenize(props.text, props.lang)}>
-      {(token) => (token.kind ? <span class={CLASS[token.kind]}>{token.text}</span> : token.text)}
+    // Each edit re-tokenizes into fresh objects, so rows are kept by position, not identity.
+    <For each={tokenize(props.text, props.lang)} keyed={false}>
+      {(token) => {
+        const kind = () => token().kind
+        return (
+          <Show when={kind()} fallback={token().text}>
+            {(kind) => <span class={CLASS[kind()]}>{token().text}</span>}
+          </Show>
+        )
+      }}
     </For>
   )
 }

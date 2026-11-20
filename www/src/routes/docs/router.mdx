@@ -3,12 +3,14 @@
 ```tsx
 import { RouteProgress } from 'solid-route-progress/router'
 
-<Router root={(props) => <><RouteProgress /><Suspense>{props.children}</Suspense></>}>
+<Router>{(props) => <><RouteProgress /><Loading>{props.children}</Loading></>}</Router>
 ```
 
 | Covered by `useIsRouting()`                                             |
 | ----------------------------------------------------------------------- |
-| `<A>` clicks · `navigate()` · back/forward · action redirects · every `<Suspense>` the new route waits on |
+| link clicks · `navigate()` · back/forward · action redirects · every `<Loading>` the new route waits on |
+
+A navigation that waits on nothing never counts as routing, so it draws no bar.
 
 ## `<RouteProgress>`
 
@@ -29,12 +31,12 @@ Each navigation takes its own [hold](/docs/controller#start).
 ## Ignoring links
 
 ```tsx
-<A href="/settings" data-sp-ignore>
+<a href="/settings" data-sp-ignore>
   Settings
-</A>
+</a>
 ```
 
-Works for `<A>`, plain anchors and Navigation API navigations alike.
+Works for router links and Navigation API navigations alike.
 
 ## Leaving the document
 
@@ -66,21 +68,22 @@ createCrossDocumentProgress(controller, options)
 
 ## Actions without a redirect
 
-An action that only revalidates runs outside `useIsRouting()`, so the bar stays hidden. Hold it for the actions you want covered:
+An action that only revalidates does not route, so the bar stays hidden. Hold it for the actions you want covered, around the call or inside the action body:
 
 ```tsx
-import { useSubmission } from '@solidjs/router'
-import { createEffect, onCleanup } from 'solid-js'
+import { action } from 'solid-js'
 import { useProgress } from 'solid-route-progress'
 
-const saving = useSubmission(saveProfile)
 const progress = useProgress()
-createEffect(() => {
-  if (saving.pending) onCleanup(progress.start())
+
+await progress.track(saveProfile(data))
+
+const save = action(function* (data: Profile) {
+  yield progress.track(api.saveProfile(data))
 })
 ```
 
-The submission stays pending until the action and its revalidation have both finished.
+The bar shows while the action is in flight, not once its transition commits.
 
 ## `createRouteProgress()`
 

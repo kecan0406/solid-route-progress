@@ -1,5 +1,5 @@
-import { splitProps, type JSX } from 'solid-js'
-import { isServer } from 'solid-js/web'
+import { omit } from 'solid-js'
+import { isServer, type JSX } from '@solidjs/web'
 import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
 import { DEV, warn } from './dev'
 import { getNavigation, listenNavigation, type CrossDocumentOptions } from './engine/navigation-api'
@@ -34,9 +34,8 @@ const LOCAL = ['filter', 'timeout', 'controller'] as const
 
 /** `<Progress>` driven by the Navigation API. No router required. Picks up a surrounding `<ProgressProvider>`. */
 export function NavigationProgress(props: NavigationProgressProps): JSX.Element {
-  const [local, options, rest] = splitProps(props, LOCAL, OPTION_KEYS)
-  // eslint-disable-next-line solid/reactivity -- the controller is picked once, at setup
-  const controller = useController(local.controller, options)
-  createNavigationProgress(controller, local)
+  const controller = useController(props)
+  createNavigationProgress(controller, props)
+  const rest = omit(props, ...LOCAL, ...OPTION_KEYS)
   return <Progress controller={controller} {...rest} />
 }

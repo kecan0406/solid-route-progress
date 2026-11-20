@@ -1,5 +1,5 @@
 import { useProgress } from 'solid-route-progress'
-import { sleep } from '~/lib/albums'
+import { sleep } from '../lib/albums'
 
 export default function Home() {
   // ★ 6. Anything that is not a navigation: hold the bar with `track()` (or `start()` / release).

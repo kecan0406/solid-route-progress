@@ -24,7 +24,9 @@ export function Dock(props: { winCtl: ProgressController }) {
 
   /** Apply a config change and preview it on the demo's bar. */
   const tune = (patch: Partial<typeof DEFAULTS>) => {
-    setCfg(patch)
+    setCfg((draft) => {
+      Object.assign(draft, patch)
+    })
     if (navLoading()) return
     const previous = releasePulse
     releasePulse = props.winCtl.start()
@@ -50,7 +52,7 @@ export function Dock(props: { winCtl: ProgressController }) {
               <button
                 type="button"
                 aria-label={`Bar color ${swatch.name}`}
-                aria-pressed={cfg.color === swatch.color}
+                aria-pressed={cfg.color === swatch.color ? 'true' : 'false'}
                 onClick={() => tune({ color: swatch.color })}
                 style={{ background: swatch.color }}
                 class="size-5.5 rounded-full border-2 border-transparent aria-pressed:border-foreground aria-pressed:shadow-[0_0_0_2px_var(--background),inset_0_0_0_2px_var(--background)]"

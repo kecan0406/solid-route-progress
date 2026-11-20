@@ -1,7 +1,7 @@
-import { createEffect, on, onCleanup, splitProps, type JSX } from 'solid-js'
-import { isServer } from 'solid-js/web'
-import { useBeforeLeave, useIsRouting, type Location } from '@solidjs/router'
-import { OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
+import { createEffect, createMemo, latest, omit, untrack } from 'solid-js'
+import { isServer, type JSX } from '@solidjs/web'
+import { useInRouter, useIsRouting, useLocation, type Location } from '@solidjs/router'
+import { CLIENT_ONLY, OPTION_KEYS, Progress, useController, type ProgressProps } from './components'
 import { DEV, explain } from './dev'
 import { isIgnored, listenNavigation, type CrossDocumentOptions } from './engine/navigation-api'
 import { createHandoff, type ProgressController } from './engine/progress'
@@ -15,8 +15,8 @@ export interface RouteProgressOptions {
    */
   shallow?: boolean
   /**
-   * Decide per navigation. Return `false` to keep the bar hidden. `to` is the resolved
-   * path (`pathname + search + hash`); `from` is the current location.
+   * Decide per navigation, back/forward included. Return `false` to keep the bar hidden. `to`
+   * is where the navigation goes (`pathname + search + hash`); `from` is the current location.
    */
   filter?: (to: string, from: Location) => boolean
   /**
@@ -30,79 +30,67 @@ export interface RouteProgressOptions {
 }
 
 /**
- * Wire a controller to `@solidjs/router`: `useIsRouting()` covers `<A>` clicks,
- * `navigate()`, back/forward and action redirects, including any `<Suspense>` the new
- * route waits on. `useBeforeLeave()` supplies the target for `shallow` / `filter`.
+ * Wire a controller to `@solidjs/router`: `useIsRouting()` covers link clicks, `navigate()`,
+ * back/forward and form-action redirects, including any `<Loading>` the new route waits on.
+ * The location's in-flight value supplies the target for `shallow` / `filter`.
  */
 export function createRouteProgress(
   controller: ProgressController,
   options: RouteProgressOptions = {},
 ): void {
   if (isServer) return
-  const isRouting = DEV ? explainedIsRouting() : useIsRouting()
-  const signal = disposalSignal()
-  let skip = false
-  const skipNext = () => {
-    skip = true
-    // The matching `isRouting` flip happens synchronously, so a flag still set on the next
-    // microtask belongs to a navigation the router dropped (or a click that made none).
-    queueMicrotask(() => {
-      skip = false
-    })
-  }
-
-  // `<A data-sp-ignore>`: capture phase, so this runs before the router's own click handler.
-  document.addEventListener(
-    'click',
-    (event) => {
-      if (isIgnored(event.target)) skipNext()
-    },
-    { capture: true, signal },
-  )
-
-  useBeforeLeave((event) => {
-    if (typeof event.to !== 'string') return
-    if (
-      (options.shallow === true && samePathname(event.to, event.from.pathname)) ||
-      options.filter?.(event.to, event.from) === false
-    )
-      skipNext()
-  })
-
-  // One hold per navigation, so other holders (`track()`, cross-document) keep theirs.
-  const hold = createHandoff(controller)
-  // `on()` keeps the controller's own signals out of this effect's dependencies.
-  createEffect(
-    on(isRouting, (routing) => {
-      if (routing && !skip) hold.next()
-      else hold.end()
-      if (routing) skip = false
-    }),
-  )
-  onCleanup(() => hold.end())
-
-  if (options.crossDocument !== false)
-    listenNavigation(
-      controller,
-      typeof options.crossDocument === 'object' ? options.crossDocument : {},
-      signal,
-    )
-}
-
-/** The router's own error names neither this component nor the fix, and both usually go wrong together. */
-function explainedIsRouting() {
-  try {
-    return useIsRouting()
-  } catch (cause) {
+  // The router's own error names neither this component nor the fix, and both usually go wrong together.
+  if (DEV && !useInRouter())
     throw new Error(
       explain(
         '<RouteProgress> must render under <Router>: put it in the root layout, or use <NavigationProgress> from solid-route-progress/navigation without a router.',
         'quick-start',
       ),
-      { cause },
     )
-  }
+  const isRouting = useIsRouting()
+  const location = useLocation()
+  const signal = disposalSignal()
+
+  // `<a data-sp-ignore>`: capture phase, so this runs before the router's own click handler. The
+  // navigation the click starts is in flight before the task ends, so the mark lasts until then.
+  let ignoring = false
+  document.addEventListener(
+    'click',
+    (event) => {
+      if (!isIgnored(event.target)) return
+      ignoring = true
+      setTimeout(() => (ignoring = false))
+    },
+    { capture: true, signal },
+  )
+
+  /** Where the navigation in flight goes, while there is one. */
+  const target = createMemo(
+    () =>
+      isRouting() ? latest(() => location.pathname + location.search + location.hash) : undefined,
+    CLIENT_ONLY,
+  )
+  // One hold per navigation, so other holders (`track()`, cross-document) keep theirs.
+  const hold = createHandoff(controller)
+  createEffect(
+    target,
+    (to) => {
+      if (to !== undefined && !ignoring && untrack(() => shows(to, location, options))) hold.next()
+      else hold.end()
+    },
+    CLIENT_ONLY,
+  )
+  signal.addEventListener('abort', () => hold.end())
+
+  const crossDocument = untrack(() => options.crossDocument)
+  if (crossDocument !== false)
+    listenNavigation(controller, typeof crossDocument === 'object' ? crossDocument : {}, signal)
 }
+
+/** Whether a navigation to `to` shows the bar. `from` is the location it leaves. */
+const shows = (to: string, from: Location, options: RouteProgressOptions) =>
+  !(options.shallow === true && samePathname(to, from.pathname)) &&
+  options.filter?.(to, from) !== false
 
 /** The pathname alone: no trailing slashes, no search string, no hash. */
 const bare = (path: string) => path.replace(/\/*([?#].*)?$/, '')
@@ -120,13 +108,12 @@ const LOCAL = ['shallow', 'filter', 'crossDocument', 'controller'] as const
  *
  * @example
  * ```tsx
- * <Router root={(props) => <><RouteProgress /><Suspense>{props.children}</Suspense></>}>
+ * <Router>{(props) => <><RouteProgress /><Loading>{props.children}</Loading></>}</Router>
  * ```
  */
 export function RouteProgress(props: RouteProgressProps): JSX.Element {
-  const [local, options, rest] = splitProps(props, LOCAL, OPTION_KEYS)
-  // eslint-disable-next-line solid/reactivity -- the controller is picked once, at setup
-  const controller = useController(local.controller, options)
-  createRouteProgress(controller, local)
+  const controller = useController(props)
+  createRouteProgress(controller, props)
+  const rest = omit(props, ...LOCAL, ...OPTION_KEYS)
   return <Progress controller={controller} {...rest} />
 }

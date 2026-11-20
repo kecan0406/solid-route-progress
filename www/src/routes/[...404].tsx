@@ -1,12 +1,9 @@
 import { Meta, Title } from '@solidjs/meta'
-import { A } from '@solidjs/router'
-import { getRequestEvent, isServer } from 'solid-js/web'
+import { httpStatus } from '@solidjs/web'
 import { Header } from '~/components/Header'
 
 export default function NotFound() {
-  // What `<HttpStatusCode code={404} />` does. Importing it from the `@solidjs/start` barrel
-  // (2.0.4) breaks the production server bundle: "Export 'ssr_exports' is not defined".
-  if (isServer) getRequestEvent()!.response.status = 404
+  httpStatus(404)
 
   return (
     <div class="mx-auto max-w-[1100px] px-5 md:px-10">
@@ -19,12 +16,12 @@ export default function NotFound() {
         </p>
         <h1 class="mb-6 text-[32px] font-semibold tracking-tight">This page does not exist.</h1>
         <p class="flex justify-center gap-4 text-[14px]">
-          <A href="/" class="underline underline-offset-4">
+          <a href="/" class="underline underline-offset-4">
             Home
-          </A>
-          <A href="/docs" class="underline underline-offset-4">
+          </a>
+          <a href="/docs" class="underline underline-offset-4">
             Docs
-          </A>
+          </a>
         </p>
       </main>
     </div>

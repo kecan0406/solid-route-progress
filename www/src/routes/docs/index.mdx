@@ -1,19 +1,21 @@
 # Introduction
 
 ```tsx
-import { Router } from '@solidjs/router'
-import { Suspense } from 'solid-js'
+import { createRouter } from '@solidjs/router'
+import { Loading } from 'solid-js'
 import { RouteProgress } from 'solid-route-progress/router'
 import 'solid-route-progress/style.css'
 
-<Router
-  root={(props) => (
+const Router = createRouter({ routes })
+
+<Router>
+  {(props) => (
     <>
       <RouteProgress />
-      <Suspense>{props.children}</Suspense>
+      <Loading>{props.children}</Loading>
     </>
   )}
-/>
+</Router>
 ```
 
 ## Entry points
@@ -50,9 +52,9 @@ What each setup adds to your bundle, in bytes, after tree-shaking:
 
 | Import                                                      | min  | gzip | brotli |
 | ----------------------------------------------------------- | ---- | ---- | ------ |
-| `<RouteProgress />`, `solid-route-progress/router`          | 4838 | 2363 | 2135   |
-| `<NavigationProgress />`, `solid-route-progress/navigation` | 4300 | 2099 | 1905   |
-| `createProgress` alone                                      | 1721 | 908  | 841    |
+| `<RouteProgress />`, `solid-route-progress/router`          | 4938 | 2427 | 2202   |
+| `<NavigationProgress />`, `solid-route-progress/navigation` | 4366 | 2159 | 1953   |
+| `createProgress` alone                                      | 1762 | 959  | 882    |
 | `solid-route-progress/style.css`                            | 1089 | 510  | 418    |
 
 Zero dependencies. The bar only moves `opacity` and `translate`, so its animations run on the compositor thread and stay smooth while the next route keeps the main thread busy.

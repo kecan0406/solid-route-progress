@@ -1,13 +1,13 @@
 import { Link } from '@solidjs/meta'
-import { A, useLocation, type RouteSectionProps } from '@solidjs/router'
+import { useLocation, type RouteSectionProps } from '@solidjs/router'
 import { createSignal, For, Show } from 'solid-js'
-import { MDXProvider } from 'solid-mdx'
 import { CodeBlock } from '~/components/CodeBlock'
 import { Header } from '~/components/Header'
 import { PageMeta } from '~/components/PageMeta'
 import { DOC_PAGES, DOCS, markdownPath } from '~/docs'
+import { MDXProvider } from '~/mdx'
 
-/** Docs layout: sidebar + the MDX page. Links inside pages go through the router, code blocks get a copy button. */
+/** Docs layout: sidebar + the MDX page. The router claims the plain links inside pages; code blocks get a copy button. */
 export default function Docs(props: RouteSectionProps) {
   const location = useLocation()
   const current = () => DOC_PAGES.find((page) => page.href === location.pathname.replace(/\/$/, ''))
@@ -44,14 +44,12 @@ export default function Docs(props: RouteSectionProps) {
                   <For each={group.pages}>
                     {(page) => (
                       <li>
-                        <A
+                        <a
                           href={page.href}
-                          end
-                          class="block rounded-lg px-2.5 py-1.5 text-[13.5px] text-muted-foreground hover:bg-muted hover:text-foreground"
-                          activeClass="bg-muted font-medium text-foreground"
+                          class="block rounded-lg px-2.5 py-1.5 text-[13.5px] text-muted-foreground hover:bg-muted hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:font-medium aria-[current=page]:text-foreground"
                         >
                           {page.title}
-                        </A>
+                        </a>
                       </li>
                     )}
                   </For>
@@ -62,7 +60,7 @@ export default function Docs(props: RouteSectionProps) {
         </nav>
         <article class="doc min-w-0 pb-16">
           <Show when={current()}>{(page) => <PageActions href={page().href} />}</Show>
-          <MDXProvider components={{ a: A, pre: CodeBlock }}>{props.children}</MDXProvider>
+          <MDXProvider components={{ pre: CodeBlock }}>{props.children}</MDXProvider>
         </article>
       </div>
     </div>

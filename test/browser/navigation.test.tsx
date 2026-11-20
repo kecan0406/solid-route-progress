@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { createRoot } from 'solid-js'
 import { createProgress } from '../../src'
 import { createNavigationProgress } from '../../src/navigation'
+import { update } from '../helpers'
 
 /**
  * The platform contract `createNavigationProgress` relies on, against the browser's real
@@ -74,6 +75,7 @@ describe('Navigation API (real)', () => {
     finish()
     await result.finished
     expect(succeeded).toBe(true)
+    await update()
     expect(controller.state()).toBe('done')
   })
 
@@ -103,6 +105,7 @@ describe('Navigation API (real)', () => {
     fail(new Error('load failed'))
     await result.finished.catch(() => {})
     expect(failed).toBe(true)
+    await update()
     expect(controller.state()).toBe('done')
     expect(controller.error()).toBe(true)
   })

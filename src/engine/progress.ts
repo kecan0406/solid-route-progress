@@ -2,14 +2,24 @@
 export type Accessor<T> = () => T
 
 /**
- * What a framework binding hands the engine: the primitives its state lives in, and whether
- * it runs on the server, where the bar never leaves `idle`.
+ * What a framework binding hands the engine: the cells it publishes its state to, how a
+ * publication reaches the screen, and whether it runs on the server, where the bar never
+ * leaves `idle`. The engine keeps its state in plain variables and only ever writes the cells,
+ * so it never depends on when the framework lets a write be read back.
  */
 export interface Runtime {
-  /** A readable, writable cell whose reads the framework tracks, e.g. Solid's `createSignal`. */
+  /**
+   * A readable, writable cell whose reads the framework tracks, e.g. Solid's `createSignal`. It
+   * only ever holds a number, a string or a boolean.
+   */
   cell<T>(initial: T): readonly [get: Accessor<T>, set: (value: T) => void]
-  /** Apply several writes as one update. */
-  batch(fn: () => void): void
+  /**
+   * Run `fn`, which writes the cells, as an update of its own, e.g. on a microtask. Several in
+   * a row may land as one update.
+   */
+  publish(fn: () => void): void
+  /** Read without subscribing whatever scope the caller runs in, e.g. Solid's `untrack`. */
+  peek<T>(fn: () => T): T
   server: boolean
 }
 
@@ -151,19 +161,21 @@ type Timer = ReturnType<typeof setTimeout> | undefined
 
 /**
  * Headless progress state machine. Rendering is left to CSS: the controller only exposes a
- * target `value` and a `state`, which a bar mirrors to `--sp-value` and `data-state`. Its
- * timers are cleared when `signal` aborts.
+ * target `value` and a `state`, which a bar mirrors to `--sp-value` and `data-state`. Each
+ * move reaches the cells through `publish`. Its timers are cleared when `signal` aborts.
  */
 export function createProgressEngine(
-  { cell, batch, server }: Runtime,
+  { cell, publish, peek, server }: Runtime,
   options: ProgressOptions,
   signal: AbortSignal,
 ): ProgressController {
   const [value, setValue] = cell(0)
   const [state, setState] = cell<ProgressState>('idle')
   const [error, setError] = cell(false)
+  /** What the bar shows. The cells catch up once the publication of that move has run. */
+  let shown: ProgressState = 'idle'
   const opt = <K extends keyof typeof DEFAULTS>(key: K): (typeof DEFAULTS)[K] =>
-    options[key] ?? DEFAULTS[key]
+    peek(() => options[key]) ?? DEFAULTS[key]
   /** The release of every hold still open: each one is its own key. */
   const holds = new Set<Release>()
 
@@ -186,15 +198,17 @@ export function createProgressEngine(
       }, ms)
   }
   /** A reveal is scheduled: the load has not lasted `delay` yet. */
-  const pending = () => state() === 'idle' && timer !== undefined
+  const pending = () => shown === 'idle' && timer !== undefined
 
   /** One update for everything a bar mirrors. The error mark only ever shows while `done`. */
-  const move = (s: ProgressState, v: number, e = false) =>
-    batch(() => {
+  const move = (s: ProgressState, v: number, e = false) => {
+    shown = s
+    publish(() => {
       setState(s)
       setValue(v)
       setError(e)
     })
+  }
   const hide = () => {
     failed = false
     move('idle', 0)
@@ -224,12 +238,11 @@ export function createProgressEngine(
   const end = (outcome?: Outcome) => {
     if (outcome === 'error') failed = true
     if (holds.size) return
-    const s = state()
-    if (s === 'idle') {
+    if (shown === 'idle') {
       // Nothing shown, and nothing left to report.
       schedule()
       failed = false
-    } else if (s !== 'done') {
+    } else if (shown !== 'done') {
       const stop = outcome === 'cancel' && !failed ? drop : finish
       const stopDelay = opt('stopDelay')
       clearTimeout(stopTimer)
@@ -246,14 +259,13 @@ export function createProgressEngine(
       holds.add(release)
       // A pending stop is superseded by the new load.
       clearTimeout(stopTimer)
-      const s = state()
       // Let a completed bar fade out fully before starting a fresh one, otherwise it would
       // visibly travel backwards from 100% to the trickle target. `delay` still applies, so a
       // quick follow-up load never flashes.
-      if (s === 'done') {
+      if (shown === 'done') {
         hide()
         schedule(show, Math.max(opt('speed'), opt('delay')))
-      } else if (s === 'idle' && !pending()) {
+      } else if (shown === 'idle' && !pending()) {
         const delay = opt('delay')
         if (delay > 0) schedule(show, delay)
         else show()
@@ -272,10 +284,9 @@ export function createProgressEngine(
     if (server) return
     n = Math.min(1, Math.max(0, n))
     if (n === 1) return done()
-    const s = state()
-    if (s === 'done' || pending()) return
-    // Revealing from `idle` in the same batch runs the transition from `--sp-start`.
-    if (s === 'idle') reveal('active', n)
+    if (shown === 'done' || pending()) return
+    // Revealing from `idle` in one update runs the transition from `--sp-start`.
+    if (shown === 'idle') reveal('active', n)
     else move('active', n)
     // Once the short hop lands, hand control back to the CSS trickle — unless the explicit
     // value already sits past the trickle target, in which case hold there.

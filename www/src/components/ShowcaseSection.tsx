@@ -1,4 +1,3 @@
-import { A } from '@solidjs/router'
 import { Show } from 'solid-js'
 import { ImageCredit } from '~/components/ImageCredit'
 import { ShowcasePreview } from '~/components/ShowcasePreview'
@@ -19,19 +18,19 @@ export function ShowcaseSection() {
         >
           Showcase
         </h2>
-        <A
+        <a
           href="/showcase"
           class="py-1.5 text-[13.5px] font-medium whitespace-nowrap text-muted-foreground hover:text-foreground"
         >
           View all →
-        </A>
+        </a>
       </div>
       <Show when={SHOWCASE[0]}>{(entry) => <FeatureCard entry={entry()} />}</Show>
       <p class="flex flex-wrap gap-x-2 gap-y-1 text-[13.5px] text-muted-foreground">
         Have you adopted solid-route-progress?
-        <A href="/showcase#add" class="font-medium text-foreground underline underline-offset-4">
+        <a href="/showcase#add" class="font-medium text-foreground underline underline-offset-4">
           Add your site →
-        </A>
+        </a>
       </p>
     </section>
   )

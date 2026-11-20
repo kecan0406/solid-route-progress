@@ -1,4 +1,3 @@
-import { A } from '@solidjs/router'
 import { REPO } from '~/links'
 
 const LINK = 'underline underline-offset-4 hover:text-foreground'
@@ -8,12 +7,12 @@ export function Footer() {
   return (
     <footer class="mx-auto flex w-full max-w-[960px] flex-wrap items-center gap-x-4 gap-y-1.5 pb-8 text-[13px] text-muted-foreground">
       <span>MIT</span>
-      <A href="/docs" class={LINK}>
+      <a href="/docs" class={LINK}>
         Docs
-      </A>
-      <A href="/showcase" class={LINK}>
+      </a>
+      <a href="/showcase" class={LINK}>
         Showcase
-      </A>
+      </a>
       <a href={REPO} class={LINK}>
         GitHub
       </a>

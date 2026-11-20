@@ -1,4 +1,5 @@
-import { createSignal, For, onCleanup, type JSX } from 'solid-js'
+import { createSignal, For, onCleanup } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import { Progress, type Outcome, type ProgressController } from 'solid-route-progress'
 import { barVars, navLoading, setNavLoading } from '~/playground'
 
@@ -181,8 +182,10 @@ export function Simulator(props: { pageCtl: ProgressController; winCtl: Progress
         </span>
       </nav>
       <div
-        class="min-h-0 flex-1 overflow-auto px-7 py-6 transition-opacity duration-300"
-        classList={{ 'opacity-60': navLoading() }}
+        class={[
+          'min-h-0 flex-1 overflow-auto px-7 py-6 transition-opacity duration-300',
+          { 'opacity-60': navLoading() },
+        ]}
       >
         {byPath(committed()).view()}
       </div>

@@ -1,5 +1,6 @@
 import { playwright } from '@vitest/browser-playwright'
-import solid from 'vite-plugin-solid'
+import solid from '@solidjs/vite-plugin'
+import type { Plugin } from 'vite'
 import { defineConfig, type ViteUserConfig } from 'vitest/config'
 
 const src = (file: string) => new URL(`./src/${file}`, import.meta.url).pathname
@@ -10,18 +11,31 @@ const alias = {
   'solid-route-progress': src('index.ts'),
 }
 
-/** The router tests again, against the oldest `@solidjs/router` line the peer range accepts. */
-const router015 = { '@solidjs/router': '@solidjs/router-0.15' }
+/**
+ * One project per runtime: the same source compiled for the DOM, for the server, for hydrating
+ * what the server rendered, for a production build, and run in real browsers.
+ */
+/** Resolve Solid's production builds, where `isDev` is `false`, wherever Vitest would pick its dev ones. */
+const production: Plugin = {
+  name: 'production-conditions',
+  enforce: 'post',
+  configEnvironment(_name, config) {
+    const conditions = config.resolve?.conditions
+    if (conditions)
+      config.resolve!.conditions = conditions
+        .map((condition) => (condition === 'development|production' ? 'production' : condition))
+        .filter((condition) => condition !== 'development')
+  },
+}
 
-/** One project per runtime: the same source compiled for the DOM, for the server, and run in real browsers. */
 const project = (
   name: string,
   test: ViteUserConfig['test'],
   solidOptions?: Parameters<typeof solid>[0],
-  extraAlias?: Record<string, string>,
+  plugins: Plugin[] = [],
 ): ViteUserConfig => ({
-  plugins: [solid(solidOptions)],
-  resolve: { alias: { ...extraAlias, ...alias } },
+  plugins: [solid(solidOptions), ...plugins],
+  resolve: { alias },
   test: { name, ...test },
 })
 
@@ -35,20 +49,25 @@ export default defineConfig({
       }),
       project('ssr', { environment: 'node', include: ['test/ssr/*.test.tsx'] }, { ssr: true }),
       project(
-        'dom (router 0.15)',
+        'hydration',
         {
           environment: 'jsdom',
           setupFiles: ['./test/setup.ts'],
-          include: ['test/router.test.tsx'],
+          include: ['test/hydration/*.test.tsx'],
+          globalSetup: ['./test/hydration/global-setup.ts'],
         },
-        undefined,
-        router015,
+        // The plugin compiles non-hydratable client code under Vitest unless told otherwise.
+        { solid: { hydratable: true } },
       ),
       project(
-        'ssr (router 0.15)',
-        { environment: 'node', include: ['test/ssr/*.test.tsx'] },
-        { ssr: true },
-        router015,
+        'production',
+        {
+          environment: 'jsdom',
+          setupFiles: ['./test/setup.ts'],
+          include: ['test/production/*.test.tsx'],
+        },
+        { dev: false },
+        [production],
       ),
       project('browser', {
         include: ['test/browser/*.test.tsx'],

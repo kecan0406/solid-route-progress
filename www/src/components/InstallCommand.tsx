@@ -1,4 +1,4 @@
-import { createSignal, For, onMount, Show } from 'solid-js'
+import { createSignal, For, onSettled, Show } from 'solid-js'
 import { copyText } from '~/clipboard'
 import { INSTALL } from '~/docs'
 
@@ -11,7 +11,7 @@ export function InstallCommand(props: { class?: string }) {
   const [copied, setCopied] = createSignal(false)
   const command = () => INSTALL.find((install) => install.manager === manager())!.command
 
-  onMount(() => {
+  onSettled(() => {
     try {
       const saved = localStorage.getItem(KEY)
       if (INSTALL.some((install) => install.manager === saved)) setManager(saved!)
@@ -45,14 +45,16 @@ export function InstallCommand(props: { class?: string }) {
           {(install) => (
             <button
               type="button"
-              aria-pressed={manager() === install.manager}
+              aria-pressed={manager() === install.manager ? 'true' : 'false'}
               onClick={() => pick(install.manager)}
-              class="-mb-px border-b-2 px-2 py-1.5 text-[11.5px]"
-              classList={{
-                'border-primary text-foreground': manager() === install.manager,
-                'border-transparent text-muted-foreground hover:text-foreground':
-                  manager() !== install.manager,
-              }}
+              class={[
+                '-mb-px border-b-2 px-2 py-1.5 text-[11.5px]',
+                {
+                  'border-primary text-foreground': manager() === install.manager,
+                  'border-transparent text-muted-foreground hover:text-foreground':
+                    manager() !== install.manager,
+                },
+              ]}
             >
               {install.manager}
             </button>
@@ -67,11 +69,13 @@ export function InstallCommand(props: { class?: string }) {
           type="button"
           onClick={copy}
           aria-label={`Copy ${command()}`}
-          class="ml-auto"
-          classList={{
-            'text-foreground': copied(),
-            'text-muted-foreground hover:text-foreground': !copied(),
-          }}
+          class={[
+            'ml-auto',
+            {
+              'text-foreground': copied(),
+              'text-muted-foreground hover:text-foreground': !copied(),
+            },
+          ]}
         >
           <Show
             when={copied()}

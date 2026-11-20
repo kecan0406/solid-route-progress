@@ -6,12 +6,13 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
     "skipLibCheck": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
-    "types": ["@solidjs/start/env"],
+    "jsxImportSource": "@solidjs/web",
+    "types": ["vite/client", "@solidjs/vite-plugin/virtual-modules"],
     "paths": {
       "~/*": ["./src/*"],
       "solid-route-progress": ["../src/index.ts"],
@@ -19,5 +20,5 @@
       "solid-route-progress/navigation": ["../src/navigation.tsx"]
     }
   },
-  "include": ["src", "vite.config.ts", "llms.ts", "showcase.ts"]
+  "include": ["src", "file-routes.d.ts", "vite.config.ts", "llms.ts", "showcase.ts"]
 }

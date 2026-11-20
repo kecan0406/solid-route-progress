@@ -1,4 +1,4 @@
-import { createMiddleware } from '@solidjs/start/middleware'
+import type { StartMiddleware } from '@solidjs/vite-plugin'
 import files from 'virtual:llms'
 import { markdownPath } from '~/docs'
 
@@ -6,22 +6,24 @@ import { markdownPath } from '~/docs'
  * The docs for agents (see `llms.ts`): `/llms.txt`, `/llms-full.txt`, `/docs/<page>.md`, and the
  * page URL itself for a client that asks for `text/markdown` over `text/html`.
  */
-export default createMiddleware([
-  (event) => {
-    const path = event.url.pathname
-    const file = files[path]
-    if (file !== undefined) {
-      const page = path.endsWith('.md') ? path.slice(0, -'.md'.length) : undefined
-      return respond(file, page)
-    }
+const llms: StartMiddleware = async (event, next) => {
+  const path = new URL(event.request.url).pathname
+  const file = files[path]
+  if (file !== undefined) {
+    const page = path.endsWith('.md') ? path.slice(0, -'.md'.length) : undefined
+    return respond(file, page)
+  }
 
-    const markdown = files[markdownPath(path.replace(/(.)\/$/, '$1'))]
-    if (markdown === undefined) return
-    // the same URL answers HTML or Markdown, so caches must key on Accept
-    event.res.headers.append('Vary', 'Accept')
-    if (prefersMarkdown(event.req.headers.get('accept'))) return respond(markdown, path)
-  },
-])
+  const markdown = files[markdownPath(path.replace(/(.)\/$/, '$1'))]
+  if (markdown === undefined) return next()
+  if (prefersMarkdown(event.request.headers.get('accept'))) return respond(markdown, path)
+  // the same URL answers HTML or Markdown, so caches must key on Accept
+  const response = await next()
+  response.headers.append('Vary', 'Accept')
+  return response
+}
+
+export default llms
 
 function respond(body: string, page: string | undefined) {
   const headers = new Headers({

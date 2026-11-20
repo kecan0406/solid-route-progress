@@ -1,4 +1,4 @@
-import type { JSX } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 
 /**
  * The chrome the examples share, so each example file shows its solid-route-progress code and little else.

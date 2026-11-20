@@ -1,5 +1,6 @@
-import { createAsync, useSearchParams } from '@solidjs/router'
-import { Show, type JSX } from 'solid-js'
+import { useSearchParams } from '@solidjs/router'
+import { createMemo, Show } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import { useProgress } from 'solid-route-progress'
 import { wait } from '../data'
 
@@ -14,7 +15,7 @@ export const Home = () => (
   <Card title="Route progress playground">
     <p>
       Every link in the header goes through <code>@solidjs/router</code>. The bar starts when
-      routing begins and completes once the route's <code>Suspense</code> resolves.
+      routing begins and completes once the route's <code>Loading</code> resolves.
     </p>
     <p>
       Navigations shorter than <code>delay</code> (200 ms by default) are never drawn, and{' '}
@@ -31,7 +32,7 @@ export const Fast = () => (
 )
 
 const Delayed = (props: { ms: number }) => {
-  const data = createAsync(() => wait(props.ms))
+  const data = createMemo(() => wait(props.ms))
   return (
     <Card title={`Slow (${props.ms} ms)`}>
       <p>{data()}</p>
@@ -46,7 +47,7 @@ export const preloadSlower = () => void wait(5000)
 
 export const Search = () => {
   const [params, setParams] = useSearchParams()
-  const data = createAsync(() => wait(params.q ? 800 : 0))
+  const data = createMemo(() => wait(params.q ? 800 : 0))
   return (
     <Card title="Search params (shallow demo)">
       <p>
