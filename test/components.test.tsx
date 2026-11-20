@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createRoot } from 'solid-js'
 import { cleanup, render, screen } from '@solidjs/testing-library'
 import { Bar, createProgress, Progress, ProgressProvider, useProgress } from '../src'
-import { paint, useFakeTimers } from './helpers'
+import { paint, update, useFakeTimers } from './helpers'
 
 beforeEach(() => useFakeTimers())
 afterEach(() => {
@@ -10,7 +11,7 @@ afterEach(() => {
 })
 
 describe('<Progress>', () => {
-  it('renders an idle progressbar shell mirroring the controller', () => {
+  it('renders an idle progressbar shell mirroring the controller', async () => {
     const controller = createProgress()
     render(() => <Progress controller={controller} />)
     const bar = screen.getByRole('progressbar', { name: 'Loading' })
@@ -24,18 +25,21 @@ describe('<Progress>', () => {
 
     controller.start()
     vi.advanceTimersByTime(200)
+    await update()
     expect(bar).toHaveAttribute('data-state', 'trickle')
     expect(bar).not.toHaveAttribute('aria-valuenow') // indeterminate while trickling
     expect(bar.style.getPropertyValue('--sp-value')).toBe('0.95')
     expect(document.documentElement).toHaveAttribute('data-sp-busy')
 
     controller.set(0.42)
+    await update()
     expect(bar).toHaveAttribute('aria-valuenow', '42')
     expect(bar).not.toHaveAttribute('aria-valuetext')
 
     paint()
     controller.done()
     vi.advanceTimersByTime(200)
+    await update()
     expect(bar).toHaveAttribute('data-state', 'idle')
     expect(document.documentElement).not.toHaveAttribute('data-sp-busy')
   })
@@ -69,7 +73,7 @@ describe('<Progress>', () => {
     warn.mockRestore()
   })
 
-  it('accepts a custom template that can read the controller', () => {
+  it('accepts a custom template that can read the controller', async () => {
     const controller = createProgress()
     const Percent = () => <output>{Math.round(useProgress().value() * 100)}%</output>
     render(() => (
@@ -80,34 +84,39 @@ describe('<Progress>', () => {
     ))
     expect(document.querySelector('.sprogress-bar')).toHaveClass('rounded')
     controller.set(0.42)
+    await update()
     expect(screen.getByRole('status')).toHaveTextContent('42%')
   })
 
-  it('announces getValueLabel as aria-valuetext for known values only', () => {
+  it('announces getValueLabel as aria-valuetext for known values only', async () => {
     const controller = createProgress({ delay: 0 })
     render(() => (
       <Progress controller={controller} getValueLabel={(percent) => `${percent} percent`} />
     ))
     const bar = screen.getByRole('progressbar')
     controller.start()
+    await update()
     expect(bar).not.toHaveAttribute('aria-valuetext')
     controller.set(0.5)
+    await update()
     expect(bar).toHaveAttribute('aria-valuetext', '50 percent')
   })
 
-  it('mirrors a failed load as data-error during the done phase', () => {
+  it('mirrors a failed load as data-error during the done phase', async () => {
     const controller = createProgress({ delay: 0 })
     render(() => <Progress controller={controller} />)
     const bar = screen.getByRole('progressbar')
     controller.start()
     paint()
     controller.done('error')
+    await update()
     expect(bar).toHaveAttribute('data-error')
     vi.advanceTimersByTime(200)
+    await update()
     expect(bar).not.toHaveAttribute('data-error')
   })
 
-  it('keeps <html data-sp-busy> until the last busy bar goes idle, and sets aria-busy on request', () => {
+  it('keeps <html data-sp-busy> until the last busy bar goes idle, and sets aria-busy on request', async () => {
     const page = createProgress({ delay: 0 })
     const panel = createProgress({ delay: 0 })
     render(() => (
@@ -120,27 +129,31 @@ describe('<Progress>', () => {
     page.start()
     const release = panel.start()
     paint()
+    await update()
     expect(html).toHaveAttribute('aria-busy', 'true')
     release()
     vi.advanceTimersByTime(200)
+    await update()
     expect(panel.active()).toBe(false)
     expect(html).toHaveAttribute('data-sp-busy')
     page.done()
     vi.advanceTimersByTime(200)
+    await update()
     expect(html).not.toHaveAttribute('data-sp-busy')
     expect(html).not.toHaveAttribute('aria-busy')
   })
 
-  it('opts out of the <html> busy attribute', () => {
+  it('opts out of the <html> busy attribute', async () => {
     const controller = createProgress()
     render(() => <Progress controller={controller} busyAttribute={false} />)
     controller.start()
     vi.advanceTimersByTime(200)
+    await update()
     expect(controller.active()).toBe(true)
     expect(document.documentElement).not.toHaveAttribute('data-sp-busy')
   })
 
-  it('uses the controller from <ProgressProvider>', () => {
+  it('uses the controller from <ProgressProvider>', async () => {
     const controller = createProgress()
     const Trigger = () => {
       const p = useProgress()
@@ -154,10 +167,11 @@ describe('<Progress>', () => {
     ))
     screen.getByRole('button').click()
     vi.advanceTimersByTime(200)
+    await update()
     expect(screen.getByRole('progressbar')).toHaveAttribute('data-state', 'trickle')
   })
 
   it('useProgress() throws outside a provider', () => {
-    expect(() => render(() => <>{useProgress().value()}</>)).toThrow(/useProgress/)
+    expect(() => createRoot(() => useProgress())).toThrow(/useProgress/)
   })
 })

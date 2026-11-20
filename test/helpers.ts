@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { flush } from 'solid-js'
 import type { NavigateEventLike } from '../src/engine/navigation-api'
 
 /** Fake timers and rAF only: listing them keeps `performance`, `queueMicrotask` and friends real. */
@@ -17,6 +18,15 @@ export const useFakeTimers = () =>
 
 /** Advance one animation frame so the controller considers the bar painted. */
 export const paint = () => vi.advanceTimersByTime(17)
+
+/**
+ * Let readers see what the controller did: it publishes on a microtask, and `flush()` applies
+ * what that wrote to the accessors and the DOM.
+ */
+export const update = async () => {
+  await Promise.resolve()
+  flush()
+}
 
 /** A cross-document `navigate` event by default; override `destination` for same-document ones. */
 export const navigateEvent = (init: Partial<NavigateEventLike> = {}): NavigateEventLike =>

@@ -1,7 +1,7 @@
 /* @refresh reload */
-import { render } from 'solid-js/web'
-import { A, Route, Router, type RouteSectionProps } from '@solidjs/router'
-import { createSignal, For, Show, Suspense } from 'solid-js'
+import { render } from '@solidjs/web'
+import { createRouter, type RouteSectionProps } from '@solidjs/router'
+import { createSignal, For, Loading, Show } from 'solid-js'
 import { Bar, ProgressProvider } from 'solid-route-progress'
 import { RouteProgress } from 'solid-route-progress/router'
 import {
@@ -32,24 +32,24 @@ const Layout = (props: RouteSectionProps) => (
     </RouteProgress>
     <header class="sticky top-0 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
       <nav class="mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3 text-sm">
-        <A href="/" end class="link" activeClass="font-semibold text-indigo-600">
+        <a href="/" class="link">
           Home
-        </A>
-        <A href="/fast" class="link" activeClass="font-semibold text-indigo-600">
+        </a>
+        <a href="/fast" class="link">
           Fast
-        </A>
-        <A href="/slow" class="link" activeClass="font-semibold text-indigo-600">
+        </a>
+        <a href="/slow" class="link">
           Slow
-        </A>
-        <A href="/slower" class="link" activeClass="font-semibold text-indigo-600">
+        </a>
+        <a href="/slower" class="link">
           Slower
-        </A>
-        <A href="/search" class="link" activeClass="font-semibold text-indigo-600">
+        </a>
+        <a href="/search" class="link">
           Search
-        </A>
-        <A href="/manual" class="link" activeClass="font-semibold text-indigo-600">
+        </a>
+        <a href="/manual" class="link">
           Manual
-        </A>
+        </a>
         <a href="https://example.com" class="link">
           External ↗
         </a>
@@ -107,21 +107,20 @@ const Layout = (props: RouteSectionProps) => (
       </nav>
     </header>
     <main class="mx-auto max-w-3xl px-6 py-8 transition-opacity [[data-sp-busy]_&]:opacity-60">
-      <Suspense fallback={<p class="text-sm text-zinc-500">loading…</p>}>{props.children}</Suspense>
+      <Loading fallback={<p class="text-sm text-zinc-500">loading…</p>}>{props.children}</Loading>
     </main>
   </ProgressProvider>
 )
 
-render(
-  () => (
-    <Router root={Layout}>
-      <Route path="/" component={Home} />
-      <Route path="/fast" component={Fast} />
-      <Route path="/slow" component={Slow} preload={preloadSlow} />
-      <Route path="/slower" component={Slower} preload={preloadSlower} />
-      <Route path="/search" component={Search} />
-      <Route path="/manual" component={Manual} />
-    </Router>
-  ),
-  document.getElementById('root')!,
-)
+const Router = createRouter({
+  routes: [
+    { path: '/', component: Home },
+    { path: '/fast', component: Fast },
+    { path: '/slow', component: Slow, preload: preloadSlow },
+    { path: '/slower', component: Slower, preload: preloadSlower },
+    { path: '/search', component: Search },
+    { path: '/manual', component: Manual },
+  ],
+})
+
+render(() => <Router>{Layout}</Router>, document.getElementById('root')!)

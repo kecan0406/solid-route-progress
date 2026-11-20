@@ -13,10 +13,10 @@ A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin
 
 ## Why solid-route-progress?
 
-- With `@solidjs/router` it takes one component. `<RouteProgress />` follows `useIsRouting()`, so links, `navigate()`, back/forward, action redirects and every `<Suspense>` the next route waits on show the bar.
+- With `@solidjs/router` it takes one component. `<RouteProgress />` follows `useIsRouting()`, so links, `navigate()`, back/forward, form-action redirects and every `<Loading>` the next route waits on show the bar.
 - The drift toward completion is a single CSS transition, and no JavaScript timer steps it. Color, height and timing are custom properties.
 - A navigation shorter than `delay` (200 ms) draws nothing, so quick loads never flash.
-- Routes, `track(fetch(...))` and your own `start()` each hold the bar, and it completes when the last one lets go.
+- Routes, `track(fetch(...))` and your own `start()` each hold the bar, and it completes when the last one lets go. It shows from inside an `action()` too, while the action is still in flight.
 - Navigations that leave the page (external links, form posts, reloads) show it too, through the Navigation API. `solid-route-progress/navigation` works without a router.
 - Styles sit in a cascade layer, so Tailwind v4 utilities win without `!important`, and `data-state` works as a variant. The bar renders on the server and is a labeled `role="progressbar"` that follows `dir="rtl"` and forced colors.
 - `<RouteProgress />` adds about 2.4 kB min+gzip to your bundle, and there are no dependencies. The bar only animates `opacity` and `translate`, so it stays smooth on the compositor thread while the next route keeps the main thread busy.
@@ -33,7 +33,7 @@ yarn add solid-route-progress
 bun add solid-route-progress
 ```
 
-It needs `solid-js` 1.9 or a later 1.x, and `@solidjs/router` 0.15 or 1.x for the router integration; Solid 2 is not supported yet. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
+It needs Solid 2: `solid-js` and `@solidjs/web` 2.0.0-rc.16 or later, and `@solidjs/router` 2.0.0-next.41 or later for the router integration. For Solid 1, use `solid-route-progress@1`. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
 
 ## Usage
 
@@ -45,27 +45,27 @@ Import the stylesheet once:
 @import 'solid-route-progress/style.css';
 ```
 
-Render the bar once under `<Router>`. With SolidStart:
+Render the bar once in the router's root layout, the render-prop child of `<Router>`:
 
 ```tsx
-// src/app.tsx
-import { Router } from '@solidjs/router'
-import { FileRoutes } from '@solidjs/start/router'
-import { Suspense } from 'solid-js'
+// src/App.tsx
+import { createRouter } from '@solidjs/router'
+import { Loading } from 'solid-js'
 import { RouteProgress } from 'solid-route-progress/router'
+import { routes } from './routes'
 import './app.css'
+
+const Router = createRouter({ routes })
 
 export default function App() {
   return (
-    <Router
-      root={(props) => (
+    <Router>
+      {(props) => (
         <>
           <RouteProgress />
-          <Suspense>{props.children}</Suspense>
+          <Loading>{props.children}</Loading>
         </>
       )}
-    >
-      <FileRoutes />
     </Router>
   )
 }
@@ -87,7 +87,7 @@ const progress = useProgress()
 progress.track(fetch('/api/items')) // shows the bar until the request settles
 ```
 
-Without `@solidjs/router`, render `<NavigationProgress />` from `solid-route-progress/navigation` instead. For server rendering, use a bundler that resolves the `solid` export condition, as SolidStart and `vite-plugin-solid` do.
+Without `@solidjs/router`, render `<NavigationProgress />` from `solid-route-progress/navigation` instead. For server rendering, use a bundler that resolves the `solid` export condition, as `@solidjs/vite-plugin` does, Start mode included.
 
 ## Documentation
 
