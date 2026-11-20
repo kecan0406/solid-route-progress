@@ -1,10 +1,12 @@
-import { A } from '@solidjs/router'
-import type { JSX } from 'solid-js'
+import { useLocation } from '@solidjs/router'
+import { createMemo, Loading } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import { createProgress } from 'solid-route-progress'
 import { RouteProgress } from 'solid-route-progress/router'
-import { Panel, Readout, Row } from './ui'
+import { delay, Panel, Readout, Row } from './ui'
 
-// These links only change the search string, so every navigation here is instant. `delay: 0`
+// These links only change the search string. A navigation shows the bar only while it waits on
+// something, so the readout loads each search string the way a page loads its data. `delay: 0`
 // and a long `stopDelay` make the flash visible; what matters is which bar flashes at all.
 const options = { delay: 0, stopDelay: 700 }
 
@@ -18,6 +20,12 @@ const Slot = (props: { name: string; children: JSX.Element }) => (
 export function SkippingNavigations() {
   const plain = createProgress(options)
   const shallow = createProgress(options)
+  const location = useLocation()
+  const loaded = createMemo(async () => {
+    const search = location.search
+    await delay(400)
+    return search || 'none'
+  })
 
   return (
     <Panel>
@@ -44,27 +52,28 @@ export function SkippingNavigations() {
         </Slot>
       </div>
       <Row>
-        <A href="?skip=go" noScroll class="rounded-lg border border-border px-3 py-2 text-[13px]">
+        <a href="?skip=go" noscroll class="rounded-lg border border-border px-3 py-2 text-[13px]">
           ?skip=go
-        </A>
-        <A
+        </a>
+        <a
           href="?skip=blocked"
-          noScroll
+          noscroll
           class="rounded-lg border border-border px-3 py-2 text-[13px]"
         >
           ?skip=blocked: filtered out
-        </A>
-        <A
+        </a>
+        <a
           href="?skip=quiet"
-          noScroll
+          noscroll
           data-sp-ignore
           class="rounded-lg border border-border px-3 py-2 text-[13px]"
         >
           ?skip=quiet: data-sp-ignore
-        </A>
+        </a>
       </Row>
       <Readout>
-        left: {plain.state()} · right: {shallow.state()}
+        left: {plain.state()} · right: {shallow.state()} · loaded:{' '}
+        <Loading fallback="…">{loaded()}</Loading>
       </Readout>
     </Panel>
   )

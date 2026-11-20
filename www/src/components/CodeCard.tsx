@@ -25,11 +25,13 @@ export function CodeCard() {
           type="button"
           onClick={copy}
           aria-label="Copy app.tsx"
-          class="ml-auto grid size-7 place-items-center rounded-md"
-          classList={{
-            'text-foreground': copied(),
-            'text-muted-foreground hover:text-foreground': !copied(),
-          }}
+          class={[
+            'ml-auto grid size-7 place-items-center rounded-md',
+            {
+              'text-foreground': copied(),
+              'text-muted-foreground hover:text-foreground': !copied(),
+            },
+          ]}
         >
           <Show
             when={copied()}

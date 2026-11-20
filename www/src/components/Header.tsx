@@ -1,5 +1,4 @@
-import { A } from '@solidjs/router'
-import { createSignal, onMount, Show } from 'solid-js'
+import { createSignal, onSettled, Show } from 'solid-js'
 import { REPO } from '~/links'
 
 const LINK =
@@ -12,7 +11,9 @@ const effectiveDark = () =>
 
 export function Header() {
   const [dark, setDark] = createSignal(true)
-  onMount(() => setDark(effectiveDark()))
+  onSettled(() => {
+    setDark(effectiveDark())
+  })
 
   const toggle = () => {
     const next = dark() ? 'light' : 'dark'
@@ -27,20 +28,20 @@ export function Header() {
 
   return (
     <header class="flex flex-wrap items-center gap-x-3.5 gap-y-1 py-3">
-      <A href="/" class="flex items-center gap-2.5 whitespace-nowrap">
+      <a href="/" class="flex items-center gap-2.5 whitespace-nowrap">
         <span class="h-[5px] w-[26px] rounded-[3px] bg-primary" />
         <span class="text-[19px] font-semibold tracking-tight">solid-route-progress</span>
         <span class="hidden font-mono text-[11px] text-muted-foreground sm:inline">
           v{__SP_VERSION__}
         </span>
-      </A>
+      </a>
       <nav class="ml-auto flex items-center gap-1">
-        <A href="/docs" class={LINK} activeClass="text-foreground">
+        <a href="/docs" class={`${LINK} data-active:text-foreground`}>
           Docs
-        </A>
-        <A href="/showcase" class={LINK} activeClass="text-foreground">
+        </a>
+        <a href="/showcase" class={`${LINK} data-active:text-foreground`}>
           Showcase
-        </A>
+        </a>
         <a href={REPO} class={LINK}>
           GitHub
         </a>

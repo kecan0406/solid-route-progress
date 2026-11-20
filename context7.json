@@ -1,8 +1,8 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "solid-route-progress",
-  "description": "Route progress bar for SolidJS and SolidStart, the thin loading bar along the top of the page, drawn with one CSS transition.",
-  "folders": ["www/src/routes/docs", "www/src/examples", "examples/solidstart/src", "skills"],
+  "description": "Route progress bar for SolidJS 2, the thin loading bar along the top of the page, drawn with one CSS transition.",
+  "folders": ["www/src/routes/docs", "www/src/examples", "examples/start/src", "skills"],
   "rules": [
     "Import 'solid-route-progress/style.css' once; the bar is invisible without it.",
     "With @solidjs/router, render <RouteProgress /> from 'solid-route-progress/router' once, inside the Router's root layout (its render-prop child), never beside <Router>.",

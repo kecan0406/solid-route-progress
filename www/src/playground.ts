@@ -1,5 +1,5 @@
-import { createSignal, type JSX } from 'solid-js'
-import { createStore } from 'solid-js/store'
+import { createSignal, createStore } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 import { live } from '~/highlight'
 
 /**
@@ -62,20 +62,20 @@ export function usageText(): string {
         '      />',
       ].join('\n')
     : '<RouteProgress />'
-  return `import { Router } from '@solidjs/router'
-import { Suspense } from 'solid-js'
+  return `import { createRouter } from '@solidjs/router'
+import { Loading } from 'solid-js'
 import { ProgressProvider } from 'solid-route-progress'
 import { RouteProgress } from 'solid-route-progress/router'
 import 'solid-route-progress/style.css'
 
-<Router
-  root={(props) => (
+const Router = createRouter({ routes })
+
+<Router>
+  {(props) => (
     <ProgressProvider${speed}>
       ${bar}
-      <Suspense>{props.children}</Suspense>
+      <Loading>{props.children}</Loading>
     </ProgressProvider>
   )}
->
-  {/* routes */}
 </Router>`
 }

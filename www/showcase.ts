@@ -82,9 +82,16 @@ export function showcase(): Plugin {
   return {
     name: 'showcase',
     resolveId: (source) => (source === id ? `\0${id}` : undefined),
+    // A watched directory would reach the client as an import, so the dev server watches it instead.
+    configureServer(server) {
+      server.watcher.add(pathOf(dir))
+      server.watcher.on('all', (event, file) => {
+        if ((event === 'add' || event === 'unlink') && file.startsWith(pathOf(dir)))
+          void server.restart()
+      })
+    },
     async load(loaded) {
       if (loaded !== `\0${id}`) return
-      this.addWatchFile(pathOf(dir))
       const files = (await this.fs.readdir(pathOf(dir)))
         .filter((file) => file.endsWith('.json'))
         .sort()

@@ -1,6 +1,6 @@
 ---
 name: solid-route-progress
-description: Adds and configures solid-route-progress, the thin loading bar along the top of the page for SolidJS and SolidStart route navigations. Use when adding a route, page or navigation loading indicator to a Solid app, or when code imports solid-route-progress, RouteProgress, NavigationProgress, ProgressProvider, useProgress or createProgress.
+description: Adds and configures solid-route-progress, the thin loading bar along the top of the page for SolidJS 2 route navigations, Start mode included. Use when adding a route, page or navigation loading indicator to a Solid app, or when code imports solid-route-progress, RouteProgress, NavigationProgress, ProgressProvider, useProgress or createProgress.
 license: MIT
 ---
 

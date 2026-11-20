@@ -1,8 +1,9 @@
-import { createSignal, splitProps, type JSX } from 'solid-js'
+import { createSignal, omit } from 'solid-js'
+import type { JSX } from '@solidjs/web'
 
 /** Shiki's `<pre>` with a copy button. */
 export function CodeBlock(props: JSX.HTMLAttributes<HTMLPreElement>) {
-  const [local, rest] = splitProps(props, ['children'])
+  const rest = omit(props, 'children')
   const [copied, setCopied] = createSignal(false)
   let pre!: HTMLPreElement
 
@@ -19,17 +20,19 @@ export function CodeBlock(props: JSX.HTMLAttributes<HTMLPreElement>) {
   return (
     <div class="group relative">
       <pre ref={pre} {...rest}>
-        {local.children}
+        {props.children}
       </pre>
       <button
         type="button"
         onClick={copy}
         aria-label="Copy code"
-        class="absolute top-2.5 right-2.5 rounded-md border border-border bg-muted px-2 py-1 font-mono text-[10.5px] font-medium opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-        classList={{
-          'text-foreground': copied(),
-          'text-muted-foreground hover:text-foreground': !copied(),
-        }}
+        class={[
+          'absolute top-2.5 right-2.5 rounded-md border border-border bg-muted px-2 py-1 font-mono text-[10.5px] font-medium opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
+          {
+            'text-foreground': copied(),
+            'text-muted-foreground hover:text-foreground': !copied(),
+          },
+        ]}
       >
         {copied() ? 'copied' : 'copy'}
       </button>

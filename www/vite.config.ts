@@ -1,7 +1,8 @@
 import mdx from '@mdx-js/rollup'
 import rehypeShiki from '@shikijs/rehype'
-import { solidStart } from '@solidjs/start/config'
+import solid from '@solidjs/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
+import { fileRoutes } from 'filesystem-routing/vite'
 import { nitro } from 'nitro/vite'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
@@ -11,6 +12,7 @@ import { llms, siteOf } from './llms'
 import { showcase } from './showcase.ts'
 import { codeTheme, dropBackground } from './src/code-theme'
 
+const src = (p: string) => new URL(`../src/${p}`, import.meta.url).pathname
 const site = siteOf(pkg)
 
 export default defineConfig({
@@ -22,12 +24,12 @@ export default defineConfig({
   },
   plugins: [
     {
-      // MDX emits JSX first; vite-plugin-solid (inside solidStart) then compiles it like any .tsx.
+      // MDX emits JSX first; @solidjs/vite-plugin then compiles it like any .tsx.
       enforce: 'pre',
       ...mdx({
         jsx: true,
-        jsxImportSource: 'solid-js',
-        providerImportSource: 'solid-mdx',
+        jsxImportSource: '@solidjs/web',
+        providerImportSource: '~/mdx',
         elementAttributeNameCase: 'html',
         stylePropertyNameCase: 'css',
         remarkPlugins: [remarkGfm],
@@ -40,11 +42,25 @@ export default defineConfig({
     tailwindcss(),
     llms(site),
     showcase(),
-    solidStart({ extensions: ['mdx'], middleware: 'src/middleware.ts' }),
+    // Start mode: the entries are generated around `src/App.tsx`, in `src/Document.tsx`.
+    // `extensions` also compiles the MDX pages and the `?pick=` route modules `fileRoutes` emits.
+    solid({
+      start: { middleware: './src/middleware.ts' },
+      ssr: true,
+      extensions: ['.mdx', '.tsx'],
+    }),
+    fileRoutes({ extensions: ['tsx', 'mdx'], types: true }),
     nitro(),
   ],
-  // The SolidStart 2.0.4 dev toolbar imports trace-mapping, whose UMD `resolve-uri` has no ESM
-  // default export unless Vite pre-bundles it.
-  optimizeDeps: { include: ['@solidjs/start > @jridgewell/trace-mapping'] },
+  // The site runs the package from source, so it always shows the code in this checkout.
+  resolve: {
+    alias: {
+      '~': new URL('./src', import.meta.url).pathname,
+      'solid-route-progress/router': src('router.tsx'),
+      'solid-route-progress/navigation': src('navigation.tsx'),
+      'solid-route-progress/style.css': src('style.css'),
+      'solid-route-progress': src('index.ts'),
+    },
+  },
   server: { port: 5200, strictPort: true },
 })

@@ -1,0 +1,23 @@
+{
+  "name": "solid-route-progress-example-start",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node dist/server/node.js"
+  },
+  "dependencies": {
+    "@solidjs/router": "^2.0.1",
+    "@solidjs/web": "^2.0.3",
+    "solid-js": "^2.0.3",
+    "solid-route-progress": "^2.0.0"
+  },
+  "devDependencies": {
+    "@solidjs/vite-plugin": "^3.0.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "filesystem-routing": "^0.5.0",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.0"
+  }
+}

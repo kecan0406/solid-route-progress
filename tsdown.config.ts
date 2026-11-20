@@ -27,7 +27,7 @@ export default defineConfig([
     publint: true,
     attw: { profile: 'esm-only', excludeEntrypoints: [/\.css$/, /package\.json$/] },
   },
-  // JSX preserved: what SolidStart / vite-plugin-solid resolve through the `solid` condition,
+  // JSX preserved: what @solidjs/vite-plugin resolves through the `solid` condition,
   // so the consumer compiles for DOM or SSR as appropriate.
   {
     ...shared,

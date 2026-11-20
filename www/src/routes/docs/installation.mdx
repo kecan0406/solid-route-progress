@@ -4,12 +4,12 @@ import { InstallCommand } from '~/components/InstallCommand'
 
 <InstallCommand class="mb-6" />
 
-| Peer              | Version                                        |
-| ----------------- | ---------------------------------------------- |
-| `solid-js`        | 1.9 or a later 1.x                             |
-| `@solidjs/router` | 0.15 or 1.x, for `solid-route-progress/router` |
+| Peer                       | Version                                      |
+| -------------------------- | -------------------------------------------- |
+| `solid-js`, `@solidjs/web` | 2.0 or later                                 |
+| `@solidjs/router`          | 2.0 or later, for `solid-route-progress/router` |
 
-Solid 2 is not supported yet.
+On Solid 1, install `solid-route-progress@1`.
 
 ## Stylesheet
 
@@ -38,6 +38,6 @@ The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later (`@la
 
 | Export condition | Build                                                                   |
 | ---------------- | ----------------------------------------------------------------------- |
-| `solid`          | JSX untouched; SolidStart and `vite-plugin-solid` compile it themselves |
+| `solid`          | JSX untouched; `@solidjs/vite-plugin` compiles it, Start mode included |
 | default          | DOM-compiled, no server rendering                                       |
 | `development`    | dev warnings; production resolves it to `false` and drops them          |

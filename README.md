@@ -5,11 +5,11 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kecan0406/solid-route-progress)
 
-A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin loading bar along the top of the page while the next route loads. The loading drift is one CSS transition, so you theme and retime it from CSS.
+A route progress bar for [SolidJS](https://solidjs.com) 2: the thin loading bar along the top of the page while the next route loads. The loading drift is one CSS transition, so you theme and retime it from CSS.
 
 [![Progress, drawn in CSS](https://solid-route-progress.vercel.app/og.png)](https://solid-route-progress.vercel.app)
 
-[Documentation](https://solid-route-progress.vercel.app/docs) · [Live demo](https://solid-route-progress.vercel.app) · [Example on StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/main/examples/solidstart?file=src/app.tsx)
+[Documentation](https://solid-route-progress.vercel.app/docs) · [Live demo](https://solid-route-progress.vercel.app) · [Example on StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/main/examples/start?file=src/App.tsx)
 
 ## Why solid-route-progress?
 
@@ -93,7 +93,7 @@ Without `@solidjs/router`, render `<NavigationProgress />` from `solid-route-pro
 
 | Page                                                                          | Covers                                                                             |
 | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [Quick start](https://solid-route-progress.vercel.app/docs/quick-start)       | `@solidjs/router`, SolidStart, no router, and driving the bar yourself             |
+| [Quick start](https://solid-route-progress.vercel.app/docs/quick-start)       | `@solidjs/router`, Start mode, no router, and driving the bar yourself             |
 | [Styling](https://solid-route-progress.vercel.app/docs/styling)               | custom properties, Tailwind utilities, state hooks, custom templates, recipes      |
 | [Controller](https://solid-route-progress.vercel.app/docs/controller)         | `createProgress()` options, `start()`, `done()`, `set()`, `track()`, and the types |
 | [Components](https://solid-route-progress.vercel.app/docs/components)         | `<Progress>`, `<ProgressProvider>`, `useProgress()`, `<Bar>`                       |

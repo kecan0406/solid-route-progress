@@ -23,7 +23,7 @@ export const DOCS = [
         file: 'quick-start',
         title: 'Quick start',
         description:
-          'Add the bar to a @solidjs/router or SolidStart app, to a page without a router, or drive it yourself.',
+          'Add the bar to a @solidjs/router or Start-mode app, to a page without a router, or drive it yourself.',
       },
       {
         href: '/docs/styling',

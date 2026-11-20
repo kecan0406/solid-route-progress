@@ -1,11 +1,11 @@
-import { A, createAsync, type RouteDefinition } from '@solidjs/router'
-import { For } from 'solid-js'
-import { getAlbums } from '~/lib/albums'
+import type { RouteDefinition } from '@solidjs/router'
+import { createMemo, For } from 'solid-js'
+import { getAlbums } from '../../lib/albums'
 
-export const route = { preload: () => getAlbums() } satisfies RouteDefinition
+export const route = { preload: () => void getAlbums() } satisfies RouteDefinition
 
 export default function Albums() {
-  const albums = createAsync(() => getAlbums())
+  const albums = createMemo(() => getAlbums())
 
   return (
     <>
@@ -14,10 +14,10 @@ export default function Albums() {
         <For each={albums()}>
           {(album) => (
             <li>
-              <A href={`/albums/${album.id}`} class="flex justify-between py-3 hover:underline">
+              <a href={`/albums/${album.id}`} class="flex justify-between py-3 hover:underline">
                 <span>{album.title}</span>
                 <span class="text-sm text-zinc-500">1.5 s</span>
-              </A>
+              </a>
             </li>
           )}
         </For>
