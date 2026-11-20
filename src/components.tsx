@@ -207,7 +207,8 @@ export function Progress(props: ProgressProps): JSX.Element {
       <div
         // Spread first: the attributes below mirror the controller and must win.
         {...rest}
-        ref={ref}
+        // An array: @solidjs/web calls a bare `ref` even when it is `undefined`, but skips holes in an array.
+        ref={[ref]}
         role="progressbar"
         aria-label={props.label ?? 'Loading'}
         aria-valuemin={0}
