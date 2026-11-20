@@ -155,16 +155,23 @@ function createBusyAttribute(attribute: string, value: string, active: () => boo
   )
 }
 
-/** Development only: say so once the bar mounts laid out but unstyled. */
-const checkStylesheet = (root: HTMLElement) =>
+/**
+ * Development only: say so once the bar mounts laid out but unstyled. Created in the component
+ * body (a ref callback may not create effects) on the server too, which keeps the hydration ids
+ * in step; the server's `onSettled` never runs its callback.
+ */
+function createStylesheetCheck(): (root: HTMLElement) => void {
+  let root: HTMLElement | undefined
   onSettled(() => {
     // No client rects means nothing is laid out (display: none, or a DOM without layout such as jsdom).
-    if (root.getClientRects().length && getComputedStyle(root).position === 'static')
+    if (root?.getClientRects().length && getComputedStyle(root).position === 'static')
       warn(
         "style.css is not loaded: import 'solid-route-progress/style.css' once.",
         'installation#stylesheet',
       )
   })
+  return (element) => (root = element)
+}
 
 /**
  * The bar shell. Renders a fixed, full-width `role="progressbar"` element and mirrors the
@@ -183,6 +190,9 @@ export function Progress(props: ProgressProps): JSX.Element {
     return percent === undefined ? undefined : props.getValueLabel?.(percent)
   }
 
+  // `undefined` in production builds, so no effect is created and no ref runs there.
+  const ref = DEV ? createStylesheetCheck() : undefined
+
   if (!isServer) {
     createBusyAttribute(
       'data-sp-busy',
@@ -197,8 +207,7 @@ export function Progress(props: ProgressProps): JSX.Element {
       <div
         // Spread first: the attributes below mirror the controller and must win.
         {...rest}
-        // `undefined` in production builds, so no ref runs there.
-        ref={DEV ? checkStylesheet : undefined}
+        ref={ref}
         role="progressbar"
         aria-label={props.label ?? 'Loading'}
         aria-valuemin={0}
