@@ -33,7 +33,7 @@ Then pick one entry by how the app navigates:
 | no router (MPA, plain links)            | `<NavigationProgress />` once, in the layout          | `solid-route-progress/navigation` |
 | loads that are not navigations          | `<ProgressProvider>` + `useProgress()`                | `solid-route-progress`            |
 
-This version targets Solid 2 (`solid-js`, `@solidjs/web` and `@solidjs/router` 2.x). On Solid 1, install `solid-route-progress@1` and read its docs instead.
+This version targets Solid 2 (`solid-js`, `@solidjs/web` and `@solidjs/router` 2.x). On Solid 1, install `solid-route-progress@1` and read its docs instead, at https://solid-route-progress-v1.vercel.app/llms.txt.
 
 `src/App.tsx`:
 
