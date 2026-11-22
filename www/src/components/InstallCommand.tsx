@@ -38,7 +38,7 @@ export function InstallCommand(props: { class?: string }) {
 
   return (
     <div
-      class={`inline-flex flex-col rounded-[10px] border border-border bg-card text-left font-mono text-[13px] ${props.class ?? ''}`}
+      class={`inline-flex max-w-full flex-col rounded-[10px] border border-border bg-card text-left font-mono text-[13px] ${props.class ?? ''}`}
     >
       <div role="group" aria-label="Package manager" class="flex border-b border-border px-1.5">
         <For each={INSTALL}>
@@ -61,8 +61,9 @@ export function InstallCommand(props: { class?: string }) {
       </div>
       <div class="flex items-center gap-2.5 px-3.5 py-2.5">
         <span class="text-muted-foreground select-none">$</span>
-        {/* as wide as the longest command, so switching managers does not resize the box */}
-        <span class="min-w-[29ch] whitespace-nowrap">{command()}</span>
+        {/* from sm up as wide as the longest command, so switching managers does not resize the
+            box; narrower screens scroll the command instead of widening the page */}
+        <span class="min-w-0 overflow-x-auto whitespace-nowrap sm:min-w-[36ch]">{command()}</span>
         <button
           type="button"
           onClick={copy}
