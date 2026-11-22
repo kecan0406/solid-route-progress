@@ -1,4 +1,5 @@
 import { createSignal, For, onSettled, Show } from 'solid-js'
+import { BRANDS } from '~/brands'
 import { copyText } from '~/clipboard'
 import { INSTALL } from '~/docs'
 
@@ -48,7 +49,7 @@ export function InstallCommand(props: { class?: string }) {
               aria-pressed={manager() === install.manager ? 'true' : 'false'}
               onClick={() => pick(install.manager)}
               class={[
-                '-mb-px border-b-2 px-2 py-1.5 text-[11.5px]',
+                '-mb-px flex items-center gap-1 border-b-2 px-1.5 py-1.5 text-[11.5px] sm:px-2',
                 {
                   'border-primary text-foreground': manager() === install.manager,
                   'border-transparent text-muted-foreground hover:text-foreground':
@@ -56,6 +57,17 @@ export function InstallCommand(props: { class?: string }) {
                 },
               ]}
             >
+              <svg
+                viewBox="0 0 24 24"
+                width="11"
+                height="11"
+                aria-hidden="true"
+                fill={
+                  manager() === install.manager ? BRANDS[install.manager]!.color : 'currentColor'
+                }
+              >
+                <path d={BRANDS[install.manager]!.path} />
+              </svg>
               {install.manager}
             </button>
           )}
