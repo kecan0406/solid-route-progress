@@ -109,7 +109,7 @@ showcase entry needs no tests, docs, or changeset.
 ## Releasing
 
 `main` releases 2.x, for Solid 2, as `latest`. The 1.x line for Solid 1 lives on the `v1` branch,
-takes bug and security fixes only, and publishes under the `v1` dist-tag from that branch's own
+takes bug and security fixes only, and publishes under the `latest-1` dist-tag from that branch's own
 Release workflow; its `CONTRIBUTING.md` covers that flow.
 
 Releases are automated with changesets and npm trusted publishing, so nobody publishes from a
