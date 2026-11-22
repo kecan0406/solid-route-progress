@@ -16,7 +16,7 @@ If an API is in neither, it does not exist. Say so instead of guessing.
 ## Setup
 
 ```sh
-npm i solid-route-progress
+npm i solid-route-progress@1
 ```
 
 Import the stylesheet once, from the app's global CSS or its entry:

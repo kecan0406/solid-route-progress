@@ -35,7 +35,7 @@ const html = /* html */ `<!doctype html>
 <div class="mark"><i></i>solid-route-progress</div>
 <h1>Progress, drawn in CSS.</h1>
 <p>A route progress bar for SolidJS. The loading drift is one CSS transition.</p>
-<code><span>$</span>npm i solid-route-progress</code>`
+<code><span>$</span>npm i solid-route-progress@1</code>`
 
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } })

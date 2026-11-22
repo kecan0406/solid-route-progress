@@ -89,8 +89,9 @@ export const markdownPath = (href: string) => `${href}.md`
 
 /** Every install command the site offers, in the order the switcher shows them. */
 export const INSTALL = [
-  { manager: 'npm', command: 'npm i solid-route-progress' },
-  { manager: 'pnpm', command: 'pnpm add solid-route-progress' },
-  { manager: 'yarn', command: 'yarn add solid-route-progress' },
-  { manager: 'bun', command: 'bun add solid-route-progress' },
+  { manager: 'npm', command: 'npm i solid-route-progress@1' },
+  { manager: 'pnpm', command: 'pnpm add solid-route-progress@1' },
+  { manager: 'yarn', command: 'yarn add solid-route-progress@1' },
+  { manager: 'bun', command: 'bun add solid-route-progress@1' },
+  { manager: 'deno', command: 'deno add npm:solid-route-progress@1' },
 ]
