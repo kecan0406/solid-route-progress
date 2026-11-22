@@ -93,4 +93,5 @@ export const INSTALL = [
   { manager: 'pnpm', command: 'pnpm add solid-route-progress' },
   { manager: 'yarn', command: 'yarn add solid-route-progress' },
   { manager: 'bun', command: 'bun add solid-route-progress' },
+  { manager: 'deno', command: 'deno add npm:solid-route-progress' },
 ]
