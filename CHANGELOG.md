@@ -1,5 +1,11 @@
 # solid-route-progress
 
+## 1.1.1
+
+### Patch Changes
+
+- [#30](https://github.com/kecan0406/solid-route-progress/pull/30) [`1afaa22`](https://github.com/kecan0406/solid-route-progress/commit/1afaa220bd12d1942db761b8b93d76424a51ef11) Thanks [@kecan0406](https://github.com/kecan0406)! - Point the 1.x line at its own docs, https://solid-route-progress-v1.vercel.app: `homepage`, the dev-mode warnings and the agent skill link there now, since https://solid-route-progress.vercel.app documents 2.x (Solid 2). 1.x releases now publish under the `v1` dist-tag, so `latest` stays on 2.x.
+
 ## 1.1.0
 
 ### Minor Changes
