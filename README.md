@@ -1,6 +1,6 @@
 # solid-route-progress
 
-[![npm](https://img.shields.io/npm/v/solid-route-progress/v1.svg)](https://www.npmjs.com/package/solid-route-progress)
+[![npm](https://img.shields.io/npm/v/solid-route-progress/latest-1.svg)](https://www.npmjs.com/package/solid-route-progress)
 [![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg?branch=v1)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kecan0406/solid-route-progress)
