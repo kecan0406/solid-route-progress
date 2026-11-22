@@ -19,6 +19,9 @@ export function Footer() {
       <a href="https://github.com/orioncactus/pretendard/blob/main/LICENSE" class={LINK}>
         Pretendard (OFL 1.1)
       </a>
+      <a href="https://github.com/yarnpkg/assets" class={LINK}>
+        Yarn logo (CC BY 4.0)
+      </a>
       <span class="ml-auto font-mono text-[11px]">v{__SP_VERSION__}</span>
     </footer>
   )
