@@ -31,6 +31,8 @@ pnpm add solid-route-progress
 yarn add solid-route-progress
 # or
 bun add solid-route-progress
+# or
+deno add npm:solid-route-progress
 ```
 
 It needs Solid 2: `solid-js` and `@solidjs/web` 2.0 or later, and `@solidjs/router` 2.0 or later for the router integration. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).

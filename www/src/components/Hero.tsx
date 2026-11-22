@@ -2,7 +2,7 @@ import { InstallCommand } from '~/components/InstallCommand'
 
 export function Hero() {
   return (
-    <section class="mx-auto max-w-[720px] pt-6 text-center">
+    <section class="mx-auto w-full max-w-[720px] pt-6 text-center">
       <p class="mb-4 font-mono text-[11px] font-medium tracking-[0.16em] text-foreground uppercase">
         Route progress for SolidJS
       </p>
