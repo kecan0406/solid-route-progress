@@ -1,15 +1,18 @@
 # solid-route-progress
 
-[![npm](https://img.shields.io/npm/v/solid-route-progress.svg)](https://www.npmjs.com/package/solid-route-progress)
-[![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/solid-route-progress/v1.svg)](https://www.npmjs.com/package/solid-route-progress)
+[![CI](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml/badge.svg?branch=v1)](https://github.com/kecan0406/solid-route-progress/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kecan0406/solid-route-progress)
 
 A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin loading bar along the top of the page while the next route loads. The loading drift is one CSS transition, so you theme and retime it from CSS.
 
-[![Progress, drawn in CSS](https://solid-route-progress.vercel.app/og.png)](https://solid-route-progress.vercel.app)
+> [!NOTE]
+> This is the 1.x line, for Solid 1. It gets bug and security fixes; new features land in 2.x, which supports Solid 2 and lives on [`main`](https://github.com/kecan0406/solid-route-progress).
 
-[Documentation](https://solid-route-progress.vercel.app/docs) · [Live demo](https://solid-route-progress.vercel.app) · [Example on StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/main/examples/solidstart?file=src/app.tsx)
+[![Progress, drawn in CSS](https://solid-route-progress-v1.vercel.app/og.png)](https://solid-route-progress-v1.vercel.app)
+
+[Documentation](https://solid-route-progress-v1.vercel.app/docs) · [Live demo](https://solid-route-progress-v1.vercel.app) · [Example on StackBlitz](https://stackblitz.com/github/kecan0406/solid-route-progress/tree/v1/examples/solidstart?file=src/app.tsx)
 
 ## Why solid-route-progress?
 
@@ -24,16 +27,16 @@ A route progress bar for [SolidJS](https://solidjs.com) and SolidStart: the thin
 ## Installation
 
 ```sh
-npm i solid-route-progress
+npm i solid-route-progress@1
 # or
-pnpm add solid-route-progress
+pnpm add solid-route-progress@1
 # or
-yarn add solid-route-progress
+yarn add solid-route-progress@1
 # or
-bun add solid-route-progress
+bun add solid-route-progress@1
 ```
 
-It needs `solid-js` 1.9 or a later 1.x, and `@solidjs/router` 0.15 or 1.x for the router integration; Solid 2 is not supported yet. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress.vercel.app/docs/installation#browsers).
+It needs `solid-js` 1.9 or a later 1.x, and `@solidjs/router` 0.15 or 1.x for the router integration; for Solid 2, use `solid-route-progress` 2.x. The bar draws in Chrome and Edge 111, Firefox 113 and Safari 15.4 or later; see [browser support](https://solid-route-progress-v1.vercel.app/docs/installation#browsers).
 
 ## Usage
 
@@ -91,15 +94,15 @@ Without `@solidjs/router`, render `<NavigationProgress />` from `solid-route-pro
 
 ## Documentation
 
-| Page                                                                          | Covers                                                                             |
-| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [Quick start](https://solid-route-progress.vercel.app/docs/quick-start)       | `@solidjs/router`, SolidStart, no router, and driving the bar yourself             |
-| [Styling](https://solid-route-progress.vercel.app/docs/styling)               | custom properties, Tailwind utilities, state hooks, custom templates, recipes      |
-| [Controller](https://solid-route-progress.vercel.app/docs/controller)         | `createProgress()` options, `start()`, `done()`, `set()`, `track()`, and the types |
-| [Components](https://solid-route-progress.vercel.app/docs/components)         | `<Progress>`, `<ProgressProvider>`, `useProgress()`, `<Bar>`                       |
-| [Router integration](https://solid-route-progress.vercel.app/docs/router)     | ignored links, navigations that leave the page, actions without a redirect         |
-| [Navigation API](https://solid-route-progress.vercel.app/docs/navigation-api) | `<NavigationProgress>`, for apps without a router                                  |
-| [Examples](https://solid-route-progress.vercel.app/docs/examples)             | live demos of each API                                                             |
+| Page                                                                             | Covers                                                                             |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [Quick start](https://solid-route-progress-v1.vercel.app/docs/quick-start)       | `@solidjs/router`, SolidStart, no router, and driving the bar yourself             |
+| [Styling](https://solid-route-progress-v1.vercel.app/docs/styling)               | custom properties, Tailwind utilities, state hooks, custom templates, recipes      |
+| [Controller](https://solid-route-progress-v1.vercel.app/docs/controller)         | `createProgress()` options, `start()`, `done()`, `set()`, `track()`, and the types |
+| [Components](https://solid-route-progress-v1.vercel.app/docs/components)         | `<Progress>`, `<ProgressProvider>`, `useProgress()`, `<Bar>`                       |
+| [Router integration](https://solid-route-progress-v1.vercel.app/docs/router)     | ignored links, navigations that leave the page, actions without a redirect         |
+| [Navigation API](https://solid-route-progress-v1.vercel.app/docs/navigation-api) | `<NavigationProgress>`, for apps without a router                                  |
+| [Examples](https://solid-route-progress-v1.vercel.app/docs/examples)             | live demos of each API                                                             |
 
 ### For AI coding assistants
 
@@ -109,7 +112,7 @@ The package ships these docs as Markdown for the installed version, in `node_mod
 Before using solid-route-progress, read node_modules/solid-route-progress/dist/docs/README.md.
 ```
 
-The site serves the same docs as [`llms.txt`](https://solid-route-progress.vercel.app/llms.txt), [`llms-full.txt`](https://solid-route-progress.vercel.app/llms-full.txt), and a `.md` copy of every page. There is also an [agent skill](skills/solid-route-progress/SKILL.md) for Claude Code, Codex, Cursor and other agents that read skills:
+The site serves the same docs as [`llms.txt`](https://solid-route-progress-v1.vercel.app/llms.txt), [`llms-full.txt`](https://solid-route-progress-v1.vercel.app/llms-full.txt), and a `.md` copy of every page. There is also an [agent skill](skills/solid-route-progress/SKILL.md) for Claude Code, Codex, Cursor and other agents that read skills:
 
 ```sh
 npx skills add kecan0406/solid-route-progress
@@ -117,23 +120,23 @@ npx skills add kecan0406/solid-route-progress
 
 ## Coming from NProgress / BProgress
 
-| There                                            | Here                                                                                                                                |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `minimum`                                        | `--sp-start`                                                                                                                        |
-| `trickleSpeed`, `easing`, `speed`                | `--sp-trickle-duration`, `--sp-trickle-easing`, `speed` / `--sp-speed`                                                              |
-| `trickle: false`                                 | `trickleTo` equal to `--sp-start`: the bar reveals and waits for `set()` / `done()`                                                 |
-| `color`, `height`, `template`                    | `--sp-color`, `--sp-height`, children                                                                                               |
-| `showSpinner`, `spinnerPosition`                 | the [spinner recipe](https://solid-route-progress.vercel.app/docs/styling#spinner), placed with your own `top` / `inset-inline-end` |
-| `parent`                                         | render the bar [inside the container](https://solid-route-progress.vercel.app/docs/styling#inside-a-container), `class="absolute"`  |
-| `direction: 'rtl'`                               | automatic under `dir="rtl"`                                                                                                         |
-| `startPosition`, `delay`, `stopDelay`            | `set(n)`, `delay` (default 200 ms), `stopDelay`                                                                                     |
-| `shallowRouting`, `targetPreprocessor`           | `shallow`, `filter(to, from)`                                                                                                       |
-| `disableSameURL`                                 | built in: navigations the router drops never show a bar                                                                             |
-| `data-disable-progress`, `data-prevent-progress` | `data-sp-ignore`                                                                                                                    |
-| `promise()`                                      | `track(promise)`; `start()` returns its own release                                                                                 |
-| `inc()`, `dec()`, `pause()`, `resume()`          | none: the drift is a CSS transition, so JS holds no current position to step or freeze. Stepwise loads: `set(k / n)`.               |
-| `indeterminate`                                  | none: trickling already reads as indeterminate to assistive tech; style `data-state="trickle"` as you like                          |
-| `nonce`, `style`, `disableStyle`, `memo`         | not needed: styles are a stylesheet you import, components are plain Solid                                                          |
+| There                                            | Here                                                                                                                                   |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `minimum`                                        | `--sp-start`                                                                                                                           |
+| `trickleSpeed`, `easing`, `speed`                | `--sp-trickle-duration`, `--sp-trickle-easing`, `speed` / `--sp-speed`                                                                 |
+| `trickle: false`                                 | `trickleTo` equal to `--sp-start`: the bar reveals and waits for `set()` / `done()`                                                    |
+| `color`, `height`, `template`                    | `--sp-color`, `--sp-height`, children                                                                                                  |
+| `showSpinner`, `spinnerPosition`                 | the [spinner recipe](https://solid-route-progress-v1.vercel.app/docs/styling#spinner), placed with your own `top` / `inset-inline-end` |
+| `parent`                                         | render the bar [inside the container](https://solid-route-progress-v1.vercel.app/docs/styling#inside-a-container), `class="absolute"`  |
+| `direction: 'rtl'`                               | automatic under `dir="rtl"`                                                                                                            |
+| `startPosition`, `delay`, `stopDelay`            | `set(n)`, `delay` (default 200 ms), `stopDelay`                                                                                        |
+| `shallowRouting`, `targetPreprocessor`           | `shallow`, `filter(to, from)`                                                                                                          |
+| `disableSameURL`                                 | built in: navigations the router drops never show a bar                                                                                |
+| `data-disable-progress`, `data-prevent-progress` | `data-sp-ignore`                                                                                                                       |
+| `promise()`                                      | `track(promise)`; `start()` returns its own release                                                                                    |
+| `inc()`, `dec()`, `pause()`, `resume()`          | none: the drift is a CSS transition, so JS holds no current position to step or freeze. Stepwise loads: `set(k / n)`.                  |
+| `indeterminate`                                  | none: trickling already reads as indeterminate to assistive tech; style `data-state="trickle"` as you like                             |
+| `nonce`, `style`, `disableStyle`, `memo`         | not needed: styles are a stylesheet you import, components are plain Solid                                                             |
 
 ## Contributing
 
