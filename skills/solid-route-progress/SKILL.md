@@ -9,7 +9,7 @@ license: MIT
 Your training data likely predates this package or covers an older version. Read the docs of the installed version before writing code:
 
 1. `node_modules/solid-route-progress/dist/docs/README.md` (index, one Markdown file per page)
-2. Otherwise https://solid-route-progress.vercel.app/llms.txt, where every page is also served as `.md`
+2. Otherwise https://solid-route-progress-v1.vercel.app/llms.txt, where every page is also served as `.md`
 
 If an API is in neither, it does not exist. Say so instead of guessing.
 

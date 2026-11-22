@@ -1,11 +1,15 @@
-# Changesets with npm trusted publishing (provenance included), after
-# changesets/changesets site/guide/_snippets/automating-trusted-publishing.yaml.
-# Merging the "chore: version packages" pull request that this workflow opens publishes to npm.
+# Releases of the 1.x line (Solid 1) from the `v1` maintenance branch, with npm trusted publishing
+# (provenance included). Merging the "chore: version packages" pull request that this workflow
+# opens publishes to npm under the `v1` dist-tag, so `latest` stays on the newest major.
+#
+# The file name has to stay `release.yml`: npm trusts this workflow by name. Unlike main, the
+# publish step is not artifact mode, because `changeset publish --from-pack-dir` refuses a custom
+# dist-tag and would publish to `latest`.
 name: Release
 
 on:
   push:
-    branches: [main]
+    branches: [v1]
 
 permissions: {}
 
@@ -17,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       mode: ${{ steps.select-mode.outputs.mode }}
-      publish-plan-artifact-id: ${{ steps.select-mode.outputs.publish-plan-artifact-id }}
     permissions:
       contents: read
     steps:
@@ -52,15 +55,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - uses: changesets/action/version@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          commit-message: 'chore: version packages'
-          pr-title: 'chore: version packages'
+          commit-message: 'chore: version packages (v1)'
+          pr-title: 'chore: version packages (v1)'
 
-  pack:
+  # the full gate, kept out of the job that holds `id-token: write`
+  check:
     if: needs.select-mode.outputs.mode == 'publish'
     needs: select-mode
     runs-on: ubuntu-latest
-    outputs:
-      pack-dir-artifact-id: ${{ steps.pack.outputs.pack-dir-artifact-id }}
     permissions:
       contents: read
     steps:
@@ -74,15 +76,10 @@ jobs:
           package-manager-cache: false
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      # the full gate, build included: a tarball publish skips `prepublishOnly`
       - run: pnpm check
-      - id: pack
-        uses: changesets/action/pack@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
-        with:
-          publish-plan-artifact-id: ${{ needs.select-mode.outputs.publish-plan-artifact-id }}
 
   publish:
-    needs: pack
+    needs: check
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -97,6 +94,21 @@ jobs:
           node-version-file: .node-version
           package-manager-cache: false
       - run: pnpm install --frozen-lockfile
-      - uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+      # `pnpm publish` runs `prepublishOnly` (build + size) from the package directory; the action
+      # then pushes the `solid-route-progress@1.x.y` tag
+      - id: changesets
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
+          publish-script: pnpm changeset publish --tag v1
+          # the action's Releases would become the repository's "Latest" over 2.x
+          create-github-releases: false
+      - if: steps.changesets.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISHED: ${{ steps.changesets.outputs.published-packages }}
+        run: |
+          version=$(jq -r '.[0].version' <<<"$PUBLISHED")
+          tag="solid-route-progress@$version"
+          awk -v heading="## $version" '$0 == heading { on = 1; next } on && /^## / { exit } on' \
+            CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          gh release create "$tag" --verify-tag --latest=false --title "$tag" --notes-file "$RUNNER_TEMP/notes.md"
