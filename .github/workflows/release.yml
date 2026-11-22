@@ -1,10 +1,11 @@
 # Releases of the 1.x line (Solid 1) from the `v1` maintenance branch, with npm trusted publishing
 # (provenance included). Merging the "chore: version packages" pull request that this workflow
-# opens publishes to npm under the `v1` dist-tag, so `latest` stays on the newest major.
+# opens publishes to npm under the `latest-1` dist-tag, so `latest` stays on the newest major.
 #
 # The file name has to stay `release.yml`: npm trusts this workflow by name. Unlike main, the
 # publish step is not artifact mode, because `changeset publish --from-pack-dir` refuses a custom
-# dist-tag and would publish to `latest`.
+# dist-tag and would publish to `latest`. npm also refuses a tag that parses as a semver range, such
+# as `v1`, hence `latest-1` (npm's own convention for older majors).
 name: Release
 
 on:
@@ -99,7 +100,7 @@ jobs:
       - id: changesets
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish-script: pnpm changeset publish --tag v1
+          publish-script: pnpm changeset publish --tag latest-1
           # the action's Releases would become the repository's "Latest" over 2.x
           create-github-releases: false
       - if: steps.changesets.outputs.published == 'true'

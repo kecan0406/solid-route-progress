@@ -115,7 +115,7 @@ laptop.
 2. Once it lands on `v1`, the Release workflow opens or updates a "chore: version packages (v1)"
    pull request. That pull request bumps the version and writes `CHANGELOG.md`, with links to the
    pull requests behind each entry.
-3. Merging it publishes to npm under the `v1` dist-tag, so `latest` stays on 2.x, pushes the
+3. Merging it publishes to npm under the `latest-1` dist-tag, so `latest` stays on 2.x, pushes the
    `solid-route-progress@1.x.y` tag, and creates the GitHub Release without marking it as the
    latest one.
 
@@ -124,7 +124,7 @@ If the publish job fails with `ENEEDAUTH`, check that npm still lists the truste
 must be `release.yml` in `kecan0406/solid-route-progress`.
 
 As a last resort, publish by hand from an up-to-date `v1`. Run `npm login` and
-`npm publish --tag v1` (without `--tag`, npm moves `latest` back to 1.x); its
+`npm publish --tag latest-1` (without `--tag`, npm moves `latest` back to 1.x); its
 `prepublishOnly` step builds the package, which also runs publint and the type checks, and enforces
 the size budget. Then create the tag and Release with
 `gh release create solid-route-progress@1.x.y --latest=false --title solid-route-progress@1.x.y --notes-file <notes>`.
