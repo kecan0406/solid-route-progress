@@ -25,6 +25,12 @@
   --destructive: light-dark(oklch(0.577 0.245 27.325), oklch(0.396 0.141 25.723));
   --destructive-foreground: oklch(0.985 0 0);
 
+  /* Package-manager marks on the install switcher's picked tab: each brand's color, with pnpm's
+     orange darkened in the light scheme to keep 3:1 against the card. */
+  --brand-npm: oklch(0.563 0.184 25.7);
+  --brand-pnpm: light-dark(oklch(0.64 0.164 61.8), oklch(0.75 0.164 61.8));
+  --brand-yarn: oklch(0.611 0.111 233.1);
+
   /* Every bar on the site follows the theme, exactly as /docs/styling says to set it. The
      playground overrides it inline on the two bars it drives. */
   --sp-color: var(--primary);
